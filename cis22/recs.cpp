@@ -10,18 +10,15 @@ class customer {
     int id;
     string name;
     float balance;
-    customer(string record){
-      int startpos = 0, pos =0;
-      pos = record.find(':',startpos);
-      id =  atoi(record.substr(startpos,pos).c_str());
-      startpos = pos + 1;
-      pos = record.find(':',startpos);
-      name = record.substr(startpos,pos-startpos);
-      cout <<  "s:" << startpos << " e:" << pos <<endl;
-      cout <<  "r: " << id << " name: " << name <<endl;
+    customer(int i,string n,float b){
+      id = i;
+      name = n;
+      balance = b;
     }
 };
 
+
+customer parseRecord(string rec);
 int main(){
   list<customer> customers;
   ifstream masterFile,transactionFile;
@@ -32,8 +29,24 @@ int main(){
     while(! masterFile.eof() ){
        getline(masterFile,customerLine);
        if (customerLine.length() > 0){
-         customer c(customerLine);
+         customer c = parseRecord(customerLine);
        }
     }
   }
+}
+
+customer parseRecord(string record){
+  int startpos = 0, pos =0;
+  pos = record.find(':',startpos);
+  int id =  atoi(record.substr(startpos,pos).c_str());
+  startpos = pos + 1;
+  pos = record.find(':',startpos);
+  string name = record.substr(startpos,pos-startpos);
+  startpos = pos + 1;
+  float balance = (float) atof(record.substr(startpos).c_str());
+  //cout <<  "s:" << startpos << " e:" << pos <<endl;
+  cout <<  "r: " << id << " name: " << name
+       <<  " b: " << id << " bal: " << balance <<endl;
+  customer c(id,name,balance);
+  return c;
 }
