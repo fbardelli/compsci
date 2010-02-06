@@ -3,22 +3,37 @@
 #include<string>
 #include<stdlib.h>
 #include<list>
+#include<cstdio>
 using namespace std;
+
+class transaction {
+  public:
+    char type;
+    union {
+      struct {
+        char name[20];
+        int quantity;
+        float price;
+      } order;
+      float payment;
+    } data;
+    transaction(float p){
+      type = 'P';
+      data.payment = p;
+    }
+};
 
 class customer {
   public:
     int id;
     string name;
     float balance;
-    customer(int i,string n,float b){
-      id = i;
-      name = n;
-      balance = b;
-    }
+    list<transaction> transactions;
+    customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
+customer parseCustomerRecord(string rec);
 
-customer parseRecord(string rec);
 int main(){
   list<customer> customers;
   ifstream masterFile,transactionFile;
@@ -29,24 +44,19 @@ int main(){
     while(! masterFile.eof() ){
        getline(masterFile,customerLine);
        if (customerLine.length() > 0){
-         customer c = parseRecord(customerLine);
+         customer c = parseCustomerRecord(customerLine);
+         cout <<  "r: " << c.id << " name: " << c.name
+              << " bal: " << c.balance <<endl;
        }
     }
   }
 }
 
-customer parseRecord(string record){
-  int startpos = 0, pos =0;
-  pos = record.find(':',startpos);
-  int id =  atoi(record.substr(startpos,pos).c_str());
-  startpos = pos + 1;
-  pos = record.find(':',startpos);
-  string name = record.substr(startpos,pos-startpos);
-  startpos = pos + 1;
-  float balance = (float) atof(record.substr(startpos).c_str());
-  //cout <<  "s:" << startpos << " e:" << pos <<endl;
-  cout <<  "r: " << id << " name: " << name
-       <<  " b: " << id << " bal: " << balance <<endl;
-  customer c(id,name,balance);
+customer parseCustomerRecord(string record){
+  int id;
+  char name[20];
+  float balance;
+  sscanf(record.c_str(),"%i\t%s\t%f",&id,name,&balance);
+  customer c(id,string(name),balance);
   return c;
 }
