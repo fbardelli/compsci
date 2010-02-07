@@ -1,0 +1,46 @@
+0	1003	3937	Stabilizing Ring	1	4.50
+P	1003	9589	472.02
+0	1003	3967	Restraining Bolt	10	38.98
+P	1003	5603	556.86
+0	1003	4497	Restraining Bolt	7	38.98
+0	1003	4943	Heuristic Processor	8	104.05
+0	1153	6785	Restraining Bolt	7	38.98
+0	1153	8914	Alluvial Dampener	4	33.49
+0	1153	8933	Alluvial Dampener	5	33.49
+P	1615	9250	200.04
+0	1615	4706	Inertial Compensator	2	23.05
+0	1615	9690	Vocabulator	1	22.35
+P	2124	9961	596.78
+0	2124	2892	Vocabulator	10	22.35
+0	2124	9591	Stabilizing Ring	9	4.50
+0	2124	8138	Alluvial Dampener	2	33.49
+P	2124	5868	375.81
+P	2124	7706	681.67
+0	2799	1831	Alluvial Dampener	4	33.49
+0	2799	3774	Heuristic Processor	4	104.05
+0	2799	9732	Alluvial Dampener	3	33.49
+0	2799	1274	Field Energizer	8	61.37
+0	3050	8796	Crystal Oscillator	2	17.49
+P	3050	2360	506.83
+0	3050	2432	Stabilizing Ring	10	4.50
+0	3564	2100	Power Coupling	9	45.99
+P	3564	3758	58.85
+0	3564	5325	Restraining Bolt	10	38.98
+0	3564	5906	Adv Shield Disruptor	8	212.10
+0	4253	1780	Crystal Oscillator	10	17.49
+P	4253	2239	608.65
+0	4253	1635	Inertial Compensator	10	23.05
+0	4253	1158	Emitter Matrix	3	11.15
+0	4253	3301	Crystal Oscillator	5	17.49
+P	4253	8649	381.23
+P	5991	2567	508.18
+0	5991	6666	Restraining Bolt	4	38.98
+P	5991	6147	552.49
+0	5991	7433	Emitter Matrix	10	11.15
+0	5991	2524	Power Coupling	9	45.99
+0	5991	5218	Adv Shield Disruptor	5	212.10
+0	7269	6300	Alluvial Dampener	9	33.49
+P	7269	5093	83.42
+0	7269	7979	Emitter Matrix	5	11.15
+P	7269	5145	204.68
+0	7269	8271	Restraining Bolt	2	38.98
