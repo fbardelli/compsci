@@ -37,7 +37,7 @@ for my $id (sort {$a<=>$b} @ids) {
     }
     $seen_ids{$transaction_id} = 1;
     if(int rand(3) && ($num_orders < 4 || $num_payments > 3) ){
-      print join("\t","0",$id,$transaction_id,$item->{name},int(1+rand(10)),sprintf("%3.2f",$item->{price})),"\n";
+      print join("\t","O",$id,$transaction_id,$item->{name},int(1+rand(10)),sprintf("%3.2f",$item->{price})),"\n";
       ++$num_orders;
     } else {
       print join("\t","P",$id,$transaction_id,sprintf("%3.2f",20+rand(700))),"\n";

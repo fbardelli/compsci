@@ -20,10 +20,10 @@ struct transaction {
       } order;
       float payment;
     } data;
-    transaction(int tId, int cId, float pay):type(PAYMENT){
+    transaction(int cId, int tId, float pay):transactionId(tId),customerId(cId),type(PAYMENT){
       data.payment = pay;
     }
-    transaction(char n[],int qty, float pr):type(ORDER){
+    transaction(int cId, int tId, char n[],int qty, float pr):transactionId(tId),customerId(cId),type(ORDER){
       data.order.quantity = qty; 
       data.order.price = pr;
     }
@@ -38,7 +38,7 @@ struct customer {
 };
 
 customer parseCustomerRecord(string record);
-transaction parseTransactionRecord(string record);
+void parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(string str, char delimiter, list<string>& parts);
 
@@ -48,12 +48,13 @@ int main(){
   ifstream masterFile,transactionFile;
   string customerLine,transactionLine;
   masterFile.open("master.dat");
-  transactionFile.open("transaction.dat");
+  transactionFile.open("transactions.dat");
   if(transactionFile.is_open()){
     while(! transactionFile.eof() ){
        getline(transactionFile,transactionLine);
        if (transactionLine.length() > 0){
-         allTransactions.push_back(parseTransactionRecord(transactionLine));
+         //allTransactions.push_back(parseTransactionRecord(transactionLine));
+         parseTransactionRecord(transactionLine);
        }
     }
   }
@@ -73,8 +74,26 @@ int main(){
 void getCustomerTransactions(customer c, list<transaction> t){
 }
 
-transaction parseTransactionRecord(string record){
-
+void parseTransactionRecord(string record){
+  list <string> parts;
+  stringSplit(record,'\t', parts);
+  char type = parts.front().at(0);
+  parts.pop_front();
+  int custId = atoi( parts.front().c_str() );
+  parts.pop_front();
+  int transId = atoi( parts.front().c_str() );
+  parts.pop_front();
+  if (type == PAYMENT) {
+    cout << "is a payment. ";
+    cout << parts.front() <<"\n";
+    parts.pop_front();
+  } else if (type == ORDER){
+    cout << "is an order. ";
+    cout << parts.front() <<"\n";
+    parts.pop_front();
+  } else {
+    cout << "type unknown";
+  }
 }
 
 customer parseCustomerRecord(string record){
