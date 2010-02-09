@@ -43,6 +43,9 @@ struct customer {
     float balance;
     list<transaction> transactions;
     customer(){};
+    ~customer(){ 
+      //cout << name << " is getting destroyed! have" << transactions.size() << "transactions\n"; 
+    };
     customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
@@ -50,6 +53,7 @@ customer * parseCustomerRecord(string record);
 transaction parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(char * string1, const char * delimiters, string parts[]);
+void writeReport(list<customer *> customers);
 
 int main(){
   list<customer *> customers;
@@ -78,7 +82,7 @@ int main(){
                  currentCustomerId = cust->id;
                }
              }else{
-                cout << "ERROR: reached end of master file";
+                cout << "ERROR: reached end of master file before end of transactions";
                 exit(1);
              }
            }
@@ -88,32 +92,31 @@ int main(){
     }
   }
   
-
-  
-
-  for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
-     cout << (*current)->name << endl;
-     float balance = (*current)->balance;
-     for(list<transaction>::iterator txn = (*current)->transactions.begin();txn != (*current)->transactions.end(); ++txn){
-       if (txn->type == ORDER){
-         int quantity = txn->data.order.quantity;
-         float price = txn->data.order.price;
-         float subtotal = (price*quantity);
-         balance += subtotal;
-         cout << "\t * "<< txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
-       } else {
-         float payment = txn->data.payment;
-         cout << "\t * "<< "\t\t\t\tPAYMENT\t" << payment <<  endl;
-         balance -= payment;
-       }
-     }
-     cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
-     delete *current;
-  }
-
+  writeReport(customers);
   return 0;
 }
 
+void writeReport(list<customer *> customers){
+  for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
+    cout << (*current)->name << endl;
+    float balance = (*current)->balance;
+    for(list<transaction>::iterator txn = (*current)->transactions.begin();txn != (*current)->transactions.end(); ++txn){
+      if (txn->type == ORDER){
+        int quantity = txn->data.order.quantity;
+        float price = txn->data.order.price;
+        float subtotal = (price*quantity);
+        balance += subtotal;
+        cout << "\t * "<< txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
+      } else {
+        float payment = txn->data.payment;
+        cout << "\t * "<< "\t\t\t\tPAYMENT\t" << payment <<  endl;
+        balance -= payment;
+      }
+    }
+    cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
+    delete *current;
+  }
+}
 
 transaction parseTransactionRecord(string record){
   string parts[6];
