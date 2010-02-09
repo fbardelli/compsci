@@ -49,7 +49,7 @@ struct customer {
 customer * parseCustomerRecord(string record);
 transaction parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
-void stringSplit(string str, char delimiter, list<string>& parts);
+void stringSplit(char * string1, const char * delimiters, string parts[]);
 
 int main(){
   list<customer *> customers;
@@ -103,7 +103,7 @@ int main(){
          cout << "\t * "<< txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
        } else {
          float payment = txn->data.payment;
-         cout << "\t * "<< "PAYMENT\t\t\t\t" << payment <<  endl;
+         cout << "\t * "<< "\t\t\t\tPAYMENT\t" << payment <<  endl;
          balance -= payment;
        }
      }
@@ -116,24 +116,19 @@ int main(){
 
 
 transaction parseTransactionRecord(string record){
-  list <string> parts;
-  stringSplit(record,'\t', parts);
-  char type = parts.front().at(0);
-  parts.pop_front();
-  int custId = atoi( parts.front().c_str() );
-  parts.pop_front();
-  int transId = atoi( parts.front().c_str() );
-  parts.pop_front();
+  string parts[6];
+  stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
+  char type = parts[0].at(0);
+  int custId = atoi( parts[1].c_str() );
+  int transId = atoi( parts[2].c_str() );
   if (type == PAYMENT) {
-    float amount = (float)atof(parts.front().c_str());
+    float amount = (float)atof(parts[3].c_str());
     transaction t(custId,transId,amount);
     return t;
   } else if (type == ORDER){
-    string item_name = parts.front();
-    parts.pop_front();
-    int item_qty = atoi(parts.front().c_str());
-    parts.pop_front();
-    float item_price = (float)atof(parts.front().c_str());
+    string item_name = parts[3];
+    int item_qty = atoi(parts[4].c_str());
+    float item_price = (float)atof(parts[5].c_str());
     transaction t(custId,transId,const_cast<char *>(item_name.c_str()),item_qty,item_price);
     return t;
   } else {
@@ -146,32 +141,25 @@ customer * parseCustomerRecord(string record){
   int id;
   string name;
   float balance;
-  list<string> parts;
-  stringSplit(record,'\t',parts);
-  id = atoi( parts.front().c_str() );
-  parts.pop_front();
-  name = parts.front();
-  parts.pop_front();
+  string parts[3];
+  stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
+  id = atoi( parts[0].c_str() );
+  name = parts[1];
   if(name.length() > 20){
     cout << "invalid record, name is too long";
     exit(1);
   }
-  balance = (float) atof( parts.front().c_str() );
-  parts.pop_front();
+  balance = (float) atof( parts[2].c_str() );
   customer * c = new customer(id,name,balance);
   return c;
 }
 
-
-void stringSplit(string str, char delimiter, list<string>& parts){
-  int delimiterPos;
-  while( (delimiterPos = str.find_first_of(delimiter)) != str.npos ) {
-    if(delimiterPos > 0) {
-      parts.push_back(str.substr(0,delimiterPos));
-    }
-    str = str.substr(delimiterPos+1);
-  }
-  if(str.length() > 0){
-     parts.push_back(str);
+void stringSplit(char * string1, const char * delimiters, string parts[]){
+  char * pch = strtok(string1,delimiters);
+  int i = 0;
+  while (pch != NULL){
+    parts[i++] = string(pch);
+    pch = strtok (NULL, delimiters);
   }
 }
+
