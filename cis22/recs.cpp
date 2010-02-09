@@ -41,16 +41,13 @@ struct customer {
     int id;
     string name;
     float balance;
-    list<transaction> transactions;
+    list<transaction *> transactions;
     customer(){};
-    ~customer(){ 
-      //cout << name << " is getting destroyed! have" << transactions.size() << "transactions\n"; 
-    };
     customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
 customer * parseCustomerRecord(string record);
-transaction parseTransactionRecord(string record);
+transaction * parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(char * string1, const char * delimiters, string parts[]);
 void writeReport(list<customer *> customers);
@@ -67,12 +64,12 @@ int main(){
     while(! transactionFile.eof() ){
        getline(transactionFile,transactionLine);
        if (transactionLine.length() > 0){
-         transaction trans = parseTransactionRecord(transactionLine);
+         transaction * trans = parseTransactionRecord(transactionLine);
          /* grab next customer record when the transaction switches to new user
             keep going until we get the right customer.  This will only work if
             both files are sorted by customer id.
          */
-         while(trans.customerId != currentCustomerId){
+         while(trans->customerId != currentCustomerId){
            if(masterFile.is_open()){
              if(! masterFile.eof() ){
                getline(masterFile,customerLine);
@@ -100,7 +97,8 @@ void writeReport(list<customer *> customers){
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
     cout << (*current)->name << endl;
     float balance = (*current)->balance;
-    for(list<transaction>::iterator txn = (*current)->transactions.begin();txn != (*current)->transactions.end(); ++txn){
+    for(list<transaction *>::iterator txnp = (*current)->transactions.begin();txnp != (*current)->transactions.end(); ++txnp){
+      transaction * txn = *txnp;
       if (txn->type == ORDER){
         int quantity = txn->data.order.quantity;
         float price = txn->data.order.price;
@@ -112,13 +110,14 @@ void writeReport(list<customer *> customers){
         cout << "\t * "<< "\t\t\t\tPAYMENT\t" << payment <<  endl;
         balance -= payment;
       }
+      delete txn;
     }
     cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
     delete *current;
   }
 }
 
-transaction parseTransactionRecord(string record){
+transaction * parseTransactionRecord(string record){
   string parts[6];
   stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
   char type = parts[0].at(0);
@@ -126,13 +125,13 @@ transaction parseTransactionRecord(string record){
   int transId = atoi( parts[2].c_str() );
   if (type == PAYMENT) {
     float amount = (float)atof(parts[3].c_str());
-    transaction t(custId,transId,amount);
+    transaction * t = new transaction(custId,transId,amount);
     return t;
   } else if (type == ORDER){
     string item_name = parts[3];
     int item_qty = atoi(parts[4].c_str());
     float item_price = (float)atof(parts[5].c_str());
-    transaction t(custId,transId,const_cast<char *>(item_name.c_str()),item_qty,item_price);
+    transaction * t = new transaction(custId,transId,const_cast<char *>(item_name.c_str()),item_qty,item_price);
     return t;
   } else {
     cout << "type unknown";
