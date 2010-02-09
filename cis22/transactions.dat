@@ -28,12 +28,12 @@ P	3564	3758	58.85
 O	3564	5325	Restraining Bolt	10	38.98
 O	3564	5906	Adv Shield Disruptor	8	212.10
 O	4253	1780	Crystal Oscillator	10	17.49
-P	4253	2239	6O8.65
+P	4253	2239	608.65
 O	4253	1635	Inertial Compensator	10	23.05
 O	4253	1158	Emitter Matrix	3	11.15
 O	4253	3301	Crystal Oscillator	5	17.49
 P	4253	8649	381.23
-P	5991	2567	5O8.18
+P	5991	2567	508.18
 O	5991	6666	Restraining Bolt	4	38.98
 P	5991	6147	552.49
 O	5991	7433	Emitter Matrix	10	11.15
@@ -42,5 +42,5 @@ O	5991	5218	Adv Shield Disruptor	5	212.10
 O	7269	6300	Alluvial Dampener	9	33.49
 P	7269	5093	83.42
 O	7269	7979	Emitter Matrix	5	11.15
-P	7269	5145	2O4.68
+P	7269	5145	204.68
 O	7269	8271	Restraining Bolt	2	38.98

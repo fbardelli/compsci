@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<cstring>
 #include<stdlib.h>
 #include<list>
 #include<cstdio>
@@ -82,9 +83,7 @@ int main(){
              }
            }
          }
-         cout << "pushing transaction" << trans.transactionId << endl;
          cust->transactions.push_back(trans);
-         cout << "csize "<<cust->transactions.size() <<endl;
        }
     }
   }
@@ -93,12 +92,22 @@ int main(){
   
 
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
-     cout << (*current)->name << (*current)->transactions.size() << endl;
+     cout << (*current)->name << endl;
+     float balance = (*current)->balance;
      for(list<transaction>::iterator txn = (*current)->transactions.begin();txn != (*current)->transactions.end(); ++txn){
        if (txn->type == ORDER){
-         cout << "\t * "<< txn->data.order.name << endl;
+         int quantity = txn->data.order.quantity;
+         float price = txn->data.order.price;
+         float subtotal = (price*quantity);
+         balance += subtotal;
+         cout << "\t * "<< txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
+       } else {
+         float payment = txn->data.payment;
+         cout << "\t * "<< "PAYMENT\t\t\t\t" << payment <<  endl;
+         balance -= payment;
        }
      }
+     cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
      delete *current;
   }
 
