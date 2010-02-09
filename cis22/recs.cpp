@@ -45,32 +45,36 @@ struct customer {
     customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
-customer parseCustomerRecord(string record);
+customer * parseCustomerRecord(string record);
 transaction parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(string str, char delimiter, list<string>& parts);
 
 int main(){
-  list<customer> customers;
-  list<transaction> allTransactions;
+  list<customer *> customers;
   ifstream masterFile,transactionFile;
   string customerLine,transactionLine;
   masterFile.open("master.dat");
   transactionFile.open("transactions.dat");
   int currentCustomerId = -1;
-  customer c;
+  customer * cust;
   if(transactionFile.is_open()){
     while(! transactionFile.eof() ){
        getline(transactionFile,transactionLine);
        if (transactionLine.length() > 0){
-         transaction t = parseTransactionRecord(transactionLine);
-         while(t.customerId != currentCustomerId){
+         transaction trans = parseTransactionRecord(transactionLine);
+         /* grab next customer record when the transaction switches to new user
+            keep going until we get the right customer.  This will only work if
+            both files are sorted by customer id.
+         */
+         while(trans.customerId != currentCustomerId){
            if(masterFile.is_open()){
              if(! masterFile.eof() ){
                getline(masterFile,customerLine);
                if (customerLine.length() > 0){
-                 c = parseCustomerRecord(customerLine);
-                 currentCustomerId = c.id;
+                 cust = parseCustomerRecord(customerLine);
+                 customers.push_back(cust);
+                 currentCustomerId = cust->id;
                }
              }else{
                 cout << "ERROR: reached end of master file";
@@ -78,20 +82,29 @@ int main(){
              }
            }
          }
-         c.transactions.push_back(t);
-         if(t.type == ORDER){
-            cout << c.name << " Ordered: "<< string(t.data.order.name) << endl;
-         }else{
-            cout << c.name << " Paid: "<< t.data.payment << endl;
-         }
+         cout << "pushing transaction" << trans.transactionId << endl;
+         cust->transactions.push_back(trans);
+         cout << "csize "<<cust->transactions.size() <<endl;
        }
     }
   }
+  
 
+  
+
+  for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
+     cout << (*current)->name << (*current)->transactions.size() << endl;
+     for(list<transaction>::iterator txn = (*current)->transactions.begin();txn != (*current)->transactions.end(); ++txn){
+       if (txn->type == ORDER){
+         cout << "\t * "<< txn->data.order.name << endl;
+       }
+     }
+     delete *current;
+  }
+
+  return 0;
 }
 
-void getCustomerTransactions(customer c, list<transaction> t){
-}
 
 transaction parseTransactionRecord(string record){
   list <string> parts;
@@ -120,7 +133,7 @@ transaction parseTransactionRecord(string record){
   }
 }
 
-customer parseCustomerRecord(string record){
+customer * parseCustomerRecord(string record){
   int id;
   string name;
   float balance;
@@ -136,7 +149,7 @@ customer parseCustomerRecord(string record){
   }
   balance = (float) atof( parts.front().c_str() );
   parts.pop_front();
-  customer c(id,name,balance);
+  customer * c = new customer(id,name,balance);
   return c;
 }
 
