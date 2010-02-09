@@ -1,4 +1,5 @@
 #include<iostream>
+#include<iomanip>
 #include<fstream>
 #include<string>
 #include<cstring>
@@ -104,10 +105,10 @@ void writeReport(list<customer *> customers){
         float price = txn->data.order.price;
         float subtotal = (price*quantity);
         balance += subtotal;
-        cout << "\t * "<< txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
+        cout << "\t * "<< setw(20) << left <<txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
       } else {
         float payment = txn->data.payment;
-        cout << "\t * "<< "\t\t\t\tPAYMENT\t" << payment <<  endl;
+        cout << "\t * "<< "PAYMENT\t\t\t\t" << payment <<  endl;
         balance -= payment;
       }
       delete txn;
