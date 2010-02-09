@@ -26,6 +26,13 @@ struct transaction {
     transaction(int cId, int tId, char n[],int qty, float pr):transactionId(tId),customerId(cId),type(ORDER){
       data.order.quantity = qty; 
       data.order.price = pr;
+      /*copy up to 1st 20 characters*/
+      int last =0;
+      for(int i = 0;i < strlen(n) && i < 20;i++){
+        data.order.name[i] = n[i];
+        last = i;
+      }
+      data.order.name[++last] = '\0';
     }
 };
 
@@ -34,11 +41,12 @@ struct customer {
     string name;
     float balance;
     list<transaction> transactions;
+    customer(){};
     customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
 customer parseCustomerRecord(string record);
-void parseTransactionRecord(string record);
+transaction parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(string str, char delimiter, list<string>& parts);
 
@@ -49,32 +57,43 @@ int main(){
   string customerLine,transactionLine;
   masterFile.open("master.dat");
   transactionFile.open("transactions.dat");
+  int currentCustomerId = -1;
+  customer c;
   if(transactionFile.is_open()){
     while(! transactionFile.eof() ){
        getline(transactionFile,transactionLine);
        if (transactionLine.length() > 0){
-         //allTransactions.push_back(parseTransactionRecord(transactionLine));
-         parseTransactionRecord(transactionLine);
+         transaction t = parseTransactionRecord(transactionLine);
+         while(t.customerId != currentCustomerId){
+           if(masterFile.is_open()){
+             if(! masterFile.eof() ){
+               getline(masterFile,customerLine);
+               if (customerLine.length() > 0){
+                 c = parseCustomerRecord(customerLine);
+                 currentCustomerId = c.id;
+               }
+             }else{
+                cout << "ERROR: reached end of master file";
+                exit(1);
+             }
+           }
+         }
+         c.transactions.push_back(t);
+         if(t.type == ORDER){
+            cout << c.name << " Ordered: "<< string(t.data.order.name) << endl;
+         }else{
+            cout << c.name << " Paid: "<< t.data.payment << endl;
+         }
        }
     }
   }
-  if(masterFile.is_open()){
-    while(! masterFile.eof() ){
-       getline(masterFile,customerLine);
-       if (customerLine.length() > 0){
-         customer c = parseCustomerRecord(customerLine);
-         cout <<  "r: " << c.id << " name: " << c.name
-              << " bal: " << c.balance <<endl;
-         //getCustomerTransactions(c,allTransactions);
-       }
-    }
-  }
+
 }
 
 void getCustomerTransactions(customer c, list<transaction> t){
 }
 
-void parseTransactionRecord(string record){
+transaction parseTransactionRecord(string record){
   list <string> parts;
   stringSplit(record,'\t', parts);
   char type = parts.front().at(0);
@@ -84,15 +103,20 @@ void parseTransactionRecord(string record){
   int transId = atoi( parts.front().c_str() );
   parts.pop_front();
   if (type == PAYMENT) {
-    cout << "is a payment. ";
-    cout << parts.front() <<"\n";
-    parts.pop_front();
+    float amount = (float)atof(parts.front().c_str());
+    transaction t(custId,transId,amount);
+    return t;
   } else if (type == ORDER){
-    cout << "is an order. ";
-    cout << parts.front() <<"\n";
+    string item_name = parts.front();
     parts.pop_front();
+    int item_qty = atoi(parts.front().c_str());
+    parts.pop_front();
+    float item_price = (float)atof(parts.front().c_str());
+    transaction t(custId,transId,const_cast<char *>(item_name.c_str()),item_qty,item_price);
+    return t;
   } else {
     cout << "type unknown";
+    exit(1);
   }
 }
 
