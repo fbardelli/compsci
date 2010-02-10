@@ -95,10 +95,12 @@ int main(){
 }
 
 void writeReport(list<customer *> customers){
+  /* iterate through list of customers */
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
     float balance = (*current)->balance;
     cout << setw(20) << left << (*current)->name << "\t" << (*current)->id <<  endl;
     cout << setw(45) << right << "Previous Balance:\t$" << balance <<  endl;
+    /* For each customer iterate through transactions writing lines for orders and payments*/
     for(list<transaction *>::iterator txnp = (*current)->transactions.begin();txnp != (*current)->transactions.end(); ++txnp){
       transaction * txn = *txnp;
       if (txn->type == ORDER){
@@ -109,7 +111,7 @@ void writeReport(list<customer *> customers){
         cout << txn->transactionId << "\t"<< setw(20) << left <<txn->data.order.name << "\t" << price << "\t" <<quantity << "\t$" << subtotal << endl;
       } else {
         float payment = txn->data.payment;
-        cout << txn->transactionId << "\t"<< "**PAYMENT\t\t\t\t$" << payment <<  endl;
+        cout << txn->transactionId << "\t"<< "**PAYMENT\t\t\t\t-$" << payment <<  endl;
         balance -= payment;
       }
       delete txn;
@@ -122,19 +124,24 @@ void writeReport(list<customer *> customers){
 
 transaction * parseTransactionRecord(string record){
   string parts[6];
+  /* split line into type, customerId, transactionId... */
   stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
   char type = parts[0].at(0);
   int custId = atoi( parts[1].c_str() );
   int transId = atoi( parts[2].c_str() );
+  /* depending on transaction type different fields will be in the file 
+     payment has paymentAmount
+     order has itemName, itemQuantity, itemPrice
+  */
   if (type == PAYMENT) {
     float amount = (float)atof(parts[3].c_str());
     transaction * t = new transaction(custId,transId,amount);
     return t;
   } else if (type == ORDER){
-    string item_name = parts[3];
-    int item_qty = atoi(parts[4].c_str());
-    float item_price = (float)atof(parts[5].c_str());
-    transaction * t = new transaction(custId,transId,const_cast<char *>(item_name.c_str()),item_qty,item_price);
+    string itemName = parts[3];
+    int itemQuantity = atoi(parts[4].c_str());
+    float itemPrice = (float)atof(parts[5].c_str());
+    transaction * t = new transaction(custId,transId,const_cast<char *>(itemName.c_str()),itemQuantity,itemPrice);
     return t;
   } else {
     cout << "type unknown";
@@ -160,8 +167,9 @@ customer * parseCustomerRecord(string record){
   return c;
 }
 
-void stringSplit(char * string1, const char * delimiters, string parts[]){
-  char * pch = strtok(string1,delimiters);
+/* split large string into smaller strings breaking on delimiter */
+void stringSplit(char * str, const char * delimiters, string parts[]){
+  char * pch = strtok(str,delimiters);
   int i = 0;
   while (pch != NULL){
     parts[i++] = string(pch);
