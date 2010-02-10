@@ -96,8 +96,9 @@ int main(){
 
 void writeReport(list<customer *> customers){
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
-    cout << (*current)->name << endl;
     float balance = (*current)->balance;
+    cout << setw(20) << left << (*current)->name << "\t" << (*current)->id <<  endl;
+    cout << setw(45) << right << "Previous Balance:\t$" << balance <<  endl;
     for(list<transaction *>::iterator txnp = (*current)->transactions.begin();txnp != (*current)->transactions.end(); ++txnp){
       transaction * txn = *txnp;
       if (txn->type == ORDER){
@@ -105,15 +106,16 @@ void writeReport(list<customer *> customers){
         float price = txn->data.order.price;
         float subtotal = (price*quantity);
         balance += subtotal;
-        cout << "\t * "<< setw(20) << left <<txn->data.order.name << "\t" << price << "\t" <<quantity << "\t" << subtotal << endl;
+        cout << txn->transactionId << "\t"<< setw(20) << left <<txn->data.order.name << "\t" << price << "\t" <<quantity << "\t$" << subtotal << endl;
       } else {
         float payment = txn->data.payment;
-        cout << "\t * "<< "PAYMENT\t\t\t\t" << payment <<  endl;
+        cout << txn->transactionId << "\t"<< "**PAYMENT\t\t\t\t$" << payment <<  endl;
         balance -= payment;
       }
       delete txn;
     }
-    cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
+    cout << setw(45) << right << "Balance Due:\t$" << balance << "\n\n";
+    //cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
     delete *current;
   }
 }
@@ -145,6 +147,7 @@ customer * parseCustomerRecord(string record){
   string name;
   float balance;
   string parts[3];
+  /* split line into id, name, balance */
   stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
   id = atoi( parts[0].c_str() );
   name = parts[1];
