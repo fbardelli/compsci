@@ -101,7 +101,7 @@ int main(){
 void updateMasterFile(list<customer *> customers){
   /* iterate through list of customers */
   ofstream master;
-  master.open("master2.dat",ios::out);
+  master.open("master.dat",ios::out);
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
     master << (*current)->id << "\t" << (*current)->name << "\t" <<(*current)->balance << endl;
     delete * current;
