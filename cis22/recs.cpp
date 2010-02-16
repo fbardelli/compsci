@@ -52,6 +52,7 @@ transaction * parseTransactionRecord(string record);
 void getCustomerTransactions(customer c, list<transaction> t);
 void stringSplit(char * string1, const char * delimiters, string parts[]);
 void writeReport(list<customer *> customers);
+void updateMasterFile(list<customer *> customers);
 
 int main(){
   list<customer *> customers;
@@ -89,9 +90,22 @@ int main(){
        }
     }
   }
+  masterFile.close();
+  transactionFile.close();
   
   writeReport(customers);
+  updateMasterFile(customers);
   return 0;
+}
+
+void updateMasterFile(list<customer *> customers){
+  /* iterate through list of customers */
+  ofstream master;
+  master.open("master2.dat",ios::out);
+  for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
+    master << (*current)->id << "\t" << (*current)->name << "\t" <<(*current)->balance << endl;
+    delete * current;
+  }
 }
 
 void writeReport(list<customer *> customers){
@@ -114,11 +128,11 @@ void writeReport(list<customer *> customers){
         cout << txn->transactionId << "\t"<< "**PAYMENT\t\t\t\t-$" << payment <<  endl;
         balance -= payment;
       }
+      (*current)->balance = balance;
       delete txn;
     }
     cout << setw(45) << right << "Balance Due:\t$" << balance << "\n\n";
     //cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
-    delete *current;
   }
 }
 
