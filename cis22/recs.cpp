@@ -1,3 +1,8 @@
+/*  Frank Bardelli
+ *  CIS 22 Data Structures
+ *  Assignment #1
+ *  February 16, 2009
+ */
 #include<iostream>
 #include<iomanip>
 #include<fstream>
