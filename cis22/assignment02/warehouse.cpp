@@ -13,13 +13,14 @@
 #define NUM_ITEMS 3
 using namespace std;
 
-struct warehouse {
-  string cityName;
-  int itemQuantity[NUM_ITEMS];
+class warehouse {
+  public:
+    string cityName;
+    int itemQuantity[NUM_ITEMS];
 };
 
-void setItemPrices(ifstream *in, float itemPrice[], int size);
-void stringSplit(char * str, const char * delimiters, string parts[]);
+void setItemPrices(ifstream& in, float itemPrice[]);
+void stringSplit(char * str, const char * delimiters, string parts[], int size);
 
 int main(){
   warehouse warehouses[NUM_WAREHOUSES] = {
@@ -31,22 +32,26 @@ int main(){
   };
   
   float itemPrice[NUM_ITEMS];
-  ifstream * inputFile;
-  inputFile->open("inputFile.dat");
-  setItemPrices(inputFile,itemPrice,NUM_ITEMS); 
+  ifstream inputFile;
+  inputFile.open("inputFile.dat");
+  setItemPrices(inputFile,itemPrice); 
+  cout << itemPrice[0] << " : " << itemPrice[1] << " : " << itemPrice[2] << endl;
   return 0;
 }
 
-void setItemPrices(ifstream * in, float itemPrice[], int size){
-  string line;
+void setItemPrices(ifstream& in, float itemPrice[]){
+  string line, parts[NUM_ITEMS];
   getline(in,line);
-  cout << line;
+  stringSplit(const_cast<char *>(line.c_str()),"\t",parts,NUM_ITEMS);
+  for (int i = 0; i < NUM_ITEMS; i++){
+    itemPrice[i] = (float) atof(parts[i].c_str());
+  }
 }
 
-void stringSplit(char * str, const char * delimiters, string parts[]){
+void stringSplit(char * str, const char * delimiters, string parts[], int size){
   char * pch = strtok(str,delimiters);
   int i = 0;
-  while (pch != NULL){
+  while (pch != NULL && i < size){
     parts[i++] = string(pch);
     pch = strtok (NULL, delimiters);
   }
