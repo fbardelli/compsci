@@ -7,6 +7,7 @@
 #include<fstream>
 #include<string>
 #include<stdlib.h>
+#include<cstring>
 #include<list>
 #define NUM_WAREHOUSES 5
 #define NUM_ITEMS 3
@@ -14,13 +15,21 @@ using namespace std;
 
 struct warehouse {
   string cityName;
-  int itemAmount[3];
+  int itemQuantity[NUM_ITEMS];
 };
 
-setItemPrices(ifstream * in, int itemPrice[]);
+void setItemPrices(ifstream *in, float itemPrice[], int size);
+void stringSplit(char * str, const char * delimiters, string parts[]);
 
 int main(){
-  warehouse warehouses[NUM_WAREHOUSES];
+  warehouse warehouses[NUM_WAREHOUSES] = {
+    {cityName:"New York", itemQuantity:{0,0,0}},
+    {cityName:"Los Angeles", itemQuantity:{0,0,0}},
+    {cityName:"Miami", itemQuantity:{0,0,0}},
+    {cityName:"Houston", itemQuantity:{0,0,0}},
+    {cityName:"Chicago", itemQuantity:{0,0,0}}
+  };
+  
   float itemPrice[NUM_ITEMS];
   ifstream * inputFile;
   inputFile->open("inputFile.dat");
@@ -28,8 +37,10 @@ int main(){
   return 0;
 }
 
-setItemPrices(ifstream * in, int itemPrice[], int size){
-
+void setItemPrices(ifstream * in, float itemPrice[], int size){
+  string line;
+  getline(in,line);
+  cout << line;
 }
 
 void stringSplit(char * str, const char * delimiters, string parts[]){
