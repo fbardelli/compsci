@@ -11,15 +11,20 @@
 #include<list>
 #define NUM_WAREHOUSES 5
 #define NUM_ITEMS 3
+#define ORDER 'o'
+#define SHIPMENT 's'
 using namespace std;
 
 class warehouse {
   public:
     string cityName;
     int itemQuantity[NUM_ITEMS];
+    warehouse * nextWarehouse;
 };
 
 void setItemPrices(ifstream& in, float itemPrice[]);
+
+void processOrdersAndShipments(ifstream& inputFile,warehouse warehouses[],float itemPrice[]);
 void stringSplit(char * str, const char * delimiters, string parts[], int size);
 
 int main(){
@@ -35,6 +40,7 @@ int main(){
   ifstream inputFile;
   inputFile.open("inputFile.dat");
   setItemPrices(inputFile,itemPrice); 
+  processOrdersAndShipments(inputFile,warehouses,itemPrice);
   cout << itemPrice[0] << " : " << itemPrice[1] << " : " << itemPrice[2] << endl;
   return 0;
 }
@@ -45,6 +51,33 @@ void setItemPrices(ifstream& in, float itemPrice[]){
   stringSplit(const_cast<char *>(line.c_str()),"\t",parts,NUM_ITEMS);
   for (int i = 0; i < NUM_ITEMS; i++){
     itemPrice[i] = (float) atof(parts[i].c_str());
+  }
+}
+
+void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPrice[]){
+  string line, parts[5];
+  while (getline(in,line) && ! in.eof()){
+    //getline(in,line);
+    stringSplit(const_cast<char *>(line.c_str()),"\t",parts,5);
+    char type = parts[0][0];
+    string cityName = parts[1];
+    int itemDelta[NUM_ITEMS];
+    itemDelta[0] = atoi(parts[2].c_str());
+    itemDelta[1] = atoi(parts[3].c_str());
+    itemDelta[2] = atoi(parts[4].c_str());
+    warehouse * currentWarehouse;
+    for(int i = 0; i < NUM_WAREHOUSES; i++){
+       if(warehouses[i].cityName == cityName){
+         currentWarehouse = &warehouses[i];
+       }
+    }
+    for( int j = 0; j < NUM_ITEMS; j++){
+       currentWarehouse->itemQuantity[j] += (type == SHIPMENT ? itemDelta[j] : -itemDelta[j]);
+    }
+    cout << type << " : " << currentWarehouse->cityName << " : " 
+         << currentWarehouse->itemQuantity[0] << " : " 
+         << currentWarehouse->itemQuantity[1] << " : " 
+         << currentWarehouse->itemQuantity[2] << endl;
   }
 }
 
