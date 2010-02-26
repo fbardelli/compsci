@@ -35,6 +35,9 @@ int main(){
     {cityName:"Houston", itemQuantity:{0,0,0}},
     {cityName:"Chicago", itemQuantity:{0,0,0}}
   };
+  for(int i = 0; i <= NUM_WAREHOUSES; i++){
+    warehouses[i].nextWarehouse = &warehouses[ (i+1)%NUM_WAREHOUSES ];
+  }
   
   float itemPrice[NUM_ITEMS];
   ifstream inputFile;
@@ -72,7 +75,35 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
        }
     }
     for( int j = 0; j < NUM_ITEMS; j++){
-       currentWarehouse->itemQuantity[j] += (type == SHIPMENT ? itemDelta[j] : -itemDelta[j]);
+       if(type == SHIPMENT){
+         currentWarehouse->itemQuantity[j] += itemDelta[j]; 
+       }else if(type == ORDER){
+         int neededItems = currentWarehouse->itemQuantity[j] - itemDelta[j];
+         if(neededItems >=0){ 
+            currentWarehouse->itemQuantity[j] -= itemDelta[j];
+         }else{
+            warehouse * pWarehouse = currentWarehouse;
+            for(int i = 0; i<= NUM_WAREHOUSES; i++){
+               if( pWarehouse->nextWarehouse->itemQuantity[j] + neededItems > 0){
+                 cout << pWarehouse->nextWarehouse->cityName << " has enough of item # " << j << endl;
+                 cout << "shipping " << -neededItems << " from " << pWarehouse->nextWarehouse->cityName <<
+                      " to " << currentWarehouse->cityName << endl;
+                 pWarehouse->nextWarehouse->itemQuantity[j] += neededItems;
+                 currentWarehouse->itemQuantity[j] -= neededItems;
+                 break;
+               }else{
+                 cout << pWarehouse->nextWarehouse->cityName << " does not have enough of item # " << j << endl;
+                 if( pWarehouse->nextWarehouse->cityName == currentWarehouse->cityName){
+                   cout << "Order for item #"<< j << " not filled" << endl;
+                   break;
+                 }
+                 pWarehouse = pWarehouse->nextWarehouse;
+               }
+            }
+         }
+       }else{
+         cout <<"invalid record type '"<<type <<", skipping";
+       }
     }
     cout << type << " : " << currentWarehouse->cityName << " : " 
          << currentWarehouse->itemQuantity[0] << " : " 
