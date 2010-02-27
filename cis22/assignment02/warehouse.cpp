@@ -35,6 +35,7 @@ int main(){
     {cityName:"Houston", itemQuantity:{0,0,0}},
     {cityName:"Chicago", itemQuantity:{0,0,0}}
   };
+  /* setup pointers to next warehouse*/
   for(int i = 0; i <= NUM_WAREHOUSES; i++){
     warehouses[i].nextWarehouse = &warehouses[ (i+1)%NUM_WAREHOUSES ];
   }
@@ -88,6 +89,7 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
                  cout << pWarehouse->nextWarehouse->cityName << " has enough of item # " << j << endl;
                  cout << "shipping " << -neededItems << " from " << pWarehouse->nextWarehouse->cityName <<
                       " to " << currentWarehouse->cityName << endl;
+                 /* move items from warehouse with surplus */
                  pWarehouse->nextWarehouse->itemQuantity[j] += neededItems;
                  currentWarehouse->itemQuantity[j] -= neededItems;
                  break;
