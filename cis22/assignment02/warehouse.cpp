@@ -9,7 +9,6 @@
 #include<string>
 #include<stdlib.h>
 #include<cstring>
-#include<list>
 #define NUM_WAREHOUSES 5
 #define NUM_ITEMS 3
 #define ORDER 'o'
@@ -79,42 +78,11 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
        }
     }
     float totalPrice = 0.0f;
-    float costModifier[NUM_ITEMS] = { 1.0f, 1.0f, 1.0f};
     for( int j = 0; j < NUM_ITEMS; j++){
        if(type == SHIPMENT){
          currentWarehouse->itemQuantity[j] += itemDelta[j]; 
        }else if(type == ORDER){
          totalPrice += processOrder(currentWarehouse,j,itemPrice[j],itemDelta[j]);
-
-//         int neededItems = currentWarehouse->itemQuantity[j] - itemDelta[j];
-//         if(neededItems >=0){ 
-//            currentWarehouse->itemQuantity[j] -= itemDelta[j];
-//         }else{
-//            /* If current warehouse does not have enough items check other warehouses */
-//            warehouse * pWarehouse = currentWarehouse;
-//            for(int i = 0; i<= NUM_WAREHOUSES; i++){
-//               if( pWarehouse->nextWarehouse->itemQuantity[j] + neededItems > 0){
-//                 /* Item found, move items from warehouse with surplus to current warehouse */
-//                 cout <<  -neededItems << " of item #" << j+1 <<" shipped from " << pWarehouse->nextWarehouse->cityName <<
-//                      " to " << currentWarehouse->cityName << endl;
-//                 pWarehouse->nextWarehouse->itemQuantity[j] += neededItems;
-//                 currentWarehouse->itemQuantity[j] -= neededItems;
-//                 /* Add a 10% charge for shipping from another warehouse */
-//                 costModifier[j] = 1.1f;
-//                 break;
-//               }else{
-//                 if( pWarehouse->nextWarehouse->cityName == currentWarehouse->cityName){
-//                   cout << "Order for item #"<< j+1 << " unfilled" << endl;
-//                   /*ship none of the item if order can't be filled */
-//                   itemDelta[j] = 0;
-//                   break;
-//                 }
-//                 pWarehouse = pWarehouse->nextWarehouse;
-//               }
-//            }
-//         }
-//         totalPrice += (itemDelta[j] * ( itemPrice[j] * costModifier[j] ));
-
        }else{
          cout <<"invalid record type '"<<type <<", skipping";
        }
@@ -130,8 +98,12 @@ float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,
      currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
   }else{
      /* If current warehouse does not have enough items check other warehouses */
-     warehouse * pWarehouse = currentWarehouse;
-     for(int i = 0; i<= NUM_WAREHOUSES; i++){
+     bool orderFilled = false;
+     /* loop through warehouses until we return back to current warehouse or we find the item*/
+     for( warehouse * pWarehouse = currentWarehouse; 
+          pWarehouse->nextWarehouse->cityName != currentWarehouse->cityName;
+          pWarehouse = pWarehouse->nextWarehouse){
+          
         if( pWarehouse->nextWarehouse->itemQuantity[itemNumber] + neededItems > 0){
           /* Item found, move items from warehouse with surplus to current warehouse */
           cout <<  -neededItems << " of item #" << itemNumber+1 <<" shipped from " << pWarehouse->nextWarehouse->cityName <<
@@ -140,17 +112,16 @@ float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,
           currentWarehouse->itemQuantity[itemNumber] -= neededItems;
           /* Add a 10% charge for shipping from another warehouse */
           costModifier = 1.1f;
+          orderFilled = true;
           break;
-        }else{
-          if( pWarehouse->nextWarehouse->cityName == currentWarehouse->cityName){
-            cout << "Order for item #"<< itemNumber+1 << " unfilled" << endl;
-            /*ship none of the item if order can't be filled */
-            itemDelta = 0;
-            break;
-          }
-          pWarehouse = pWarehouse->nextWarehouse;
         }
-     }
+      }
+      if( ! orderFilled ){
+        cout << "Order for item #"<< itemNumber+1 << " unfilled" << endl;
+        /*ship none of the item if order can't be filled */
+        itemDelta = 0;
+       }
+        
   }
   return (float) (itemDelta * ( itemPrice * costModifier ));
 }
