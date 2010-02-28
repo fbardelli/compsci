@@ -20,11 +20,18 @@ class warehouse {
     string cityName;
     int itemQuantity[NUM_ITEMS];
     warehouse * nextWarehouse;
+    void printSummary() {
+      cout << setw(10) << left << cityName << "\t" 
+       << itemQuantity[0] << "\t" 
+       << itemQuantity[1] << "\t" 
+       << itemQuantity[2] << endl;
+    }
 };
 
 void setItemPrices(ifstream& in, float itemPrice[]);
 void processOrdersAndShipments(ifstream& inputFile,warehouse warehouses[],float itemPrice[]);
 float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,int itemDelta);
+bool transferInventory(warehouse * currentWarehouse, int itemNumber, int neededItems);
 void stringSplit(char * str, const char * delimiters, string parts[], int size);
 void printSummary(warehouse * currentWarehouse, char type, float totalPrice);
 
@@ -37,7 +44,7 @@ int main(){
     {cityName:"Houston", itemQuantity:{0,0,0}},
     {cityName:"Chicago", itemQuantity:{0,0,0}}
   };
-  /* setup pointers to next warehouse*/
+  /* setup circular list of pointers to next warehouse */
   for(int i = 0; i <= NUM_WAREHOUSES; i++){
     warehouses[i].nextWarehouse = &warehouses[ (i+1)%NUM_WAREHOUSES ];
   }
@@ -63,7 +70,7 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
   string line, parts[5];
   /* Read in file */
   while (getline(in,line) && ! in.eof()){
-    cout << line << endl;
+    cout << endl << line << endl;
     stringSplit(const_cast<char *>(line.c_str()),"\t",parts,5);
     char type = parts[0].at(0);
     string cityName = parts[1];
@@ -94,43 +101,57 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
 float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,int itemDelta){
   int neededItems = currentWarehouse->itemQuantity[itemNumber] - itemDelta;
   float costModifier = 1.0f;
-  if(neededItems >=0){ 
+  if(neededItems >=0) { 
      currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
   }else{
      /* If current warehouse does not have enough items check other warehouses */
-     bool orderFilled = false;
-     /* loop through warehouses until we return back to current warehouse or we find the item*/
-     for( warehouse * pWarehouse = currentWarehouse; 
-          pWarehouse->nextWarehouse->cityName != currentWarehouse->cityName;
-          pWarehouse = pWarehouse->nextWarehouse){
-          
-        if( pWarehouse->nextWarehouse->itemQuantity[itemNumber] + neededItems > 0){
-          /* Item found, move items from warehouse with surplus to current warehouse */
-          cout <<  -neededItems << " of item #" << itemNumber+1 <<" shipped from " << pWarehouse->nextWarehouse->cityName <<
-               " to " << currentWarehouse->cityName << endl;
-          pWarehouse->nextWarehouse->itemQuantity[itemNumber] += neededItems;
-          currentWarehouse->itemQuantity[itemNumber] -= neededItems;
-          /* Add a 10% charge for shipping from another warehouse */
-          costModifier = 1.1f;
-          orderFilled = true;
-          break;
-        }
-      }
-      if( ! orderFilled ){
+     bool orderFilled = transferInventory(currentWarehouse,itemNumber,-neededItems);
+
+      if( orderFilled ){
+        /* Add a 10% charge for shipping from another warehouse */
+        currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
+        costModifier = 1.1f;
+      } else {
         cout << "Order for item #"<< itemNumber+1 << " unfilled" << endl;
         /*ship none of the item if order can't be filled */
         itemDelta = 0;
-       }
+      }
         
   }
   return (float) (itemDelta * ( itemPrice * costModifier ));
 }
 
+bool transferInventory(warehouse * currentWarehouse, int itemNumber, int neededItems){
+  warehouse * transferWarehouse =0;
+  int maxSpareInventory = 0;
+  /* loop through warehouses until we return back to current warehouse or we find the item*/
+  for( warehouse * pWarehouse = currentWarehouse; 
+       pWarehouse->nextWarehouse->cityName != currentWarehouse->cityName;
+       pWarehouse = pWarehouse->nextWarehouse){
+    /*check if warehouse has enough inventory to spare */  
+    int spareInventory = pWarehouse->nextWarehouse->itemQuantity[itemNumber] - neededItems;
+    if(  spareInventory > 0){
+      /* find warehouse with largest surplus */
+      if(spareInventory > maxSpareInventory){
+        maxSpareInventory = spareInventory;
+        transferWarehouse = pWarehouse->nextWarehouse;
+      }
+    }
+  }
+  if( transferWarehouse!=0){
+    /* Item found, move items from warehouse with surplus to current warehouse */
+    cout <<  neededItems << " of item #" << itemNumber+1 <<" shipped from " << transferWarehouse->cityName
+         << " to " << currentWarehouse->cityName << endl;
+       transferWarehouse->itemQuantity[itemNumber] -= neededItems;
+       currentWarehouse->itemQuantity[itemNumber] += neededItems;
+       transferWarehouse->printSummary();
+       return true;
+   }
+   return false;
+}
+
 void printSummary(warehouse * currentWarehouse, char type, float totalPrice){
-  cout << setw(10) << left << currentWarehouse->cityName << "\t" 
-       << currentWarehouse->itemQuantity[0] << "\t" 
-       << currentWarehouse->itemQuantity[1] << "\t" 
-       << currentWarehouse->itemQuantity[2] << endl;
+  currentWarehouse->printSummary();
   if(type == ORDER){  
     cout << "Price of Order:\t$" << totalPrice <<endl;
   }
