@@ -117,7 +117,6 @@ float processOrder( warehouse * currentWarehouse, int itemNumber, float itemPric
       /*ship none of the item if order can't be filled */
       itemDelta = 0;
     }
-    
   }
   return (float) (itemDelta * ( itemPrice * costModifier ));
 }

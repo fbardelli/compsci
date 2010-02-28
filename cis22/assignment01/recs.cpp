@@ -16,48 +16,48 @@ using namespace std;
 #define PAYMENT 'P'
 
 struct transaction {
-    char type;
-    int transactionId;
-    int customerId;
-    union {
-      struct {
-        char name[21];
-        int quantity;
-        float price;
-      } order;
-      float payment;
-    } data;
-    transaction(int cId, int tId, float pay):transactionId(tId),customerId(cId),type(PAYMENT){
-      data.payment = pay;
+  char type;
+  int transactionId;
+  int customerId;
+  union {
+    struct {
+      char name[21];
+      int quantity;
+      float price;
+    } order;
+    float payment;
+  } data;
+  transaction(int cId, int tId, float pay):transactionId(tId),customerId(cId),type(PAYMENT){
+    data.payment = pay;
+  }
+  transaction(int cId, int tId, char n[],int qty, float pr):transactionId(tId),customerId(cId),type(ORDER){
+    data.order.quantity = qty; 
+    data.order.price = pr;
+    /*copy up to 1st 20 characters*/
+    int last = 0;
+    for( int i = 0;i < strlen(n) && i < 20; i++ ){
+      data.order.name[i] = n[i];
+      last = i;
     }
-    transaction(int cId, int tId, char n[],int qty, float pr):transactionId(tId),customerId(cId),type(ORDER){
-      data.order.quantity = qty; 
-      data.order.price = pr;
-      /*copy up to 1st 20 characters*/
-      int last =0;
-      for(int i = 0;i < strlen(n) && i < 20;i++){
-        data.order.name[i] = n[i];
-        last = i;
-      }
-      data.order.name[++last] = '\0';
-    }
+    data.order.name[++last] = '\0';
+  }
 };
 
 struct customer {
-    int id;
-    string name;
-    float balance;
-    list<transaction *> transactions;
-    customer(){};
-    customer(int i,string n,float b):id(i),name(n),balance(b){}
+  int id;
+  string name;
+  float balance;
+  list<transaction *> transactions;
+  customer(){};
+  customer(int i,string n,float b):id(i),name(n),balance(b){}
 };
 
-customer * parseCustomerRecord(string record);
-transaction * parseTransactionRecord(string record);
-void getCustomerTransactions(customer c, list<transaction> t);
-void stringSplit(char * string1, const char * delimiters, string parts[]);
-void writeReport(list<customer *> customers);
-void updateMasterFile(list<customer *> customers);
+customer * parseCustomerRecord( string record );
+transaction * parseTransactionRecord( string record );
+void getCustomerTransactions( customer c, list<transaction> t);
+void stringSplit( char * string1, const char * delimiters, string parts[]);
+void writeReport( list<customer *> customers );
+void updateMasterFile( list<customer *> customers );
 
 int main(){
   list<customer *> customers;
@@ -69,41 +69,40 @@ int main(){
   customer * cust;
   if(transactionFile.is_open()){
     while(! transactionFile.eof() ){
-       getline(transactionFile,transactionLine);
-       if (transactionLine.length() > 0){
-         transaction * trans = parseTransactionRecord(transactionLine);
-         /* grab next customer record when the transaction switches to new user
-            keep going until we get the right customer.  This will only work if
-            both files are sorted by customer id.
+      getline(transactionFile,transactionLine);
+      if (transactionLine.length() > 0){
+        transaction * trans = parseTransactionRecord(transactionLine);
+        /* grab next customer record when the transaction switches to new user
+         keep going until we get the right customer.  This will only work if
+         both files are sorted by customer id.
          */
-         while(trans->customerId != currentCustomerId){
-           if(masterFile.is_open()){
-             if(! masterFile.eof() ){
-               getline(masterFile,customerLine);
-               if (customerLine.length() > 0){
-                 cust = parseCustomerRecord(customerLine);
-                 customers.push_back(cust);
-                 currentCustomerId = cust->id;
-               }
-             }else{
-                cout << "ERROR: reached end of master file before end of transactions";
-                exit(1);
-             }
-           }
-         }
-         cust->transactions.push_back(trans);
-       }
+        while(trans->customerId != currentCustomerId){
+          if(masterFile.is_open()){
+            if(! masterFile.eof() ){
+              getline(masterFile,customerLine);
+              if (customerLine.length() > 0){
+                cust = parseCustomerRecord(customerLine);
+                customers.push_back(cust);
+                currentCustomerId = cust->id;
+              }
+            }else{
+              cout << "ERROR: reached end of master file before end of transactions";
+              exit(1);
+            }
+          }
+        }
+        cust->transactions.push_back(trans);
+      }
     }
   }
   masterFile.close();
   transactionFile.close();
-  
   writeReport(customers);
   updateMasterFile(customers);
   return 0;
 }
 
-void updateMasterFile(list<customer *> customers){
+void updateMasterFile( list<customer *> customers ){
   /* iterate through list of customers */
   ofstream master;
   master.open("master.dat",ios::out);
@@ -113,7 +112,7 @@ void updateMasterFile(list<customer *> customers){
   }
 }
 
-void writeReport(list<customer *> customers){
+void writeReport( list<customer *> customers ){
   /* iterate through list of customers */
   for(list<customer *>::iterator current = customers.begin();current != customers.end(); ++current){
     float balance = (*current)->balance;
@@ -137,11 +136,10 @@ void writeReport(list<customer *> customers){
       delete txn;
     }
     cout << setw(45) << right << "Balance Due:\t$" << balance << "\n\n";
-    //cout << "\t\t\t\t\tTOTAL\t" << balance <<  endl;
   }
 }
 
-transaction * parseTransactionRecord(string record){
+transaction * parseTransactionRecord( string record ){
   string parts[6];
   /* split line into type, customerId, transactionId... */
   stringSplit(const_cast<char *>(record.c_str()),"\t", parts);
@@ -149,9 +147,9 @@ transaction * parseTransactionRecord(string record){
   int custId = atoi( parts[1].c_str() );
   int transId = atoi( parts[2].c_str() );
   /* depending on transaction type different fields will be in the file 
-     payment has paymentAmount
-     order has itemName, itemQuantity, itemPrice
-  */
+   payment has paymentAmount
+   order has itemName, itemQuantity, itemPrice
+   */
   if (type == PAYMENT) {
     float amount = (float)atof(parts[3].c_str());
     transaction * t = new transaction(custId,transId,amount);
@@ -168,7 +166,7 @@ transaction * parseTransactionRecord(string record){
   }
 }
 
-customer * parseCustomerRecord(string record){
+customer * parseCustomerRecord( string record ){
   int id;
   string name;
   float balance;
@@ -187,7 +185,7 @@ customer * parseCustomerRecord(string record){
 }
 
 /* split large string into smaller strings breaking on delimiter */
-void stringSplit(char * str, const char * delimiters, string parts[]){
+void stringSplit( char * str, const char * delimiters, string parts[] ){
   char * pch = strtok(str,delimiters);
   int i = 0;
   while (pch != NULL){
