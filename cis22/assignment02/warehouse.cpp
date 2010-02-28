@@ -16,24 +16,24 @@
 using namespace std;
 
 class warehouse {
-  public:
-    string cityName;
-    int itemQuantity[NUM_ITEMS];
-    warehouse * nextWarehouse;
-    void printSummary() {
-      cout << setw(10) << left << cityName << "\t" 
-       << itemQuantity[0] << "\t" 
-       << itemQuantity[1] << "\t" 
-       << itemQuantity[2] << endl;
-    }
+public:
+  string cityName;
+  int itemQuantity[NUM_ITEMS];
+  warehouse * nextWarehouse;
+  void printSummary() {
+    cout << setw(10) << left << cityName << "\t" 
+         << itemQuantity[0] << "\t" 
+         << itemQuantity[1] << "\t" 
+         << itemQuantity[2] << endl;
+  }
 };
 
-void setItemPrices(ifstream& in, float itemPrice[]);
-void processOrdersAndShipments(ifstream& inputFile,warehouse warehouses[],float itemPrice[]);
-float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,int itemDelta);
-bool transferInventory(warehouse * currentWarehouse, int itemNumber, int neededItems);
-void stringSplit(char * str, const char * delimiters, string parts[], int size);
-void printSummary(warehouse * currentWarehouse, char type, float totalPrice);
+void setItemPrices( ifstream& in, float itemPrice[] );
+void processOrdersAndShipments( ifstream& inputFile, warehouse warehouses[], float itemPrice[]);
+float processOrder( warehouse * currentWarehouse, int itemNumber, float itemPrice, int itemDelta );
+bool transferInventory( warehouse * currentWarehouse, int itemNumber, int neededItems );
+void stringSplit( char * str, const char * delimiters, string parts[], int size );
+void printSummary( warehouse * currentWarehouse, char type, float totalPrice );
 
 int main(){
   /* initialize warehouses with 0 items */
@@ -57,7 +57,7 @@ int main(){
   return 0;
 }
 
-void setItemPrices(ifstream& in, float itemPrice[]){
+void setItemPrices( ifstream& in, float itemPrice[] ){
   string line, parts[NUM_ITEMS];
   getline(in,line);
   stringSplit(const_cast<char *>(line.c_str()),"\t",parts,NUM_ITEMS);
@@ -66,11 +66,12 @@ void setItemPrices(ifstream& in, float itemPrice[]){
   }
 }
 
-void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPrice[]){
+void processOrdersAndShipments( ifstream& in, warehouse warehouses[], float itemPrice[] ){
   string line, parts[5];
   /* Read in file */
   while (getline(in,line) && ! in.eof()){
     cout << endl << line << endl;
+    /* File contains: type cityName amount1 amount2 amount3 */
     stringSplit(const_cast<char *>(line.c_str()),"\t",parts,5);
     char type = parts[0].at(0);
     string cityName = parts[1];
@@ -80,54 +81,54 @@ void processOrdersAndShipments(ifstream& in, warehouse warehouses[],float itemPr
     itemDelta[2] = atoi(parts[4].c_str());
     warehouse * currentWarehouse;
     for(int i = 0; i < NUM_WAREHOUSES; i++){
-       if(warehouses[i].cityName == cityName){
-         currentWarehouse = &warehouses[i];
-       }
+      if(warehouses[i].cityName == cityName){
+        currentWarehouse = &warehouses[i];
+      }
     }
     float totalPrice = 0.0f;
     for( int j = 0; j < NUM_ITEMS; j++){
-       if(type == SHIPMENT){
-         currentWarehouse->itemQuantity[j] += itemDelta[j]; 
-       }else if(type == ORDER){
-         totalPrice += processOrder(currentWarehouse,j,itemPrice[j],itemDelta[j]);
-       }else{
-         cout <<"invalid record type '"<<type <<", skipping";
-       }
+      if(type == SHIPMENT){
+        currentWarehouse->itemQuantity[j] += itemDelta[j]; 
+      }else if(type == ORDER){
+        totalPrice += processOrder(currentWarehouse,j,itemPrice[j],itemDelta[j]);
+      }else{
+        cout <<"invalid record type '"<<type <<", skipping";
+      }
     }
     printSummary(currentWarehouse,type,totalPrice);
   }
 }
 
-float processOrder( warehouse * currentWarehouse,int itemNumber,float itemPrice,int itemDelta){
+float processOrder( warehouse * currentWarehouse, int itemNumber, float itemPrice, int itemDelta ){
   int neededItems = currentWarehouse->itemQuantity[itemNumber] - itemDelta;
   float costModifier = 1.0f;
   if(neededItems >=0) { 
-     currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
+    currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
   }else{
-     /* If current warehouse does not have enough items check other warehouses */
-     bool orderFilled = transferInventory(currentWarehouse,itemNumber,-neededItems);
-
-      if( orderFilled ){
-        /* Add a 10% charge for shipping from another warehouse */
-        currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
-        costModifier = 1.1f;
-      } else {
-        cout << "Order for item #"<< itemNumber+1 << " unfilled" << endl;
-        /*ship none of the item if order can't be filled */
-        itemDelta = 0;
-      }
-        
+    /* If current warehouse does not have enough items check other warehouses */
+    bool orderFilled = transferInventory(currentWarehouse,itemNumber,-neededItems);
+    
+    if( orderFilled ){
+      /* Add a 10% charge for shipping from another warehouse */
+      currentWarehouse->itemQuantity[itemNumber] -= itemDelta;
+      costModifier = 1.1f;
+    } else {
+      cout << "Order for item #"<< itemNumber+1 << " unfilled" << endl;
+      /*ship none of the item if order can't be filled */
+      itemDelta = 0;
+    }
+    
   }
   return (float) (itemDelta * ( itemPrice * costModifier ));
 }
 
 bool transferInventory(warehouse * currentWarehouse, int itemNumber, int neededItems){
-  warehouse * transferWarehouse =0;
+  warehouse * transferWarehouse = 0;
   int maxSpareInventory = 0;
   /* loop through warehouses until we return back to current warehouse or we find the item*/
   for( warehouse * pWarehouse = currentWarehouse; 
-       pWarehouse->nextWarehouse->cityName != currentWarehouse->cityName;
-       pWarehouse = pWarehouse->nextWarehouse){
+      pWarehouse->nextWarehouse->cityName != currentWarehouse->cityName;
+      pWarehouse = pWarehouse->nextWarehouse){
     /*check if warehouse has enough inventory to spare */  
     int spareInventory = pWarehouse->nextWarehouse->itemQuantity[itemNumber] - neededItems;
     if(  spareInventory > 0){
@@ -138,19 +139,20 @@ bool transferInventory(warehouse * currentWarehouse, int itemNumber, int neededI
       }
     }
   }
-  if( transferWarehouse!=0){
+  if( transferWarehouse != 0){
     /* Item found, move items from warehouse with surplus to current warehouse */
-    cout <<  neededItems << " of item #" << itemNumber+1 <<" shipped from " << transferWarehouse->cityName
+    cout <<  neededItems << " of item #" << itemNumber+1 
+         << " shipped from " << transferWarehouse->cityName
          << " to " << currentWarehouse->cityName << endl;
-       transferWarehouse->itemQuantity[itemNumber] -= neededItems;
-       currentWarehouse->itemQuantity[itemNumber] += neededItems;
-       transferWarehouse->printSummary();
-       return true;
-   }
-   return false;
+    transferWarehouse->itemQuantity[itemNumber] -= neededItems;
+    currentWarehouse->itemQuantity[itemNumber] += neededItems;
+    transferWarehouse->printSummary();
+    return true;
+  }
+  return false;
 }
 
-void printSummary(warehouse * currentWarehouse, char type, float totalPrice){
+void printSummary( warehouse * currentWarehouse, char type, float totalPrice ){
   currentWarehouse->printSummary();
   if(type == ORDER){  
     cout << "Price of Order:\t$" << totalPrice <<endl;
