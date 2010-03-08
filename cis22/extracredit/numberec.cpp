@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     exit(1);
   }
   /* validate that numbers are valid */
-  for(int i=1;i<num_args;i++){
+  for(int i = 1; i < num_args; i++){
     nums.push_back(atoi(argv[i]));
     if (nums[i-1] <= 0){
       cout << "arguments must be numeric and greater than 0\n";
@@ -29,10 +29,10 @@ int main(int argc, char *argv[]){
 
 void displaynums(vector<int> nums, int index, vector<int> num_stack){
   int next = index + 1;
-  for ( int i =0; i < nums[index]; i++ ){
+  for ( int i = 0; i < nums[index]; i++ ){
     if (next == nums.size()){
       cout << "[";
-      for(int j =0; j < num_stack.size(); j++){
+      for(int j = 0; j < num_stack.size(); j++){
         cout << num_stack[j] << ",";
       }
       cout << i << "]\n";
