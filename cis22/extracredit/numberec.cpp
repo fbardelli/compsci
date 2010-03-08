@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-void displaynums(vector<int> nums, int arg_index, vector<int> num_stack);
+void displayArray(vector<int> nums, int arg_index, vector<int> num_stack);
 
 int main(int argc, char *argv[]){
   int num_args = argc;
@@ -11,8 +11,8 @@ int main(int argc, char *argv[]){
      have a size() method and can be manipulted like stacks*/
   vector<int> nums, num_stack;
   /* validate that numbers were entered*/
-  if(num_args < 1){
-    cout << "this command requires a vector of numbers\n";
+  if(num_args < 2){
+    cout << "this command requires a list of numbers\n";
     exit(1);
   }
   /* validate that numbers are valid */
@@ -23,11 +23,11 @@ int main(int argc, char *argv[]){
       exit(1);
     }
   }
-  displaynums(nums, 0, num_stack);
+  displayArray(nums, 0, num_stack);
   return 0;
 }
 
-void displaynums(vector<int> nums, int index, vector<int> num_stack){
+void displayArray(vector<int> nums, int index, vector<int> num_stack){
   int next = index + 1;
   for ( int i = 0; i < nums[index]; i++ ){
     if (next == nums.size()){
@@ -38,7 +38,7 @@ void displaynums(vector<int> nums, int index, vector<int> num_stack){
       cout << i << "]\n";
     }else{
       num_stack.push_back(i);
-      displaynums(nums, next, num_stack);
+      displayArray(nums, next, num_stack);
       num_stack.pop_back();
     }
   }
