@@ -28,17 +28,19 @@ int main(int argc, char *argv[]){
 }
 
 void displayArray(vector<int> nums, int index, vector<int> num_stack){
-  int next = index + 1;
+  int next_index = index + 1;
   for ( int i = 0; i < nums[index]; i++ ){
-    if (next == nums.size()){
+    /* if we are at the last digit output the contents of the stack*/
+    if (next_index == nums.size()){
       cout << "[";
       for(int j = 0; j < num_stack.size(); j++){
         cout << num_stack[j] << ",";
       }
       cout << i << "]\n";
     }else{
+      /* not at the last digit the user entered descend*/
       num_stack.push_back(i);
-      displayArray(nums, next, num_stack);
+      displayArray(nums, next_index, num_stack);
       num_stack.pop_back();
     }
   }
