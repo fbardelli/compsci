@@ -6,19 +6,18 @@ using namespace std;
 void displaynums(int nums[],int num_args, int arg_index, list<int> num_stack);
 
 int main(int argc, char *argv[]){
+  int * nums;
   int num_args = argc - 1;
   list<int> num_stack;
   if(num_args < 1){
     cout << "this command requires a list of numbers\n";
     exit(1);
   }
-  int * nums;
   nums = new int [num_args];
   for(int i=0;i<num_args;i++){
     nums[i] = atoi(argv[i+1]);
     if (nums[i] <= 0){
       cout << "arguments must be numeric and greater than 0\n";
-      delete [] nums;
       exit(1);
     }
   }
