@@ -1,3 +1,9 @@
+/*  Frank Bardelli
+ *  CIS 22 Data Structures
+ *  Extra Credit Assignment 
+ *  March 5, 2009
+ */
+
 #include <iostream>
 #include <stdlib.h>
 using namespace std;
@@ -13,10 +19,10 @@ int main(int argc, char *argv[]){
     cout << "this command requires a list of numbers\n";
     exit(1);
   }
-  /*size not known until runtime, dynamically allocate */
+  /* size not known until runtime, dynamically allocate */
   nums = new int[size];
   num_stack = new int[size];
-  /* validate that numbers are valid */
+  /* check that numbers entered are valid*/
   for(int i = 0; i < size; i++){
     nums[i] = atoi(argv[i+1]);
     if (nums[i] <= 0){
@@ -31,7 +37,7 @@ int main(int argc, char *argv[]){
   return 0;
 }
 
-void displayArray(int * nums, int index, int * num_stack, int size){
+void displayArray(int *nums, int index, int *num_stack, int size){
   int next_index = index + 1;
   for ( int i = 0; i < nums[index]; i++ ){
     /* store the value at current index so we can display it later */
