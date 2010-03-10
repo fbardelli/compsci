@@ -1,47 +1,48 @@
 #include <iostream>
 #include <stdlib.h>
-#include <vector>
 using namespace std;
 
-void displayArray(vector<int> nums, int arg_index, vector<int> num_stack);
+void displayArray(int * nums, int index, int * num_stack, int size);
 
 int main(int argc, char *argv[]){
   int num_args = argc;
-  /* using vectors because they are easier to manage than dynamic arrays, 
-     have a size() method and can be manipulted like stacks*/
-  vector<int> nums, num_stack;
+  int size = num_args - 1;
+  int *nums, *num_stack;
   /* validate that numbers were entered*/
   if(num_args < 2){
     cout << "this command requires a list of numbers\n";
     exit(1);
   }
+  nums = new int(size);
+  num_stack = new int(size);
   /* validate that numbers are valid */
-  for(int i = 1; i < num_args; i++){
-    nums.push_back(atoi(argv[i]));
-    if (nums[i-1] <= 0){
+  for(int i = 0; i < size; i++){
+    nums[i] = atoi(argv[i+1]);
+    if (nums[i] <= 0){
       cout << "arguments must be numeric and greater than 0\n";
       exit(1);
     }
   }
-  displayArray(nums, 0, num_stack);
+  displayArray(nums, 0, num_stack, size);
+  delete[] nums;
+  delete[] num_stack;
   return 0;
 }
 
-void displayArray(vector<int> nums, int index, vector<int> num_stack){
+void displayArray(int * nums, int index, int * num_stack, int size){
   int next_index = index + 1;
   for ( int i = 0; i < nums[index]; i++ ){
+    /* store the value at current index so we can display it later */
+    num_stack[index] = i;
     /* if we are at the last digit output the contents of the stack*/
-    if (next_index == nums.size()){
+    if (next_index == size){
       cout << "[";
-      for(int j = 0; j < num_stack.size(); j++){
+      for(int j = 0; j < size-1; j++){
         cout << num_stack[j] << ",";
       }
       cout << i << "]\n";
     }else{
-      /* not at the last digit the user entered descend*/
-      num_stack.push_back(i);
-      displayArray(nums, next_index, num_stack);
-      num_stack.pop_back();
+      displayArray(nums, next_index, num_stack, size);
     }
   }
 }
