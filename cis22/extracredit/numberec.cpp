@@ -25,8 +25,9 @@ int main(int argc, char *argv[]){
     }
   }
   displayArray(nums, 0, num_stack, size);
-  delete nums;
-  delete num_stack;
+  /*free memory allocated*/
+  delete [] nums;
+  delete [] num_stack;
   return 0;
 }
 
