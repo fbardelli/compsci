@@ -13,8 +13,9 @@ int main(int argc, char *argv[]){
     cout << "this command requires a list of numbers\n";
     exit(1);
   }
-  nums = new int(size);
-  num_stack = new int(size);
+  /*size not known until runtime, dynamically allocate */
+  nums = new int[size];
+  num_stack = new int[size];
   /* validate that numbers are valid */
   for(int i = 0; i < size; i++){
     nums[i] = atoi(argv[i+1]);
@@ -24,8 +25,8 @@ int main(int argc, char *argv[]){
     }
   }
   displayArray(nums, 0, num_stack, size);
-  delete[] nums;
-  delete[] num_stack;
+  delete nums;
+  delete num_stack;
   return 0;
 }
 
