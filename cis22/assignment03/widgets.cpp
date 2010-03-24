@@ -10,12 +10,43 @@
 #include<stdlib.h>
 #include<cstring>
 #include<list>
-#define NUM_WAREHOUSES 5
-#define NUM_ITEMS 3
-#define ORDER 'o'
-#define SHIPMENT 's'
 using namespace std;
 
+struct receipt {
+  int quantity;
+  double cost;
+};
+
+class promo {
+  int percentage;
+  int usesRemaining;
+  bool isActive;
+  promo(){
+ 	
+  }
+  void activate(int p){
+    isActive = true;
+    usesRemaining = 2;
+    percentage =  p;
+  }
+  void deactivate(){
+    isActive = false;
+    usesRemaining = 0;
+    percentage = 0;
+  }
+  void usePromo(){
+    usesRemaining--;
+    if(usesRemaining < 1){
+      deactivate();
+    }
+  }
+  float getPromo() {
+    if(isActive){
+      usePromo();
+    }
+    return 1.0f + (percentage * 0.01f);
+  }
+}
 
 //void stringSplit( char * str, const char * delimiters, string parts[], int size );
 void processRecords( ifstream& in );
