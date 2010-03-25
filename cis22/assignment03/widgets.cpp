@@ -12,6 +12,8 @@
 #include<list>
 #define MARKUP 1.3f
 using namespace std;
+#include <sstream> // header file for string stream processing
+using std::ostringstream; // stream insertion operators
 
 void processRecords( ifstream& in );
 
@@ -59,45 +61,50 @@ class inventory {
     void add(receipt r){
       rList.push_back(r);
     }
-    void processOrder(int desiredQuantity, promotion * p){
+    void processOrder(int requestedQuantity, promotion * p){
       float totalCost = 0.0f;
       float currentPromoModifier = p->getPromo();
-      cout << fixed << setprecision(2);
+      int neededQuantity = requestedQuantity;
+      ostringstream outputString;
+      outputString << fixed << setprecision(2);
       
       //while we have widgets in stock and the customer needs widgets
-      while ( ! rList.empty() && desiredQuantity > 0){
+      while ( ! rList.empty() && neededQuantity > 0){
         //receipt r = rList.front();
         int sold = 0;
         float cost = rList.front().cost;
-        if (rList.front().quantity > desiredQuantity){
-          rList.front().quantity -= desiredQuantity;
-          sold = desiredQuantity;
-          desiredQuantity = 0;
+        if (rList.front().quantity > neededQuantity){
+          rList.front().quantity -= neededQuantity;
+          sold = neededQuantity;
+          neededQuantity = 0;
         }else{
-          desiredQuantity -= rList.front().quantity;
+          neededQuantity -= rList.front().quantity;
           sold = rList.front().quantity;
           //no more items left at this price
           rList.pop_front();
         }
         float current_sale = sold * cost * MARKUP;
-        cout << sold << " @ " << ( cost * MARKUP ) << " each Sales:\t$" << current_sale << endl; 
+        outputString << sold << " @ " << ( cost * MARKUP ) << " each Sales:\t$" << current_sale << endl; 
         totalCost += current_sale; 
       }
 
       //If the customer still needs widgets and we dont have any
-      if (desiredQuantity>0){
-        cout << "Remainder of "<< desiredQuantity<<" widgets not availible\n";
+      if (neededQuantity>0){
+         outputString << "Remainder of "<< neededQuantity<<" widgets not availible\n";
       }
       
       //process discount if there's one active
       int discount = p->getDiscount();
       float discountedCost = totalCost * currentPromoModifier;
       if(totalCost != discountedCost){
-         cout << "\tOriginal Sale:\t$" <<  totalCost << endl;
-         cout << "\tDiscount " << discount <<"%\t-$" << totalCost-discountedCost << endl;
+         outputString << "\tOriginal Sale:\t$" <<  totalCost << endl;
+         outputString << "\tDiscount " << discount <<"%\t-$" << totalCost-discountedCost << endl;
          totalCost = discountedCost;
       }
-      cout << "\tTotal Sale:\t$" << totalCost << "\n\n";
+      outputString << "\tTotal Sale:\t$" << totalCost << "\n\n";
+      cout << "Sold " << requestedQuantity-neededQuantity 
+           << " of " << requestedQuantity << " widgets\n";
+      cout << outputString.str();
     }
 };
 
