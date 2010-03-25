@@ -10,7 +10,10 @@
 #include<stdlib.h>
 #include<cstring>
 #include<list>
+#define MARKUP 1.3f
 using namespace std;
+
+void processRecords( ifstream& in );
 
 struct receipt {
   int quantity;
@@ -22,9 +25,7 @@ class promotion {
   int usesRemaining;
   bool isActive;
   public:
-    promotion(){
-          
-    }
+    promotion(){}
     void activate(int p){
       isActive = true;
       usesRemaining = 2;
@@ -36,16 +37,18 @@ class promotion {
       percentage = 0;
     }
     void usePromo(){
-      usesRemaining--;
-      if(usesRemaining < 1){
+      if(usesRemaining-- < 1){
         deactivate();
       }
+    }
+    int getDiscount(){
+      return percentage;
     }
     float getPromo() {
       if(isActive){
         usePromo();
       }
-      return 1.0f + (percentage * 0.01f);
+      return 1.0f - (percentage * 0.01f);
     }
 };
 
@@ -54,15 +57,14 @@ class inventory {
   public:
     inventory(){}
     void add(receipt r){
-      //cout << "pushing: q" << r.quantity << "c" << r.cost << endl;
       rList.push_back(r);
-      //cout << "size after push "<< rList.size() <<endl;
     }
-    void processOrder(int desiredQuantity, promotion p){
-      //while we have wigets in stock and the customer needs widgets
-      float total_cost = 0.0f;
-      float currentPromoModifier = p.getPromo();
-      //cout << "size: "<<rList.size()<<endl;
+    void processOrder(int desiredQuantity, promotion * p){
+      float totalCost = 0.0f;
+      float currentPromoModifier = p->getPromo();
+      cout << fixed << setprecision(2);
+      
+      //while we have widgets in stock and the customer needs widgets
       while ( ! rList.empty() && desiredQuantity > 0){
         //receipt r = rList.front();
         int sold = 0;
@@ -74,26 +76,33 @@ class inventory {
         }else{
           desiredQuantity -= rList.front().quantity;
           sold = rList.front().quantity;
-          //cout <<"REMOVING";
-          //cout << "size was: " << rList.size();
+          //no more items left at this price
           rList.pop_front();
-          //cout << " size is: " << rList.size() <<"\n";
         }
-        float current_sale = sold * cost;
-        cout << sold << " at " << cost << " each  Sales:\t $" << current_sale << endl; 
-        total_cost += current_sale; 
+        float current_sale = sold * cost * MARKUP;
+        cout << sold << " @ " << ( cost * MARKUP ) << " each Sales:\t$" << current_sale << endl; 
+        totalCost += current_sale; 
       }
+
+      //If the customer still needs widgets and we dont have any
       if (desiredQuantity>0){
-      cout << "Remainder of "<< desiredQuantity<<" widgets not availible\n";
+        cout << "Remainder of "<< desiredQuantity<<" widgets not availible\n";
       }
-      cout << "\tTotal Sale:\t $" <<  total_cost << endl;
+      
+      //process discount if there's one active
+      int discount = p->getDiscount();
+      float discountedCost = totalCost * currentPromoModifier;
+      if(totalCost != discountedCost){
+         cout << "\tOriginal Sale:\t$" <<  totalCost << endl;
+         cout << "\tDiscount " << discount <<"%\t-$" << totalCost-discountedCost << endl;
+         totalCost = discountedCost;
+      }
+      cout << "\tTotal Sale:\t$" << totalCost << "\n\n";
     }
 };
 
 
 
-//void stringSplit( char * str, const char * delimiters, string parts[], int size );
-void processRecords( ifstream& in );
 
 int main(){
   ifstream inputFile;
@@ -118,35 +127,30 @@ void processRecords( ifstream& in ){
     double cost;
     switch(type.at(0)){
       case 'P':
-        //cout << "promo ";
         pch = strtok (NULL, delimiter);
         percent = atoi(pch);
+        cout << "Read in a " << percent << "\% promotion\n\n";
         promo.activate(percent);
-        //cout << "pct :" << percent << "%\n";
         break;
       case 'S':
-        //cout << "sales ";
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
-        stock.processOrder(quantity,promo);
-        //cout << "SALES QTY :" << quantity << "\n";
+        cout << "Processing sale of " << quantity << " widgets\n";
+        stock.processOrder(quantity,&promo);
         break;
       case 'R':
-        //cout << "receipt ";
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
         pch = strtok (NULL, delimiter);
         cost = atof(pch);
+        cout << "Received " << quantity << " widgets at $" 
+             << setprecision(2) << fixed << cost <<" each"
+             <<"($" << cost * MARKUP <<" after 30% markup)\n\n";
         receipt r = {quantity,cost};
         stock.add(r);
-        //cout << "qty :" << quantity << " cost :" << cost << "\n";
         break;
     }
   }
 }
 
-
-//  while (pch != NULL && i < size){
-//    parts[i++] = string(pch);
-//    pch = strtok (NULL, delimiters);
 
