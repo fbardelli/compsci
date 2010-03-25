@@ -10,21 +10,12 @@
 #include<stdlib.h>
 #include<cstring>
 #include<list>
-#define PROMO   'P'
-#define SALE    'S'
-#define RECEIPT 'R'
+#define NUM_WAREHOUSES 5
+#define NUM_ITEMS 3
+#define ORDER 'o'
+#define SHIPMENT 's'
 using namespace std;
 
-struct stock {
-  int quantity;
-  double cost;
-};
-
-struct promo {
-  int discountPercent;
-  int usesRemaining;
-  bool active;
-};
 
 //void stringSplit( char * str, const char * delimiters, string parts[], int size );
 void processRecords( ifstream& in );
@@ -39,7 +30,6 @@ int main(){
 void processRecords( ifstream& in ){
   string line, parts[3];
   /* Read in file */
-  list<stock> itemStock;
   while (getline(in,line) && ! in.eof()){
     /* File contains: type cityName amount1 amount2 amount3 */
     const char * delimiter = "\t";
@@ -47,33 +37,28 @@ void processRecords( ifstream& in ){
     string type = string(pch);
     int percent, quantity;
     double cost;
-    //stock st;
     switch(type.at(0)){
-      case PROMO:
+      case 'P':
         cout << "promo ";
         pch = strtok (NULL, delimiter);
         percent = atoi(pch);
         cout << "pct :" << percent << "%\n";
         break;
-      case SALE:
+      case 'S':
         cout << "sales ";
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
         cout << "qty :" << quantity << "\n";
         break;
-      case RECEIPT:
+      case 'R':
+        cout << "receipt ";
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
         pch = strtok (NULL, delimiter);
         cost = atof(pch);
-        stock st = {quantity,cost};
-        itemStock.push_back(st);
-        cout << quantity << " widgets received at cost:$" << cost << "\n";
+        cout << "qty :" << quantity << " cost :" << cost << "\n";
         break;
     }
-  }
-  for(list<stock>::iterator current = itemStock.begin();current != itemStock.end(); ++current){
-    cout << current->quantity << "::" << current->cost << endl;
   }
 }
 
