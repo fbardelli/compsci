@@ -1,7 +1,7 @@
 /*  Frank Bardelli
  *  CIS 22 Data Structures
- *  Assignment #2
- *  February 22, 2009
+ *  Assignment #3
+ *  March 31, 2010
  */
 #include<iostream>
 #include<iomanip>
@@ -23,11 +23,16 @@ struct receipt {
 };
 
 class promotion {
-  int percentage;
-  int usesRemaining;
+  int percentage, usesRemaining;
   bool isActive;
   public:
-    promotion(){}
+    promotion(){
+      //if no args, initialize as inactive
+      deactivate();
+    }
+    promotion(int p){
+      activate(p);
+    }
     void activate(int p){
       isActive = true;
       usesRemaining = 2;
@@ -39,6 +44,7 @@ class promotion {
       percentage = 0;
     }
     void usePromo(){
+      //decrement uses remaining
       if(usesRemaining-- < 1){
         deactivate();
       }
@@ -101,13 +107,13 @@ class inventory {
          outputString << "\tDiscount " << discount <<"%\t-$" << totalCost-discountedCost << endl;
          totalCost = discountedCost;
       }
+      //output sales report
       outputString << "\tTotal Sale:\t$" << totalCost << "\n\n";
       cout << "Sold " << requestedQuantity-neededQuantity 
            << " of " << requestedQuantity << " widgets\n";
       cout << outputString.str();
     }
 };
-
 
 
 
@@ -134,26 +140,33 @@ void processRecords( ifstream& in ){
     double cost;
     switch(type.at(0)){
       case 'P':
+        //parse remainder of record for promo amount
         pch = strtok (NULL, delimiter);
         percent = atoi(pch);
+
         cout << "Read in a " << percent << "\% promotion\n\n";
         promo.activate(percent);
         break;
       case 'S':
+        //parse remainder of record for order quantity 
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
+
         cout << "Processing sale of " << quantity << " widgets\n";
         stock.processOrder(quantity,&promo);
         break;
       case 'R':
+        //parse remainder of record for quantity & cost
         pch = strtok (NULL, delimiter);
         quantity = atoi(pch);
         pch = strtok (NULL, delimiter);
         cost = atof(pch);
+
         cout << "Received " << quantity << " widgets at $" 
              << setprecision(2) << fixed << cost <<" each"
              <<"($" << cost * MARKUP <<" after 30% markup)\n\n";
         receipt r = {quantity,cost};
+        //add shipment to end of inventory FIFO
         stock.add(r);
         break;
     }
