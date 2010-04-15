@@ -26,6 +26,7 @@ struct Node {
 
 Node * buildTree(list<int> numbers);
 void processData( ifstream& in );
+void processInsertsAndDeletes( ifstream& in, list<int> numbers );
 
 
 int main(){
@@ -39,12 +40,35 @@ int main(){
 
 void processData( ifstream& in ){
 
-  string line, parts[3];
+  string line;
   while (getline(in,line) && ! in.eof()){
-
-    //const char * delimiter = "\t";
-    //char * pch = strtok((char *)line.c_str(),delimiter);
+    if(line.find("SET") == 0){
+       list<int> nodes;
+       string numbers = line.substr(line.find(':')+2);
+       const char * delimiter = " ";
+       char * pch = strtok((char *)numbers.c_str(),delimiter);
+         
+       nodes.push_back(atoi(pch));
+       while(pch = strtok (NULL, delimiter)){
+         nodes.push_back(atoi(pch));
+       }
+       for(list<int>::iterator current = nodes.begin();current != nodes.end(); ++current){
+         cout << (*current) << ":";
+       }
+       cout << "\n  =" << nodes.size()<<"\n";
+       processInsertsAndDeletes(in, nodes);
+    }
     //pch = strtok (NULL, delimiter);
+  }
+}
+
+void processInsertsAndDeletes( ifstream& in, list<int> numbers ){
+  string line;
+  while (getline(in,line) && ! in.eof()){
+     if (line.length() == 0){
+       break;
+     }
+     cout << "len:" << line.length() << endl;
   }
 }
 
