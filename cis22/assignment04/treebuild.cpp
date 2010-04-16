@@ -23,9 +23,12 @@ struct Node {
    Node  *right;
    Node  *parent;
    int   height;
-   Node( int d, Node *lt = NULL, Node *rt=NULL ) : data( d ), left( lt ), right( rt ){}
+   //Node( int d, Node *lt = NULL, Node *rt=NULL ) : data( d ), left( lt ), right( rt ){}
    Node( int d ) : data( d ), left( NULL ), right( NULL ){}
    Node( ) : data( NULL ), left( NULL ), right( NULL ){}
+   void insert(int d){
+      insert( new Node(d) );
+   }
    void insert(Node * n){ 
      if (n->data == data){
        cout << "Node with value: " << data << " already exists\n";
@@ -35,14 +38,37 @@ struct Node {
          left->insert(n);
        } else {
          left = n;
+         left->setParent((Node *)this);
        }
      }else if ( n->data > data){
        if (right != NULL){
          right->insert(n);
        } else {
          right = n;
+         right->setParent((Node *)this);
        }
      }
+   }
+   void remove(int d){
+     if (d == data){
+       cout << "found " << d << " removing\n";
+       return;
+     }
+     if(d < data){
+       if (left != NULL){
+         left->remove(d);
+         return;
+       } 
+     } else if ( d > data) {
+       if (right != NULL){
+         right->remove(d);
+         return;
+       }  
+     }
+     cout << "failed to remove " << d << "\n";
+   }
+   void setParent(Node *p) { 
+       parent = p;
    }
    void traversePreOrder(){
       if(data){
@@ -88,6 +114,16 @@ struct Node {
         right->countNodes(i);
       }
    }
+   void freeTree(){
+      if(left !=NULL){
+        left->freeTree();
+      }
+      if(right !=NULL){
+        right->freeTree();
+      }
+      cout << "freeing node with data: " << data << endl;
+      delete this;
+   }
 
 };
 
@@ -119,13 +155,10 @@ void processData( ifstream& in ){
          if(! tree->data){
            tree->data = number;
          }else{
-           tree->insert(new Node(number,NULL,NULL));
+           tree->insert(number);
          }
          pch = strtok (NULL, delimiter);
        }
-       //for(list<int>::iterator current = nodes.begin();current != nodes.end(); ++current){
-       //  cout << (*current) << ":";
-       //}
        cout << "\nTREE(Pre):";
        tree->traversePreOrder();
        cout << "\nTREE(In):";
@@ -137,6 +170,7 @@ void processData( ifstream& in ){
        tree->countNodes(i);
        cout << "TREE(Count): " << i << "\n";
        processInsertsAndDeletes(in, tree);
+       tree->freeTree();
     }
     //pch = strtok (NULL, delimiter);
   }
@@ -151,12 +185,19 @@ void processInsertsAndDeletes( ifstream& in, Node * tree ){
      const char * delimiter = "\t";
      char * pch = strtok((char *)line.c_str(),delimiter);
      string op;
+     string insert_key = "INSERT ";
+     string delete_key = "DELETE ";
      while( pch != NULL){
         op = string(pch);
         cout << op << endl;
+        if(op.find(insert_key) != -1){
+          tree->insert( atoi( op.substr( insert_key.length() ).c_str()) );
+        }else if (op.find(delete_key) != -1){
+          tree->remove( atoi( op.substr( delete_key.length() ).c_str()) );
+        }
         pch = strtok (NULL, delimiter);
      }
-     cout << "len:" << line.length() << endl;
+     //cout << "len:" << line.length() << endl;
   }
 }
 
