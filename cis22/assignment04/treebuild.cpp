@@ -24,6 +24,8 @@ struct Node {
    Node  *parent;
    int   height;
    Node( int d, Node *lt = NULL, Node *rt=NULL ) : data( d ), left( lt ), right( rt ){}
+   Node( int d ) : data( d ), left( NULL ), right( NULL ){}
+   Node( ) : data( NULL ), left( NULL ), right( NULL ){}
    void insert(Node * n){ 
      if (n->data == data){
        cout << "Node with value: " << data << " already exists\n";
@@ -43,7 +45,9 @@ struct Node {
      }
    }
    void traversePreOrder(){
-      cout << data << " ";
+      if(data){
+        cout << data << " ";
+      }
       if(left !=NULL){
         left->traversePreOrder();
       }
@@ -55,7 +59,9 @@ struct Node {
       if(left !=NULL){
         left->traverseInOrder();
       }
-      cout << data << " ";
+      if(data){
+        cout << data << " ";
+      }
       if(right !=NULL){
         right->traverseInOrder();
       }
@@ -67,10 +73,14 @@ struct Node {
       if(right !=NULL){
         right->traversePostOrder();
       }
-      cout << data << " ";
+      if(data){
+        cout << data << " ";
+      }
    }
    void countNodes(int &i){
-      i++;
+      if(data){
+        i++;
+      }
       if(left !=NULL){
         left->countNodes(i);
       }
@@ -83,7 +93,7 @@ struct Node {
 
 Node * buildTree(list<int> numbers);
 void processData( ifstream& in );
-void processInsertsAndDeletes( ifstream& in, list<int> numbers );
+void processInsertsAndDeletes( ifstream& in, Node * tree );
 
 
 int main(){
@@ -100,25 +110,22 @@ void processData( ifstream& in ){
   string line;
   while (getline(in,line) && ! in.eof()){
     if(line.find("SET") == 0){
-       list<int> nodes;
        string numbers = line.substr(line.find(':')+2);
        const char * delimiter = " ";
        char * pch = strtok((char *)numbers.c_str(),delimiter);
-       int number =   atoi(pch);
-       Node * tree = new Node(number,NULL,NULL);
-       while(number != RECORD_TERMINATOR ){
-         nodes.push_back(number);
-         pch = strtok (NULL, delimiter);
-         number = atoi(pch);
-         if(number != RECORD_TERMINATOR){
-           Node * node = new Node(number,NULL,NULL);
-           tree->insert(node);
+       int number; 
+       Node * tree = new Node(); 
+       while( (number = atoi(pch) ) != RECORD_TERMINATOR ){
+         if(! tree->data){
+           tree->data = number;
+         }else{
+           tree->insert(new Node(number,NULL,NULL));
          }
+         pch = strtok (NULL, delimiter);
        }
-       for(list<int>::iterator current = nodes.begin();current != nodes.end(); ++current){
-         cout << (*current) << ":";
-       }
-       cout << "\n  =" << nodes.size()<<"\n";
+       //for(list<int>::iterator current = nodes.begin();current != nodes.end(); ++current){
+       //  cout << (*current) << ":";
+       //}
        cout << "\nTREE(Pre):";
        tree->traversePreOrder();
        cout << "\nTREE(In):";
@@ -129,13 +136,13 @@ void processData( ifstream& in ){
        int i = 0;
        tree->countNodes(i);
        cout << "TREE(Count): " << i << "\n";
-       processInsertsAndDeletes(in, nodes);
+       processInsertsAndDeletes(in, tree);
     }
     //pch = strtok (NULL, delimiter);
   }
 }
 
-void processInsertsAndDeletes( ifstream& in, list<int> numbers ){
+void processInsertsAndDeletes( ifstream& in, Node * tree ){
   string line;
   while (getline(in,line) && ! in.eof()){
      if (line.length() == 0){
@@ -143,7 +150,12 @@ void processInsertsAndDeletes( ifstream& in, list<int> numbers ){
      }
      const char * delimiter = "\t";
      char * pch = strtok((char *)line.c_str(),delimiter);
-
+     string op;
+     while( pch != NULL){
+        op = string(pch);
+        cout << op << endl;
+        pch = strtok (NULL, delimiter);
+     }
      cout << "len:" << line.length() << endl;
   }
 }
