@@ -17,115 +17,191 @@ using std::ostringstream; // stream insertion operators
 
 #define RECORD_TERMINATOR -999
 
-struct Node {
+class Node {
    int data;
    Node  *left;
    Node  *right;
    Node  *parent;
    int   height;
-   //Node( int d, Node *lt = NULL, Node *rt=NULL ) : data( d ), left( lt ), right( rt ){}
-   Node( int d ) : data( d ), left( NULL ), right( NULL ){}
-   Node( ) : data( NULL ), left( NULL ), right( NULL ){}
-   void insert(int d){
-      insert( new Node(d) );
-   }
-   void insert(Node * n){ 
-     if (n->data == data){
-       cout << "Node with value: " << data << " already exists\n";
-     }
-     if(n->data < data){
-       if (left != NULL){
-         left->insert(n);
-       } else {
-         left = n;
-         left->setParent((Node *)this);
-       }
-     }else if ( n->data > data){
-       if (right != NULL){
-         right->insert(n);
-       } else {
-         right = n;
-         right->setParent((Node *)this);
-       }
-     }
-   }
-   void remove(int d){
-     if (d == data){
-       cout << "found " << d << " removing\n";
-       return;
-     }
-     if(d < data){
-       if (left != NULL){
-         left->remove(d);
-         return;
-       } 
-     } else if ( d > data) {
-       if (right != NULL){
-         right->remove(d);
-         return;
-       }  
-     }
-     cout << "failed to remove " << d << "\n";
-   }
-   void setParent(Node *p) { 
-       parent = p;
-   }
-   void traversePreOrder(){
-      if(data){
-        cout << data << " ";
-      }
-      if(left !=NULL){
-        left->traversePreOrder();
-      }
-      if(right !=NULL){
-        right->traversePreOrder();
-      }
-   }
-   void traverseInOrder(){
-      if(left !=NULL){
-        left->traverseInOrder();
-      }
-      if(data){
-        cout << data << " ";
-      }
-      if(right !=NULL){
-        right->traverseInOrder();
-      }
-   }
-   void traversePostOrder(){
-      if(left !=NULL){
-        left->traversePostOrder();
-      }
-      if(right !=NULL){
-        right->traversePostOrder();
-      }
-      if(data){
-        cout << data << " ";
-      }
-   }
-   void countNodes(int &i){
-      if(data){
-        i++;
-      }
-      if(left !=NULL){
-        left->countNodes(i);
-      }
-      if(right !=NULL){
-        right->countNodes(i);
-      }
-   }
-   void freeTree(){
-      if(left !=NULL){
-        left->freeTree();
-      }
-      if(right !=NULL){
-        right->freeTree();
-      }
-      cout << "freeing node with data: " << data << endl;
-      delete this;
-   }
-
+   public:
+     Node( int d ) : data( d ), left( NULL ), right( NULL ){ }
+     Node( ) : data( NULL ), left( NULL ), right( NULL ){ parent = NULL; }
+     int getData(){ return data; }
+     void setData(int d){ data = d;}
+     void insert(int d);
+     void insert(Node * n);
+     void remove(int d);
+     void freeTree();
+     void setParent(Node *p); 
+     void traversePreOrder();
+     void traverseInOrder();
+     void traversePostOrder();
+     void countNodes(int &i);
+     void displayChildren();
 };
+
+void Node::insert(int d){
+   insert( new Node(d) );
+}
+
+void Node::insert(Node * n){ 
+  if (n->data == data){
+    cout << "Node with value: " << data << " already exists\n";
+  }
+  if(n->data < data){
+    if (left != NULL){
+      left->insert(n);
+    } else {
+      left = n;
+      left->setParent((Node *)this);
+    }
+  }else if ( n->data > data){
+    if (right != NULL){
+      right->insert(n);
+    } else {
+      right = n;
+      right->setParent((Node *)this);
+    }
+  }
+}
+
+void Node::remove(int d){
+  if(d < data){
+    if (left != NULL){
+      left->remove(d);
+      return;
+    } 
+  } else if ( d > data) {
+    if (right != NULL){
+      right->remove(d);
+      return;
+    }  
+  } else if (d == data){
+    cout << "found " << d << " removing\n";
+    if ( left != NULL && right != NULL){
+      cout << d << " has L & R\n";
+
+    }else if(left != NULL || right != NULL){
+       Node *current = this;
+       Node *replace;
+       if(left !=NULL){
+          cout << d << " has L\n";
+          replace = left;
+       }
+       if(right !=NULL){
+          cout << d << " has R\n";
+          replace = right;
+          cout << d << " assigned R\n";
+       }
+       if(parent != NULL){
+         if( parent->right != NULL && parent->right == this){
+           cout << d << " parent has me on R\n";
+           parent->right = replace;
+         }
+         if(parent->left != NULL && parent->left == this){
+           cout << d << " parent has me on L\n";
+           parent->left = replace;
+         }
+       }
+       cout<<"got here";
+    }else{
+       if(parent !=NULL){
+         if(parent->right == this){
+           parent->right = NULL;
+         } else if(parent->left == this){
+           parent->left = NULL;
+         }
+         delete this;
+       }
+       data = NULL;
+    }
+    return;
+  }
+
+  cout << "failed to remove " << d << "\n";
+}
+
+void Node::setParent(Node *p) { 
+    parent = p;
+}
+
+void Node::traversePreOrder(){
+   if(data){
+     cout << data << " ";
+   }
+   if(left !=NULL){
+     left->traversePreOrder();
+   }
+   if(right !=NULL){
+     right->traversePreOrder();
+   }
+}
+
+void Node::traverseInOrder(){
+   if(left !=NULL){
+     left->traverseInOrder();
+   }
+   if(data){
+     cout << data << " ";
+   }
+   if(right !=NULL){
+     right->traverseInOrder();
+   }
+}
+
+void Node::traversePostOrder(){
+   if(left !=NULL){
+     left->traversePostOrder();
+   }
+   if(right !=NULL){
+     right->traversePostOrder();
+   }
+   if(data){
+     cout << data << " ";
+   }
+}
+
+void Node::displayChildren(){
+   int numChildren = 0;
+   if(left !=NULL){
+     numChildren++;
+     left->displayChildren();
+   }
+   if(right !=NULL){
+     numChildren++;
+     right->displayChildren();
+   }
+   if(data){
+     cout << "node #" << data << " has " << numChildren << " children\n";
+   }
+}
+
+
+void Node::countNodes(int &i){
+   if(data){
+     i++;
+   }
+   if(left !=NULL){
+     left->countNodes(i);
+   }
+   if(right !=NULL){
+     right->countNodes(i);
+   }
+}
+
+void Node::freeTree(){
+   if(left !=NULL){
+     left->freeTree();
+   }
+   if(right !=NULL){
+     right->freeTree();
+   }
+   cout << "freeing node with data: " << data << endl;
+   delete this;
+}
+
+
+
 
 Node * buildTree(list<int> numbers);
 void processData( ifstream& in );
@@ -152,8 +228,8 @@ void processData( ifstream& in ){
        int number; 
        Node * tree = new Node(); 
        while( (number = atoi(pch) ) != RECORD_TERMINATOR ){
-         if(! tree->data){
-           tree->data = number;
+         if(! tree->getData()){
+           tree->setData(number);
          }else{
            tree->insert(number);
          }
@@ -168,8 +244,13 @@ void processData( ifstream& in ){
        cout << "\n";
        int i = 0;
        tree->countNodes(i);
+       tree->displayChildren();
        cout << "TREE(Count): " << i << "\n";
        processInsertsAndDeletes(in, tree);
+       i = 0;
+       tree->countNodes(i);
+       tree->displayChildren();
+       cout << "TREE(Count): " << i << "\n";
        tree->freeTree();
     }
     //pch = strtok (NULL, delimiter);
