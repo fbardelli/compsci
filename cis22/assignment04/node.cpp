@@ -7,11 +7,17 @@ using namespace std;
 #include "node.h"
 
 void Node::insert(int d){
+   /* helper method so caller need not worry about allocating memory on insert*/
    insert( new Node(d) );
 }
 
-void Node::insert(Node * n){ 
+void Node::insert(Node * n) { 
+ /*  Traverse tree until approriate spot is found 
+ *   Using a simple left = less than, right = greater than
+ *   Will not balance well with pre-sorted data
+ * */
   if (n->data == data){
+    /* print error if node is in the tree */
     cout << "Failed to insert Node with value:" << data << " Node already exists\n";
   }
   if(n->data < data){
@@ -33,6 +39,8 @@ void Node::insert(Node * n){
 
 
 void Node::remove(int d){
+ /*  Traverse tree moving right or left 
+ *   until we reach the leaf we are seeking */
   if(d < data){
     if (left != NULL){
       left->remove(d);
@@ -44,7 +52,13 @@ void Node::remove(int d){
       return;
     }  
   } else if (d == data){
+    /* found the leaf, there are three posible cases to deal with */ 
     if ( left != NULL && right != NULL){
+       /* both right and left are filled 
+        * find leftmost node (node with lowest value in right tree) 
+        * on the right side, replace current value with that value
+        * then remove that value from the right tree.
+        */ 
        Node * replacement = right;
        while (replacement->left != NULL){
          replacement = replacement->left;
@@ -52,7 +66,9 @@ void Node::remove(int d){
        data = replacement->data;
        replacement->remove(data);
     }else if(left != NULL || right != NULL){
-       Node *current = this;
+       /* if we have exactly one child, 
+        * replace this node with its child
+        */
        Node *replace;
        if(left !=NULL){
           replace = left;
@@ -69,9 +85,16 @@ void Node::remove(int d){
          }
        }
        if(replace != NULL){
+           /* parent may be NULL if we are at the top of the tree*/
            replace->setParent(parent);
+           /*this node fully replaced, delete it */
+           delete this;
        }
     }else{
+       /* if this node has no children 
+        * set references in our parent to null
+        * and simply delete this node
+       */
        if(parent !=NULL){
          if(parent->right == this){
            parent->right = NULL;
@@ -84,7 +107,7 @@ void Node::remove(int d){
     }
     return;
   }
-
+  /* If we get here we traversed the tree without finding the requested node */
   cout << "failed to remove " << d << " Node not found\n";
 }
 
@@ -93,6 +116,7 @@ void Node::setParent(Node *p) {
 }
 
 void Node::traversePreOrder(){
+   /* preorder = root, left, right */
    if(data){
      cout << data << " ";
    }
@@ -105,6 +129,7 @@ void Node::traversePreOrder(){
 }
 
 void Node::traverseInOrder(){
+   /* inorder = left, root, right */
    if(left !=NULL){
      left->traverseInOrder();
    }
@@ -117,6 +142,7 @@ void Node::traverseInOrder(){
 }
 
 void Node::traversePostOrder(){
+   /* postorder = left, right, root */
    if(left !=NULL){
      left->traversePostOrder();
    }
@@ -129,6 +155,7 @@ void Node::traversePostOrder(){
 }
 
 void Node::displayChildren(){
+  /* traverse tree displaying # children for each node*/
   int numChildren = 0;
   if(left !=NULL){
     numChildren++;
@@ -140,6 +167,7 @@ void Node::displayChildren(){
   }
   cout << "node #" << data << " has " << numChildren << " children\n";
 }
+
 void Node::countReport(){
   int i = countNodes();
   cout << "TREE(Count): " << i << "\n";
@@ -152,6 +180,7 @@ int Node::countNodes(){
 }
 
 void Node::countNodes(int &i){
+   /* traverse tree updating i with total nodes in tree*/
    if(data){
      i++;
    }
@@ -164,6 +193,7 @@ void Node::countNodes(int &i){
 }
 
 void Node::freeTree(){
+   /* traverse tree postorder freeing nodes from the bottom up*/
    if(left !=NULL){
      left->freeTree();
    }
@@ -183,5 +213,4 @@ void Node::traversalReport(){
   traversePostOrder();
   cout << "\n";
 }
-
 
