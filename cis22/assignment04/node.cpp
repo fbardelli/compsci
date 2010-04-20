@@ -2,7 +2,8 @@
 #include<string>
 #include<stdlib.h>
 using namespace std;
-
+#include <sstream> // header file for string stream processing
+using std::ostringstream; // stream insertion operators
 
 #include "node.h"
 
@@ -18,21 +19,21 @@ void Node::insert(Node * n) {
  * */
   if (n->data == data){
     /* print error if node is in the tree */
-    cout << "Failed to insert Node with value:" << data << " Node already exists\n";
+    cout << "Failed to insert Node with value=" << data << " Node already exists\n";
   }
   if(n->data < data){
     if (left != NULL){
       left->insert(n);
     } else {
       left = n;
-      left->setParent((Node *)this);
+      left->setParent(this);
     }
   }else if ( n->data > data){
     if (right != NULL){
       right->insert(n);
     } else {
       right = n;
-      right->setParent((Node *)this);
+      right->setParent(this);
     }
   }
 }
@@ -64,7 +65,8 @@ void Node::remove(int d){
          replacement = replacement->left;
        }
        data = replacement->data;
-       replacement->remove(data);
+       /* remove node with duplicate data in right tree */
+       right->remove(data);
     }else if(left != NULL || right != NULL){
        /* if we have exactly one child, 
         * replace this node with its child
@@ -76,20 +78,11 @@ void Node::remove(int d){
        if(right !=NULL){
           replace = right;
        }
-       if(parent != NULL){
-         if( parent->right != NULL && parent->right == this){
-           parent->right = replace;
-         }
-         if(parent->left != NULL && parent->left == this){
-           parent->left = replace;
-         }
-       }
-       if(replace != NULL){
-           /* parent may be NULL if we are at the top of the tree*/
-           replace->setParent(parent);
-           /*this node fully replaced, delete it */
-           delete this;
-       }
+       data = replace->data;
+       right = replace->right;
+       left = replace->left;
+       /* relevant node data copied, free it */
+       delete replace;
     }else{
        /* if this node has no children 
         * set references in our parent to null
@@ -117,9 +110,7 @@ void Node::setParent(Node *p) {
 
 void Node::traversePreOrder(){
    /* preorder = root, left, right */
-   if(data){
-     cout << data << " ";
-   }
+   cout << data << " ";
    if(left !=NULL){
      left->traversePreOrder();
    }
@@ -133,9 +124,7 @@ void Node::traverseInOrder(){
    if(left !=NULL){
      left->traverseInOrder();
    }
-   if(data){
-     cout << data << " ";
-   }
+   cout << data << " ";
    if(right !=NULL){
      right->traverseInOrder();
    }
@@ -149,23 +138,31 @@ void Node::traversePostOrder(){
    if(right !=NULL){
      right->traversePostOrder();
    }
-   if(data){
-     cout << data << " ";
-   }
+   cout << data << " ";
 }
 
 void Node::displayChildren(){
   /* traverse tree displaying # children for each node*/
   int numChildren = 0;
+  ostringstream children;
   if(left !=NULL){
     numChildren++;
+    children << "left:" << left->data;
     left->displayChildren();
   }
   if(right !=NULL){
     numChildren++;
+    if(left!=NULL){
+      children <<",";
+    }
+    children << "right:" << right->data;
     right->displayChildren();
   }
-  cout << "node #" << data << " has " << numChildren << " children\n";
+  cout << "node #" << data << " has " << numChildren << " child" << (numChildren == 1 ? "":"ren" );
+  if(numChildren){
+    cout << " (" << children.str() << ")";
+  }
+  cout << endl;
 }
 
 void Node::countReport(){
