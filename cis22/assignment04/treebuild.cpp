@@ -1,7 +1,7 @@
 /*  Frank Bardelli
  *  CIS 22 Data Structures
- *  Assignment #3
- *  March 31, 2010
+ *  Assignment #4
+ *  April 15, 2010
  */
 #include<iostream>
 #include<fstream>
@@ -32,14 +32,19 @@ void processData( ifstream& in ){
 
   string line;
   while (getline(in,line) && ! in.eof()){
+    /* find number sets */
     if(line.find("SET") == 0){
+       /* read all digits after the colon */
        string numbers = line.substr(line.find(':')+2);
+       /* split on spaces */
        const char * delimiter = " ";
        char * pch = strtok((char *)numbers.c_str(),delimiter);
        int number; 
        Node * tree = new Node(); 
+       /* add digits to the tree until we reach -999 */
        while( (number = atoi(pch) ) != RECORD_TERMINATOR ){
          if(! tree->getData()){
+           /* initialize root node */
            tree->setData(number);
          }else{
            tree->insert(number);
@@ -47,12 +52,14 @@ void processData( ifstream& in ){
          pch = strtok (NULL, delimiter);
        }
 
+       /* display tree state */
        tree->traversalReport();
        tree->countReport();
        tree->displayChildren();
-       
+
        processInsertsAndDeletes(in, tree);
 
+       /* display tree state */
        tree->traversalReport();
        tree->countReport();
        tree->displayChildren();
@@ -66,9 +73,11 @@ void processData( ifstream& in ){
 void processInsertsAndDeletes( ifstream& in, Node * tree ){
   string line;
   while (getline(in,line) && ! in.eof()){
+     /*read until the first blank line */
      if (line.length() == 0){
        break;
      }
+     /* split up inserts and deletes on tab character */
      const char * delimiter = "\t";
      char * pch = strtok((char *)line.c_str(),delimiter);
      string op;
@@ -77,6 +86,7 @@ void processInsertsAndDeletes( ifstream& in, Node * tree ){
      while( pch != NULL){
         op = string(pch);
         cout << op << endl;
+        /* perform inserts and deletes */
         if(op.find(insert_key) != -1){
           tree->insert( atoi( op.substr( insert_key.length() ).c_str()) );
         }else if (op.find(delete_key) != -1){
