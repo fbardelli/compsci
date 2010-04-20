@@ -5,7 +5,7 @@ class Node {
    Node  *parent;
    int   height;
    public:
-     Node( int d ) : data( d ), left( NULL ), right( NULL ){ }
+     Node( int d ) : data( d ), left( NULL ), right( NULL ), parent(NULL){ }
      Node( ) : data( NULL ), left( NULL ), right( NULL ){ parent = NULL; }
      int getData(){ return data; }
      void setData(int d){ data = d;}
