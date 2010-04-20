@@ -95,6 +95,8 @@ void Node::remove(int d){
            parent->left = NULL;
          }
          delete this;
+       }else{
+         empty = true;
        }
        data = NULL;
     }
@@ -110,7 +112,8 @@ void Node::setParent(Node *p) {
 
 void Node::traversePreOrder(){
    /* preorder = root, left, right */
-   cout << data << " ";
+   if(!empty)
+     cout << data << " ";
    if(left !=NULL){
      left->traversePreOrder();
    }
@@ -124,7 +127,8 @@ void Node::traverseInOrder(){
    if(left !=NULL){
      left->traverseInOrder();
    }
-   cout << data << " ";
+   if(!empty)
+     cout << data << " ";
    if(right !=NULL){
      right->traverseInOrder();
    }
@@ -138,7 +142,8 @@ void Node::traversePostOrder(){
    if(right !=NULL){
      right->traversePostOrder();
    }
-   cout << data << " ";
+   if(!empty)
+     cout << data << " ";
 }
 
 void Node::displayChildren(){
@@ -158,11 +163,13 @@ void Node::displayChildren(){
     children << "right:" << right->data;
     right->displayChildren();
   }
-  cout << "node #" << data << " has " << numChildren << " child" << (numChildren == 1 ? "":"ren" );
-  if(numChildren){
-    cout << " (" << children.str() << ")";
+  if(!empty){
+    cout << "node #" << data << " has " << numChildren << " child" << (numChildren == 1 ? "":"ren" );
+    if(numChildren){
+      cout << " (" << children.str() << ")";
+    }
+    cout << endl;
   }
-  cout << endl;
 }
 
 void Node::countReport(){

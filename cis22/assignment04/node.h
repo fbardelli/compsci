@@ -3,12 +3,13 @@ class Node {
    Node  *left;
    Node  *right;
    Node  *parent;
+   bool empty;
    int   height;
    public:
-     Node( int d ) : data( d ), left( NULL ), right( NULL ), parent(NULL){ }
-     Node( ) : data( NULL ), left( NULL ), right( NULL ){ parent = NULL; }
+     Node( int d ) : empty(false), data( d ), left( NULL ), right( NULL ), parent(NULL){ }
+     Node( ) : empty(true), data( NULL ), left( NULL ), right( NULL ){ parent = NULL; }
      int getData(){ return data; }
-     void setData(int d){ data = d;}
+     void setData(int d){ data = d; empty = false;}
      void insert(int d);
      void insert(Node * n);
      void remove(int d);
