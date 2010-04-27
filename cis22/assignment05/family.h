@@ -23,7 +23,7 @@ class FamilyMember {
      list<FamilyMember *> getUncles();
      void setParent(FamilyMember * p){ parent = p;}
      void setBrother(FamilyMember * b){ brother = b;}
-     void addSon(string n, int numSons);
-     void addBrother(string n, int numSons);
+     void addSon(FamilyMember * s);
+     void addBrother(FamilyMember * b);
 };
 

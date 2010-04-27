@@ -3,12 +3,12 @@
 using namespace std;
 #include "family.h"
 
-void FamilyMember::addSon(string n, int numSons){
+void FamilyMember::addSon(FamilyMember * s){
   if( son == NULL){
-    son = new FamilyMember(n, numSons);
+    son = s;
     son->setParent(this);
   }else{
-    son->addBrother(n,numSons);
+    son->addBrother(s);
     FamilyMember * youngestBrother = son->getYoungestBrother();
     youngestBrother->setParent(this);
   }
@@ -63,9 +63,9 @@ list<FamilyMember *> FamilyMember::getSons(){
   return s;
 }
 
-void FamilyMember::addBrother(string n, int numSons){
+void FamilyMember::addBrother(FamilyMember * b){
   FamilyMember * youngest = getYoungestBrother();
-  youngest->setBrother(new FamilyMember(n, numSons));
+  youngest->setBrother(b);
 }
 
 
