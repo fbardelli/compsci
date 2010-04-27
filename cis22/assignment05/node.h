@@ -1,3 +1,4 @@
+#include<list>
 class Node {
    int remainingSons;
    string name;
@@ -10,7 +11,9 @@ class Node {
      int getRemainingSons(){ return remainingSons; }
      string getName(){ return name;}
      Node * getParent(){return parent;}
-     Node * youngestBrother();
+     Node * getYoungestBrother();
+     Node * getOldestBrother();
+     std::list<Node *> getBrothers();
      void setParent(Node * p){ parent = p;}
      void setBrother(Node * b){ brother = b;}
      void addSon(string n, int numSons);
