@@ -10,16 +10,19 @@
 #include<cstring>
 using namespace std;
 
-#include "node.h"
+#include "family.h"
 
-
+FamilyMember * parseInputFile(ifstream& in);
 
 int main(){
-
   ifstream inputFile;
-  inputFile.open("sets.dat");
+  inputFile.open("tree.dat");
+  FamilyMember * tree = parseInputFile(inputFile);
   return 0;
 }
 
-
+FamilyMember * parseInputFile(ifstream& in){
+  FamilyMember * f = new FamilyMember("Jones",3);
+  return f;
+}
 

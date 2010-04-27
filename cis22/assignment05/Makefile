@@ -4,7 +4,7 @@ all: familytree
 
 rebuild: clean all
 
-familytree: familytree.o node.o
+familytree: familytree.o family.o
 
 familytree.o: familytree.cpp
 
