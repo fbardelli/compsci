@@ -8,7 +8,7 @@
 #include<string>
 #include<stdlib.h>
 #include<cstring>
-#include<queue>
+#include<list>
 using namespace std;
 
 #include "family.h"
@@ -30,7 +30,7 @@ int main(){
 
 FamilyMember * parseInputFile(ifstream& in){
   string line;
-  queue<Father> fathers;
+  list<Father *> fathers;
   FamilyMember * ancestor = NULL;
   while (getline(in,line) && ! in.eof()){
      string name = line.substr(0,line.find('\t'));
@@ -39,26 +39,29 @@ FamilyMember * parseInputFile(ifstream& in){
      if(ancestor == NULL && fathers.size() == 0) {
        ancestor = member;
        Father father  = {ancestor, num};
-       fathers.push(father);
+       cout << "adding father " << member->getName() <<endl;
+       fathers.push_back(&father);
      }else if(fathers.size() >= 1){
        if(num >= 1){
          Father father  = {member, num};
-         fathers.push(father);
+         cout << "adding father" << member->getName() <<endl;
+         fathers.push_back(&father);
        }
-       Father f = fathers.front();
-       if (f.numSons < 1) {
+       Father * f = fathers.front();
+       cout << f->p->getName() << " had " << f->numSons << " sons\n";
+       if (f->numSons < 1) {
          if(fathers.size() > 1){
-           fathers.pop();
+           fathers.pop_front();
            f = fathers.front();
          }else{
            cout << "Error: there are no valid fathers left\n";
          }
        }
-       cout << "adding " << member->getName() << " son of  " <<f.p->getName() << endl;
-       f.p->addSon(member);
-       cout << f.p->getName() << " had " << f.numSons << " sons\n";
-       f.numSons = f.numSons -1;
-       cout << f.p->getName() << " has " << f.numSons << " sons\n";
+       cout << "adding " << member->getName() << " son of  " <<f->p->getName() << endl;
+       f->p->addSon(member);
+       cout << f->p->getName() << " had " << f->numSons << " sons\n";
+       f->numSons = f->numSons -1;
+       cout << f->p->getName() << " has " << f->numSons << " sons\n";
        cout << "fs" << fathers.size() << endl;
      }else{
            cout << "Error: there are no valid fathers left\n";
