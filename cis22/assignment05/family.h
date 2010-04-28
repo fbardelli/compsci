@@ -2,15 +2,13 @@
 using namespace std;
 
 class FamilyMember {
-   int remainingSons;
    string name;
    FamilyMember  *son;
    FamilyMember  *brother;
    FamilyMember  *parent;
    public:
-     FamilyMember( string n, int numSons ) :  name( n ), remainingSons(numSons), son( NULL ),
-                                      brother( NULL ), parent(NULL){ }
-     int getRemainingSons(){ return remainingSons; }
+     FamilyMember( string n ) :  name( n ), son( NULL ),
+                                 brother( NULL ), parent(NULL){ }
      string getName(){ return name;}
      FamilyMember * getParent(){return parent;}
      FamilyMember * getGrandparent();

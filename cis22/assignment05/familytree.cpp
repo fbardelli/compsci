@@ -8,17 +8,13 @@
 #include<string>
 #include<stdlib.h>
 #include<cstring>
-#include<list>
+#include<queue>
 using namespace std;
 
 #include "family.h"
 
 FamilyMember * parseInputFile(ifstream& in);
 
-struct Father {
-  FamilyMember * p;
-  int numSons; 
-};
 
 int main(){
   ifstream inputFile;
@@ -30,41 +26,34 @@ int main(){
 
 FamilyMember * parseInputFile(ifstream& in){
   string line;
-  list<Father *> fathers;
+  queue<FamilyMember *> fathers;
   FamilyMember * ancestor = NULL;
   while (getline(in,line) && ! in.eof()){
+     /* parse record, get name and number of sons */
      string name = line.substr(0,line.find('\t'));
-     int num = atoi( (line.substr(line.find('\t')+1)).c_str() );
-     FamilyMember * member = new FamilyMember(name,num);
-     if(ancestor == NULL && fathers.size() == 0) {
+     int numSons = atoi( (line.substr(line.find('\t')+1)).c_str() );
+     FamilyMember * member = new FamilyMember(name);
+
+     /* The first record is the ancestor of the others */
+     if(ancestor == NULL){
        ancestor = member;
-       Father father  = {ancestor, num};
-       cout << "adding father " << member->getName() <<endl;
-       fathers.push_back(&father);
-     }else if(fathers.size() >= 1){
-       if(num >= 1){
-         Father father  = {member, num};
-         cout << "adding father" << member->getName() <<endl;
-         fathers.push_back(&father);
-       }
-       Father * f = fathers.front();
-       cout << f->p->getName() << " had " << f->numSons << " sons\n";
-       if (f->numSons < 1) {
-         if(fathers.size() > 1){
-           fathers.pop_front();
-           f = fathers.front();
-         }else{
-           cout << "Error: there are no valid fathers left\n";
-         }
-       }
-       cout << "adding " << member->getName() << " son of  " <<f->p->getName() << endl;
-       f->p->addSon(member);
-       cout << f->p->getName() << " had " << f->numSons << " sons\n";
-       f->numSons = f->numSons -1;
-       cout << f->p->getName() << " has " << f->numSons << " sons\n";
-       cout << "fs" << fathers.size() << endl;
      }else{
-           cout << "Error: there are no valid fathers left\n";
+       /* All other records have a father we've seen */
+       if(! fathers.empty()){
+         /* take a father off the top of the stack */
+         FamilyMember * father = fathers.front();
+         fathers.pop();
+         father->addSon(member);
+       } else {
+         cout << "Error: no more fathers\n";
+       }
+     }
+     /* maintain a queue of pointers to fathers,
+        if a father has multiple sons store it once for
+        each son 
+     */
+     for(int i = 0; i < numSons; i++){
+       fathers.push(member);
      }
   }
   return ancestor;
