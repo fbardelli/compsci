@@ -26,5 +26,6 @@ class FamilyMember {
      void addSon(FamilyMember * s);
      void addBrother(FamilyMember * b);
      void applyPreOrder( void(* func)(FamilyMember *), FamilyMember * m);
+     void applyPostOrder( void(* func)(FamilyMember *), FamilyMember * m);
 };
 

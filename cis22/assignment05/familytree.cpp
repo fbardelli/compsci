@@ -21,19 +21,25 @@ FamilyMember * parseInputFile(ifstream& in);
 void printFamilyReport(FamilyMember * f);
 string readFamilyList(list<FamilyMember *> fl);
 string displayIfExists(FamilyMember * f);
+void freeFamilyTree(FamilyMember * f);
 
 void printFamilyReport(FamilyMember * f){
   cout << f->getName() << ":"
        << "\n\t Father: " << displayIfExists(f->getParent())
        << "\n\t Grandfather: " << displayIfExists(f->getGrandparent())
-       << "\n\t Youngest Brother: " << displayIfExists(f->getYoungestBrother())
-       << "\n\t Oldest Brother: " << displayIfExists(f->getOldestBrother())
+       << "\n\t Youngest Brother(excluding self): " << displayIfExists(f->getYoungestBrother())
+       << "\n\t Oldest Brother(excluding self): " << displayIfExists(f->getOldestBrother())
        << "\n\t Youngest Son: " << displayIfExists(f->getYoungestSon())
        << "\n\t Oldest Son: " << displayIfExists(f->getOldestSon())
        << "\n\t Brothers:" << readFamilyList(f->getBrothers())
        << "\n\t Sons:" << readFamilyList(f->getSons())
        << "\n\t Uncles:" << readFamilyList(f->getUncles())
        << endl;
+}
+
+void freeFamilyTree(FamilyMember * f){
+  cout << "freeing " << f->getName() << endl;
+  delete f;
 }
 
 string displayIfExists(FamilyMember * f){
@@ -61,6 +67,7 @@ int main(){
   inputFile.open("tree.dat");
   FamilyMember * familytree = parseInputFile(inputFile);
   familytree->applyPreOrder( &printFamilyReport, familytree);
+  familytree->applyPostOrder( &freeFamilyTree, familytree);
   return 0;
 }
 
