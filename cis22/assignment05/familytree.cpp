@@ -23,17 +23,17 @@ string readFamilyList(list<FamilyMember *> fl);
 string displayIfExists(FamilyMember * f);
 
 void printFamilyReport(FamilyMember * f){
-  cout << f->getName() << ":";
-  cout << "\n\t Father: " << displayIfExists(f->getParent());
-  cout << "\n\t Grandfather: " << displayIfExists(f->getGrandparent());
-  cout << "\n\t Youngest Brother: " << displayIfExists(f->getYoungestBrother());
-  cout << "\n\t Oldest Brother: " << displayIfExists(f->getOldestBrother());
-  cout << "\n\t Youngest Son: " << displayIfExists(f->getYoungestSon());
-  cout << "\n\t Oldest Son: " << displayIfExists(f->getOldestSon());
-  cout << "\n\t Brothers:" << readFamilyList(f->getBrothers());
-  cout << "\n\t Sons:" << readFamilyList(f->getSons());
-  cout << "\n\t Uncles:" << readFamilyList(f->getUncles());
-  cout << endl;
+  cout << f->getName() << ":"
+       << "\n\t Father: " << displayIfExists(f->getParent())
+       << "\n\t Grandfather: " << displayIfExists(f->getGrandparent())
+       << "\n\t Youngest Brother: " << displayIfExists(f->getYoungestBrother())
+       << "\n\t Oldest Brother: " << displayIfExists(f->getOldestBrother())
+       << "\n\t Youngest Son: " << displayIfExists(f->getYoungestSon())
+       << "\n\t Oldest Son: " << displayIfExists(f->getOldestSon())
+       << "\n\t Brothers:" << readFamilyList(f->getBrothers())
+       << "\n\t Sons:" << readFamilyList(f->getSons())
+       << "\n\t Uncles:" << readFamilyList(f->getUncles())
+       << endl;
 }
 
 string displayIfExists(FamilyMember * f){
