@@ -53,7 +53,9 @@ list<FamilyMember *> FamilyMember::getBrothers(){
   FamilyMember * parent = getParent();
   if(parent != NULL){
     FamilyMember * nextOldestSon = parent->getOldestSon();
+    /* add brothers down the chain until there are none left */
     while(nextOldestSon != NULL){
+      /* exclude self from list of brothers */
       if(nextOldestSon != this){
         b.push_back(nextOldestSon);
       }
@@ -65,6 +67,7 @@ list<FamilyMember *> FamilyMember::getBrothers(){
 
 list<FamilyMember *> FamilyMember::getSons(){
   list<FamilyMember *> s;
+  /* get a list of oldest sons brothers, then add oldest son*/
   if (son){
     s = son->getBrothers();
     s.push_front(son);
@@ -74,13 +77,13 @@ list<FamilyMember *> FamilyMember::getSons(){
 
 void FamilyMember::addBrother(FamilyMember * b){
   FamilyMember * youngest = getYoungestBrother();
+  /* Find brother with no brother pointer, and add*/
   if(youngest != NULL && youngest->getBrother() != this){
     youngest->setBrother(b);
   }else{
     setBrother(b);
   }
 }
-
 
 list<FamilyMember *> FamilyMember::getUncles(){
   if (parent !=NULL){
@@ -90,8 +93,8 @@ list<FamilyMember *> FamilyMember::getUncles(){
   return u;
 }
 
-
 void FamilyMember::applyPreOrder( void(* func)(FamilyMember *), FamilyMember * m){
+  /* apply passed in function in PreOrder to every node in the tree */
   func(m);
   if(m->getSon() != NULL){
     applyPreOrder(func,m->getSon());
@@ -102,6 +105,7 @@ void FamilyMember::applyPreOrder( void(* func)(FamilyMember *), FamilyMember * m
 }
 
 void FamilyMember::applyPostOrder( void(* func)(FamilyMember *), FamilyMember * m){
+  /* apply passed in function in PostOrder to every node in the tree */
   if(m->getSon() != NULL){
     applyPostOrder(func,m->getSon());
   }

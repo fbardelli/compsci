@@ -42,10 +42,12 @@ void freeFamilyTree(FamilyMember * f){
   delete f;
 }
 
+/* helper method replace name with N/A for NULL nodes*/
 string displayIfExists(FamilyMember * f){
   return (f !=NULL ? f->getName() : "N/A");
 }
 
+/* convert linked list into a string */
 string readFamilyList(list<FamilyMember *> fl){
    ostringstream outputString;
    outputString << fl.size();
