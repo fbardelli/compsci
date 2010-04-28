@@ -1,5 +1,6 @@
 #include <string>
 #include <list>
+#include <iostream>
 using namespace std;
 #include "family.h"
 
@@ -29,8 +30,11 @@ FamilyMember * FamilyMember::getYoungestBrother(){
 }
 
 FamilyMember * FamilyMember::getOldestBrother(){
-  FamilyMember * parent = getParent();
-  return parent->son;
+  if (parent != NULL){
+    return parent->getSon();
+  }else{
+    return this;
+  }
 }
 
 FamilyMember * FamilyMember::getOldestSon(){
@@ -38,18 +42,22 @@ FamilyMember * FamilyMember::getOldestSon(){
 }
 
 FamilyMember * FamilyMember::getYoungestSon(){
-  return son->getYoungestBrother();
+  if(son){
+    return son->getYoungestBrother();
+  }
 }
 
 list<FamilyMember *> FamilyMember::getBrothers(){
   list<FamilyMember *> b;
   FamilyMember * parent = getParent();
-  FamilyMember * nextOldestSon = parent->getOldestSon();
-  while(nextOldestSon != NULL){
-    if(nextOldestSon != this){
-      b.push_back(nextOldestSon);
+  if(parent != NULL){
+    FamilyMember * nextOldestSon = parent->getOldestSon();
+    while(nextOldestSon != NULL){
+      if(nextOldestSon != this){
+        b.push_back(nextOldestSon);
+      }
+      nextOldestSon = nextOldestSon->brother;
     }
-    nextOldestSon = nextOldestSon->brother;
   }
   return b;
 }
@@ -70,5 +78,20 @@ void FamilyMember::addBrother(FamilyMember * b){
 
 
 list<FamilyMember *> FamilyMember::getUncles(){
-  return parent->getBrothers();
+  if (parent !=NULL){
+    return parent->getBrothers();
+  }
+  list<FamilyMember *> u;
+  return u;
+}
+
+
+void FamilyMember::applyPreOrder( void(* func)(FamilyMember *), FamilyMember * m){
+  func(m);
+  if(m->getSon() != NULL){
+    applyPreOrder(func,m->getSon());
+  }
+  if(m->getBrother() != NULL){
+    applyPreOrder(func,m->getBrother());
+  }
 }

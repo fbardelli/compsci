@@ -9,18 +9,58 @@
 #include<stdlib.h>
 #include<cstring>
 #include<queue>
+#include<list>
 using namespace std;
+#include <sstream> // header file for string stream processing
+using std::ostringstream; // stream insertion operators
+
 
 #include "family.h"
 
 FamilyMember * parseInputFile(ifstream& in);
+void printFamilyReport(FamilyMember * f);
+string readFamilyList(list<FamilyMember *> fl);
+string displayIfExists(FamilyMember * f);
 
+void printFamilyReport(FamilyMember * f){
+  cout << f->getName() << ":";
+  cout << "\n\t Father: " << displayIfExists(f->getParent());
+  cout << "\n\t Grandfather: " << displayIfExists(f->getGrandparent());
+  cout << "\n\t Youngest Brother: " << displayIfExists(f->getYoungestBrother());
+  cout << "\n\t Oldest Brother: " << displayIfExists(f->getOldestBrother());
+  cout << "\n\t Youngest Son: " << displayIfExists(f->getYoungestSon());
+  cout << "\n\t Oldest Son: " << displayIfExists(f->getOldestSon());
+  cout << "\n\t Brothers:" << readFamilyList(f->getBrothers());
+  cout << "\n\t Sons:" << readFamilyList(f->getSons());
+  cout << "\n\t Uncles:" << readFamilyList(f->getUncles());
+  cout << endl;
+}
+
+string displayIfExists(FamilyMember * f){
+  return (f !=NULL ? f->getName() : "N/A");
+}
+
+string readFamilyList(list<FamilyMember *> fl){
+   ostringstream outputString;
+   outputString << fl.size();
+   if(fl.size()){
+     outputString << " ( ";
+     list<FamilyMember*>::iterator i;
+     for (i = fl.begin(); i != fl.end(); ++i)
+     {
+        outputString << (*i)->getName();
+        outputString << " ";
+     }
+     outputString << ")";
+   }
+   return outputString.str();
+}
 
 int main(){
   ifstream inputFile;
   inputFile.open("tree.dat");
   FamilyMember * familytree = parseInputFile(inputFile);
-  cout << familytree->getSons().size() << "\n";
+  familytree->applyPreOrder( &printFamilyReport, familytree);
   return 0;
 }
 

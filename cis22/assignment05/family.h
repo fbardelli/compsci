@@ -11,6 +11,8 @@ class FamilyMember {
                                  brother( NULL ), parent(NULL){ }
      string getName(){ return name;}
      FamilyMember * getParent(){return parent;}
+     FamilyMember * getSon(){return son;}
+     FamilyMember * getBrother(){return brother;}
      FamilyMember * getGrandparent();
      FamilyMember * getYoungestBrother();
      FamilyMember * getOldestBrother();
@@ -23,5 +25,6 @@ class FamilyMember {
      void setBrother(FamilyMember * b){ brother = b;}
      void addSon(FamilyMember * s);
      void addBrother(FamilyMember * b);
+     void applyPreOrder( void(* func)(FamilyMember *), FamilyMember * m);
 };
 
