@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <stdlib.h>
+#include <sys/time.h>
 using namespace std;
 
 void printArray( int array[], int size);
@@ -138,12 +140,65 @@ void heapAnalyze(int array[], int size){
   printArray( c, 10);
   cout << "comparisons:" << comps << " swaps:" << swaps << endl;
 }
+
+int * makeReversed(int size){
+  int * array = new int[size];
+  for(int i = 0; i <= size; i++){
+    array[i] = size-(i+1);
+  }
+  return array;
+}
+
+int * makeSorted(int size){
+  int * array = new int[size];
+  for(int i = 0; i <= size; i++){
+    array[i] = i;
+  }
+  return array;
+}
  
+int * makeAlmostSorted(int size){
+  int * array = makeSorted(size);
+  for(int i = 0; i <= size/5; i++){
+    int randomIndex = (rand() % size);
+    int temp = array[randomIndex];
+    int swapIndex;
+    if(randomIndex == size){
+      swapIndex= randomIndex-1;
+    }else{
+      swapIndex= randomIndex+1;
+    }
+    array[randomIndex] =  array[swapIndex];
+    array[swapIndex] = temp;
+  }
+  return array;
+}
+
+int * makeRandom( int size ) {
+  int * array = makeSorted(size);
+
+  for (int i = 0; i < size; i++) {
+     int temp = array[i];
+     int randomIndex = (rand() % (size-i))+i;
+     array[i] =  array[randomIndex];
+     array[randomIndex] = temp;
+  }
+  return array;
+}
+
 int main(){
   cout <<"bubble\n";
-  int random[10] = {2,4,5,6,1,9,8,7,3,0};
-  int almostsorted[10] = {0,1,2,4,3,5,6,7,9,8};
-  int reversed[10] = {9,8,7,6,5,4,3,2,1,0};
+
+  struct timeval time; 
+  gettimeofday(&time, 0);
+  long int s = time.tv_usec * getpid(); 
+  srand(s);
+
+
+  int * random = makeRandom(10); 
+  int * reversed = makeReversed(10);
+  int * almostsorted = makeAlmostSorted(10);
+  //int almostsorted[10] = {0,1,2,4,3,5,6,7,9,8};
   bubbleAnalyze(random, 10);
   bubbleAnalyze(almostsorted, 10);
   bubbleAnalyze(reversed, 10);
