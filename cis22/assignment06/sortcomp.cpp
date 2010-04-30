@@ -4,15 +4,17 @@
 #include <stdlib.h>
 #include <sys/time.h>
 using namespace std;
+#define HEAP 'h'
+#define BUBBLE 'b'
+#define QUICK 'q'
 
 void printArray( int array[], int size);
 void bubbleSort( int array[], int size, int &comps, int &swaps);
-void bubbleAnalyze(int array[], int size);
 void quickSort(int array[], int left, int right, int &comps, int &swaps);
-void quickAnalyze(int array[], int size);
 void heapSort(int array[], int size, int &comps, int &swaps);
 void siftDown(int array[], int root, int bottom, int &comps, int &swaps);
-void heapAnalyze(int array[], int size);
+void sortAnalyze(int array[], int size, char type);
+void threeSort(int random[], int almostsorted[], int reversed[], int size, char type);
 void runSorts(int size);
 int * makeReversed(int size);
 int * makeSorted(int size);
@@ -113,37 +115,25 @@ void siftDown(int array[], int root, int bottom, int &comps, int &swaps) {
   }
 }
 
-void bubbleAnalyze(int array[], int size){
+void sortAnalyze(int array[], int size, char type){
   int a[size];
   memcpy(a,array,sizeof(int)*size);
   int comps = 0;
   int swaps = 0;
   printArray( a, size);
-  bubbleSort( a, size, comps, swaps);
+  switch(type){
+    case BUBBLE:
+      bubbleSort( a, size, comps, swaps);
+      break;
+    case QUICK:
+      quickSort( a, 0, size-1, comps, swaps);
+      break;
+    case HEAP:
+      heapSort( a, size, comps, swaps);
+      break;
+  }
   printArray( a, size);
   cout << "comparisons:" << comps << " swaps:" << swaps <<endl;
-}
-
-void quickAnalyze(int array[], int size){
-  int b[size];
-  memcpy(b,array,sizeof(int)*size);
-  int comps = 0;
-  int swaps = 0;
-  printArray( b, size);
-  quickSort( b, 0, size-1, comps, swaps);
-  printArray( b, size);
-  cout << "comparisons:" << comps << " swaps:" << swaps <<endl;
-}
-
-void heapAnalyze(int array[], int size){
-  int c[size];
-  memcpy(c,array,sizeof(int)*size);
-  int comps = 0;
-  int swaps = 0;
-  printArray( c, size);
-  heapSort( c, size, comps, swaps);
-  printArray( c, size);
-  cout << "comparisons:" << comps << " swaps:" << swaps << endl;
 }
 
 int * makeReversed(int size){
@@ -191,31 +181,27 @@ int * makeRandom( int size ) {
   return array;
 }
 
+void threeSort(int random[], int almostsorted[], int reversed[],int size, char type){
+  cout << "random\n";
+  sortAnalyze(random, size, type);
+  cout << "almost sorted\n";
+  sortAnalyze(almostsorted, size, type);
+  cout << "reversed\n";
+  sortAnalyze(reversed, size, type);
+}
+
 void runSorts(int size){
   int * random = makeRandom(size); 
   int * reversed = makeReversed(size);
   int * almostsorted = makeAlmostSorted(size);
   cout <<"\nbubble sort of " << size <<" items\n";
-  cout << "random\n";
-  bubbleAnalyze(random, size);
-  bubbleAnalyze(almostsorted, size);
-  bubbleAnalyze(reversed, size);
+  threeSort(random,almostsorted,reversed,size,BUBBLE);
 
   cout <<"\nquick sort of " << size <<" items\n";
-  cout << "random\n";
-  quickAnalyze(random, size);
-  cout << "almost sorted\n";
-  quickAnalyze(almostsorted, size);
-  cout << "reversed\n";
-  quickAnalyze(reversed, size);
+  threeSort(random,almostsorted,reversed,size,QUICK);
 
   cout <<"\nheap sort of " << size <<" items\n";
-  cout << "random\n";
-  heapAnalyze(random, size);
-  cout << "almost sorted\n";
-  heapAnalyze(almostsorted, size);
-  cout << "reversed\n";
-  heapAnalyze(reversed, size);
+  threeSort(random,almostsorted,reversed,size,HEAP);
 }
 
 int main(){
