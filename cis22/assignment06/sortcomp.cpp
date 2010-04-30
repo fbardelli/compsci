@@ -116,7 +116,7 @@ void siftDown(int array[], int root, int bottom, int &comps, int &swaps) {
 }
 
 void sortAnalyze(int array[], int size, char type){
-  int a[size];
+  int * a = new int[size];
   memcpy(a,array,sizeof(int)*size);
   int comps = 0;
   int swaps = 0;
@@ -134,6 +134,7 @@ void sortAnalyze(int array[], int size, char type){
   }
   printArray( a, size);
   cout << "comparisons:" << comps << " swaps:" << swaps <<endl;
+  delete [] a;
 }
 
 int * makeReversed(int size){
@@ -202,6 +203,8 @@ void runSorts(int size){
 
   cout <<"\nheap sort of " << size <<" items\n";
   threeSort(random,almostsorted,reversed,size,HEAP);
+  delete [] reversed;
+  delete [] random;
 }
 
 int main(){
