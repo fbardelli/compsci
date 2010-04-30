@@ -13,6 +13,11 @@ void quickAnalyze(int array[], int size);
 void heapSort(int array[], int size, int &comps, int &swaps);
 void siftDown(int array[], int root, int bottom, int &comps, int &swaps);
 void heapAnalyze(int array[], int size);
+void runSorts(int size);
+int * makeReversed(int size);
+int * makeSorted(int size);
+int * makeAlmostSorted(int size);
+int * makeRandom( int size );
 
 void printArray( int array[], int size){
   for(int i = 0; i < size; i++){
@@ -113,9 +118,9 @@ void bubbleAnalyze(int array[], int size){
   memcpy(a,array,sizeof(int)*size);
   int comps = 0;
   int swaps = 0;
-  printArray( a, 10);
-  bubbleSort( a, 10, comps, swaps);
-  printArray( a, 10);
+  printArray( a, size);
+  bubbleSort( a, size, comps, swaps);
+  printArray( a, size);
   cout << "comparisons:" << comps << " swaps:" << swaps <<endl;
 }
 
@@ -135,9 +140,9 @@ void heapAnalyze(int array[], int size){
   memcpy(c,array,sizeof(int)*size);
   int comps = 0;
   int swaps = 0;
-  printArray( c, 10);
+  printArray( c, size);
   heapSort( c, size, comps, swaps);
-  printArray( c, 10);
+  printArray( c, size);
   cout << "comparisons:" << comps << " swaps:" << swaps << endl;
 }
 
@@ -186,32 +191,42 @@ int * makeRandom( int size ) {
   return array;
 }
 
+void runSorts(int size){
+  int * random = makeRandom(size); 
+  int * reversed = makeReversed(size);
+  int * almostsorted = makeAlmostSorted(size);
+  cout <<"\nbubble sort of " << size <<" items\n";
+  cout << "random\n";
+  bubbleAnalyze(random, size);
+  bubbleAnalyze(almostsorted, size);
+  bubbleAnalyze(reversed, size);
+
+  cout <<"\nquick sort of " << size <<" items\n";
+  cout << "random\n";
+  quickAnalyze(random, size);
+  cout << "almost sorted\n";
+  quickAnalyze(almostsorted, size);
+  cout << "reversed\n";
+  quickAnalyze(reversed, size);
+
+  cout <<"\nheap sort of " << size <<" items\n";
+  cout << "random\n";
+  heapAnalyze(random, size);
+  cout << "almost sorted\n";
+  heapAnalyze(almostsorted, size);
+  cout << "reversed\n";
+  heapAnalyze(reversed, size);
+}
+
 int main(){
-  cout <<"bubble\n";
 
   struct timeval time; 
   gettimeofday(&time, 0);
   long int s = time.tv_usec * getpid(); 
   srand(s);
-
-
-  int * random = makeRandom(10); 
-  int * reversed = makeReversed(10);
-  int * almostsorted = makeAlmostSorted(10);
-  //int almostsorted[10] = {0,1,2,4,3,5,6,7,9,8};
-  bubbleAnalyze(random, 10);
-  bubbleAnalyze(almostsorted, 10);
-  bubbleAnalyze(reversed, 10);
-
-  cout <<"\nquick\n";
-  quickAnalyze(random, 10);
-  quickAnalyze(almostsorted, 10);
-  quickAnalyze(reversed, 10);
-
-  cout <<"\nheap\n";
-  heapAnalyze(random, 10);
-  heapAnalyze(almostsorted, 10);
-  heapAnalyze(reversed, 10);
+  runSorts(10);
+  runSorts(50);
+  runSorts(100);
 
   return 0;
 }
