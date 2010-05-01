@@ -49,7 +49,6 @@ void quickSort(int array[], int left, int right, int &comps, int &swaps) {
       int i = left, j = right;
       int tmp;
       int pivot = array[(left + right) / 2];
- 
       /* partition */
       while (i <= j) {
             while (array[i] < pivot)
@@ -57,7 +56,7 @@ void quickSort(int array[], int left, int right, int &comps, int &swaps) {
             while (array[j] > pivot)
                   j--; comps++;
             if (i <= j) {
-                  swaps++;
+                  swaps++; comps++;
                   tmp = array[i];
                   array[i] = array[j];
                   array[j] = tmp;
@@ -65,7 +64,6 @@ void quickSort(int array[], int left, int right, int &comps, int &swaps) {
                   j--;
             }
       }
-
       /* recursion */
       if (left < j)
             quickSort(array, left, j, ++comps,swaps);
@@ -94,12 +92,13 @@ void siftDown(int array[], int root, int bottom, int &comps, int &swaps) {
   while ((root*2 <= bottom) && (!done)){
     if (root*2 == bottom){
       maxChild = root * 2;
-      comps++;
+      comps+=1;
     }else if (array[root * 2] > array[root * 2 + 1]){
       maxChild = root * 2;
-      comps++;
+      comps+=2;
     }else{
       maxChild = root * 2 + 1;
+      comps+=2;
     }
 
     if (array[root] < array[maxChild]){
@@ -116,11 +115,17 @@ void siftDown(int array[], int root, int bottom, int &comps, int &swaps) {
 }
 
 void sortAnalyze(int array[], int size, char type){
-  int * a = new int[size];
-  memcpy(a,array,sizeof(int)*size);
+  int * a = 0;
   int comps = 0;
   int swaps = 0;
+  a = new int[size];
+  /* Using memcpy to copy array.  Copying a range of n * sizeof(int) bytes 
+     is more efficient than iterating through 2 arrays making n assignments 
+     especially for large arrays */
+  memcpy(a,array,sizeof(int)*size);
+  cout << "pre sort: ";
   printArray( a, size);
+  /* run sort specified counting comparisons and swaps */
   switch(type){
     case BUBBLE:
       bubbleSort( a, size, comps, swaps);
@@ -132,9 +137,11 @@ void sortAnalyze(int array[], int size, char type){
       heapSort( a, size, comps, swaps);
       break;
   }
+  cout << "post sort: ";
   printArray( a, size);
-  cout << "comparisons:" << comps << " swaps:" << swaps <<endl;
+  cout << "comparisons: " << comps << " swaps: " << swaps <<endl;
   delete [] a;
+  a = 0;
 }
 
 int * makeReversed(int size){
@@ -155,11 +162,14 @@ int * makeSorted(int size){
  
 int * makeAlmostSorted(int size){
   int * array = makeSorted(size);
+  /* swap around 1/5th of the elements in the array
+    with the next element over 
+  */
   for(int i = 0; i <= size/5; i++){
     int randomIndex = (rand() % size);
     int temp = array[randomIndex];
     int swapIndex;
-    if(randomIndex == size){
+    if(randomIndex == size-1){
       swapIndex= randomIndex-1;
     }else{
       swapIndex= randomIndex+1;
@@ -172,7 +182,6 @@ int * makeAlmostSorted(int size){
 
 int * makeRandom( int size ) {
   int * array = makeSorted(size);
-
   for (int i = 0; i < size; i++) {
      int temp = array[i];
      int randomIndex = (rand() % (size-i))+i;
@@ -203,16 +212,20 @@ void runSorts(int size){
 
   cout <<"\nheap sort of " << size <<" items\n";
   threeSort(random,almostsorted,reversed,size,HEAP);
-  delete [] reversed;
-  delete [] random;
+
+  delete[] random;
+  delete[] reversed;
+  delete[] almostsorted;
 }
 
 int main(){
-
+  /* initialize random number generator */
   struct timeval time; 
   gettimeofday(&time, 0);
   long int s = time.tv_usec * getpid(); 
   srand(s);
+
+  /* run 3 different sorts on each of 3 number sets */
   runSorts(10);
   runSorts(50);
   runSorts(100);
