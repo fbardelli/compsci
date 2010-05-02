@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <vector>
@@ -9,7 +8,10 @@ using namespace std;
 #define BUBBLE 'b'
 #define QUICK 'q'
 
-void printArray( vector <int> array, int size);
+/* switched from dynamic arrays to STL vector<int>, as the copy behavior
+   for vectors is simple, performance difference is negligible
+   and there is much less memory mgmt overhead */
+void printArray( vector <int> & array, int size);
 void bubbleSort( vector <int> & array, int size, int &comps, int &swaps);
 void quickSort(vector <int> & array, int left, int right, int &comps, int &swaps);
 void heapSort(vector <int> & array, int size, int &comps, int &swaps);
@@ -22,7 +24,7 @@ vector<int> makeSorted(int size);
 vector<int> makeAlmostSorted(int size);
 vector<int> makeRandom( int size );
 
-void printArray(vector<int> array, int size){
+void printArray(vector<int> & array, int size){
   for(int i = 0; i < size; i++){
     cout << array[i] << " ";
   }
@@ -141,6 +143,8 @@ void sortAnalyze(vector<int> array, int size, char type){
 
 vector <int> makeReversed(int size){
   vector <int> array;
+  /* give  vector a hint on how much memory to allocate */
+  array.reserve(size);
   for(int i = 0; i <= size; i++){
     array.push_back(size-(i+1));
   }
@@ -149,6 +153,8 @@ vector <int> makeReversed(int size){
 
 vector <int> makeSorted(int size){
   vector <int> array;
+  /* give  vector a hint on how much memory to allocate */
+  array.reserve(size);
   for(int i = 0; i <= size; i++){
     array.push_back(i);
   }
