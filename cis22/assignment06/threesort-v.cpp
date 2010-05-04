@@ -187,28 +187,36 @@ void SortCompare::runSorts(){
 }
 
 void SortCompare::sortReport(vector<SortPerformance> sp){
-  SortPerformance mostComparisons, leastComparisons, mostSwaps, leastSwaps;
+  SortPerformance mostComps, leastComps, midComps, 
+                  mostSwaps, leastSwaps, midSwaps;
   for(int i=0; i<sp.size(); i++){
-    if(sp[i].comps > mostComparisons.comps){
-      mostComparisons=sp[i];
-    }
-    if( leastComparisons.comps == 0 || sp[i].comps < leastComparisons.comps ){
-      leastComparisons=sp[i];
-    }
-    if(sp[i].swaps > mostSwaps.swaps){
+    if(sp[i].comps > mostComps.comps)
+      mostComps=sp[i];
+    if( leastComps.comps == 0 || sp[i].comps < leastComps.comps )
+      leastComps=sp[i];
+    if(sp[i].swaps > mostSwaps.swaps)
       mostSwaps=sp[i];
-    }
-    if( leastSwaps.swaps == 0 || sp[i].swaps < leastSwaps.swaps ){
+    if( leastSwaps.swaps == 0 || sp[i].swaps < leastSwaps.swaps )
       leastSwaps=sp[i];
-    }
   }
+  for(int i=0; i<sp.size(); i++){
+    if(sp[i].type != mostComps.type && sp[i].type != leastComps.type)
+      midComps = sp[i];
+    if(sp[i].type != mostSwaps.type && sp[i].type != leastSwaps.type)
+      midSwaps = sp[i];
+  }
+  
   cout << "\nfor a " << listType << " list of " << size << " items:\n"
-       << " The Most Comparisons occur with " << sortDesc[mostComparisons.type] 
-       << " with " << mostComparisons.comps << endl
-       << " The Least Comparisons occur with " << sortDesc[leastComparisons.type]  
-       << " with " << leastComparisons.comps << endl
+       << " The Most Comparisons occur with " << sortDesc[mostComps.type] 
+       << " with " << mostComps.comps << endl
+       << " The Middle number of Comparisons occur with " << sortDesc[midComps.type] 
+       << " with " << midComps.comps << endl
+       << " The Least Comparisons occur with " << sortDesc[leastComps.type]  
+       << " with " << leastComps.comps << endl
        << " The Most Swaps occur with " << sortDesc[mostSwaps.type] 
        << " with " << mostSwaps.swaps << endl
+       << " The Middle number of Swaps occur with " << sortDesc[midSwaps.type] 
+       << " with " << midSwaps.swaps << endl
        << " The Least Swaps occur with " << sortDesc[leastSwaps.type]  
        << " with " << leastSwaps.swaps << endl;
 
