@@ -3,26 +3,42 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <vector>
+#include <map>
 using namespace std;
-#define HEAP 'h'
 #define BUBBLE 'b'
-#define QUICK 'q'
+#define QUICK  'q'
+#define HEAP   'h'
+
+struct SortPerformance {
+  char type;
+  int swaps;
+  int comps;
+  SortPerformance():swaps(0),comps(0){}
+};
 
 /* switched from dynamic arrays to STL vector<int>, as the copy behavior
    for vectors is simple, performance difference is negligible
    and there is much less memory mgmt overhead */
 class SortCompare {
   private:
-    int comps, swaps;
+    int comps, swaps, size;
+    string listType;
+    vector<int> array;
+    map<char,string> sortDesc;
   public:
+    SortCompare(int s, string lt, vector<int> a): size(s),array(a),listType(lt){
+      sortDesc[BUBBLE] = "BubbleSort";
+      sortDesc[QUICK] = "QuickSort";
+      sortDesc[HEAP] = "HeapSort";
+    };
+    void sortReport(vector<SortPerformance> sp);
     void printArray( vector <int> & array, int size);
-    void bubbleSort( vector <int> & array, int size, int &comps, int &swaps);
-    void quickSort(vector <int> & array, int left, int right, int &comps, int &swaps);
-    void heapSort(vector <int> & array, int size, int &comps, int &swaps);
-    void siftDown(vector <int> & array, int root, int bottom, int &comps, int &swaps);
-    void sortAnalyze(vector <int> array, int size, char type);
-    void threeSort(vector<int> & random, vector<int> & almostsorted, vector<int> & reversed, int size, char type);
-    void runSorts(int size, string listType, vector<int> & list);
+    void bubbleSort( vector <int> & array, int size);
+    void quickSort(vector <int> & array, int left, int right);
+    void heapSort(vector <int> & array, int size);
+    void siftDown(vector <int> & array, int root, int bottom);
+    SortPerformance sortAnalyze(char type);
+    void runSorts();
 };
 
 vector<int> makeReversed(int size);
@@ -37,7 +53,7 @@ void SortCompare::printArray(vector<int> & array, int size){
   cout << "\n";
 }
 
-void SortCompare::bubbleSort(vector<int> & array, int size, int &comps, int &swaps){
+void SortCompare::bubbleSort(vector<int> & array, int size){
   bool swapped = true;
   while(swapped){
     swapped = false;
@@ -54,7 +70,7 @@ void SortCompare::bubbleSort(vector<int> & array, int size, int &comps, int &swa
   }
 }
 
-void SortCompare::quickSort(vector<int> & array, int left, int right, int &comps, int &swaps) {
+void SortCompare::quickSort(vector<int> & array, int left, int right) {
       int i = left, j = right;
       int tmp;
       int pivot = array[(left + right) / 2];
@@ -74,28 +90,32 @@ void SortCompare::quickSort(vector<int> & array, int left, int right, int &comps
             }
       }
       /* recursion */
-      if (left < j)
-            quickSort(array, left, j, ++comps,swaps);
-      if (i < right)
-            quickSort(array, i, right, ++comps,swaps);
+      if (left < j){
+        comps++;
+        quickSort(array, left, j);
+      }
+      if (i < right){
+        comps++;
+        quickSort(array, i, right);
+      }
 }
 
-void SortCompare::heapSort(vector<int> & array, int size, int &comps, int &swaps) {
+void SortCompare::heapSort(vector<int> & array, int size) {
   int i, temp;
   for (i = size - 1; i >= 0; i--)
-    siftDown(array, i, size - 1, comps, swaps);
+    siftDown(array, i, size - 1);
  
   for (i = size-1; i >= 1; i--){
     swaps++;
     temp = array[0];
     array[0] = array[i];
     array[i] = temp;
-    siftDown(array, 0, i-1, comps, swaps);
+    siftDown(array, 0, i-1);
   }
 }
  
  
-void SortCompare::siftDown(vector<int> & array, int root, int bottom, int &comps, int &swaps) {
+void SortCompare::siftDown(vector<int> & array, int root, int bottom) {
   int done, maxChild, temp;
   done = 0;
   while ((root*2 <= bottom) && (!done)){
@@ -123,40 +143,77 @@ void SortCompare::siftDown(vector<int> & array, int root, int bottom, int &comps
   }
 }
 
-void SortCompare::sortAnalyze(vector<int> array, int size, char type){
+SortPerformance SortCompare::sortAnalyze(char type){
   vector<int> a;
-  int comps = 0;
-  int swaps = 0;
+  SortPerformance sp;
+  comps = 0;
+  swaps = 0;
   a = array;
   cout << "pre sort: ";
   printArray( a, size);
   /* run sort specified counting comparisons and swaps */
   switch(type){
     case BUBBLE:
-      bubbleSort( a, size, comps, swaps);
+      bubbleSort( a, size );
       break;
     case QUICK:
-      quickSort( a, 0, size-1, comps, swaps);
+      quickSort( a, 0, size-1 );
       break;
     case HEAP:
-      heapSort( a, size, comps, swaps);
+      heapSort( a, size );
       break;
   }
+  sp.comps = comps;
+  sp.swaps = swaps;
+  sp.type  = type;
   cout << "post sort: ";
   printArray( a, size);
   cout << "comparisons: " << comps << " swaps: " << swaps <<endl;
+  return sp;
 }
 
 
-void SortCompare::runSorts(int size, string listType, vector<int> & list){
+void SortCompare::runSorts(){
+  vector <SortPerformance> sp; 
   cout <<"\nbubble sort of " << size << " " << listType << " items\n";
-  sortAnalyze(list, size, BUBBLE);
+  sp.push_back(sortAnalyze(BUBBLE));
 
   cout <<"\nquick sort of " << size << " " << listType << " items\n";
-  sortAnalyze(list, size, QUICK);
+  sp.push_back(sortAnalyze(QUICK));
 
   cout <<"\nheap sort of " << size << " " << listType << " items\n";
-  sortAnalyze(list, size, HEAP);
+  sp.push_back(sortAnalyze(HEAP));
+  sortReport(sp);
+}
+
+void SortCompare::sortReport(vector<SortPerformance> sp){
+  SortPerformance mostComparisons, leastComparisons, mostSwaps, leastSwaps;
+  for(int i=0; i<sp.size(); i++){
+    if(sp[i].comps > mostComparisons.comps){
+      mostComparisons=sp[i];
+    }
+    if( leastComparisons.comps == 0 || sp[i].comps < leastComparisons.comps ){
+      leastComparisons=sp[i];
+    }
+    if(sp[i].swaps > mostSwaps.swaps){
+      mostSwaps=sp[i];
+    }
+    if( leastSwaps.swaps == 0 || sp[i].swaps < leastSwaps.swaps ){
+      leastSwaps=sp[i];
+    }
+  }
+  cout << "\nfor a " << listType << " list of " << size << " items:\n"
+       << " The Most Comparisons occur with " << sortDesc[mostComparisons.type] 
+       << " with " << mostComparisons.comps << endl
+       << " The Least Comparisons occur with " << sortDesc[leastComparisons.type]  
+       << " with " << leastComparisons.comps << endl
+       << " The Most Swaps occur with " << sortDesc[mostSwaps.type] 
+       << " with " << mostSwaps.swaps << endl
+       << " The Least Swaps occur with " << sortDesc[leastSwaps.type]  
+       << " with " << leastSwaps.swaps << endl;
+
+
+
 }
 
 vector <int> makeReversed(int size){
@@ -210,25 +267,31 @@ vector <int> makeRandom( int size ) {
   return array;
 }
 
+void seedRandom();
 
-
-int main(){
-  /* initialize random number generator */
-  int numItems[] = {10,50,100}; 
+void seedRandom(){
   struct timeval time; 
   gettimeofday(&time, 0);
   long int s = time.tv_usec * getpid(); 
   srand(s);
-  SortCompare sc;
+}
+
+int main(){
+  /* initialize random number generator */
+  int numItems[] = {10,50,100}; 
+  seedRandom();
   for(int i = 0; i < 3; i++){
     int size =  numItems[i];
     /* run 3 different sorts on each of 3 number sets */
-    vector<int> random = makeRandom(size);
-    sc.runSorts(size,string("random"),random);
-    vector<int> reversed = makeReversed(size);
-    sc.runSorts(size,string("reversed"), reversed);
     vector<int> almostSorted = makeAlmostSorted(size);
-    sc.runSorts(size,string("almost sorted"),almostSorted);
+    SortCompare sc1(size,string("almost sorted"),almostSorted);
+    sc1.runSorts();
+    vector<int> reversed = makeReversed(size);
+    SortCompare sc2(size,string("reversed"), reversed);
+    sc2.runSorts();
+    vector<int> random = makeRandom(size);
+    SortCompare sc3(size,string("random"),random);
+    sc3.runSorts();
   }
 
   return 0;
