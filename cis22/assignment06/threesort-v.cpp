@@ -57,6 +57,7 @@ void SortCompare::bubbleSort(vector<int> & array, int size){
   bool swapped = true;
   while(swapped){
     swapped = false;
+    /* if we get through the list with no swaps we're done */
     for(int i = 0; i < size - 1; i++){
       comps++;
       if(array[i] > array[i+1]){
@@ -121,13 +122,12 @@ void SortCompare::siftDown(vector<int> & array, int root, int bottom) {
   while ((root*2 <= bottom) && (!done)){
     if (root*2 == bottom){
       maxChild = root * 2;
-      comps+=1;
     }else if (array[root * 2] > array[root * 2 + 1]){
       maxChild = root * 2;
-      comps+=2;
+      comps++;
     }else{
       maxChild = root * 2 + 1;
-      comps+=2;
+      comps++;
     }
 
     if (array[root] < array[maxChild]){
@@ -144,10 +144,12 @@ void SortCompare::siftDown(vector<int> & array, int root, int bottom) {
 }
 
 SortPerformance SortCompare::sortAnalyze(char type){
-  vector<int> a;
   SortPerformance sp;
+  vector<int> a;
+  a.reserve(size);
   comps = 0;
   swaps = 0;
+  /* deep copy of vector data so we get a copy to sort*/
   a = array;
   cout << "pre sort: ";
   printArray( a, size);
@@ -163,12 +165,14 @@ SortPerformance SortCompare::sortAnalyze(char type){
       heapSort( a, size );
       break;
   }
-  sp.comps = comps;
-  sp.swaps = swaps;
-  sp.type  = type;
+  /* show the results of the sort */
   cout << "post sort: ";
   printArray( a, size);
   cout << "comparisons: " << comps << " swaps: " << swaps <<endl;
+  /* fill in data about performance to compare aganst other sorts */
+  sp.comps = comps;
+  sp.swaps = swaps;
+  sp.type  = type;
   return sp;
 }
 
@@ -183,12 +187,15 @@ void SortCompare::runSorts(){
 
   cout <<"\nheap sort of " << size << " " << listType << " items\n";
   sp.push_back(sortAnalyze(HEAP));
+  /* compare stats from all three sort types */
   sortReport(sp);
 }
 
 void SortCompare::sortReport(vector<SortPerformance> sp){
   SortPerformance mostComps, leastComps, midComps, 
                   mostSwaps, leastSwaps, midSwaps;
+  /*determine best, worst and middle sorts by comparisons and
+    interchanges (swaps) */
   for(int i=0; i<sp.size(); i++){
     if(sp[i].comps > mostComps.comps)
       mostComps=sp[i];
