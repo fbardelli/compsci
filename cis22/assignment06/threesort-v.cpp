@@ -1,3 +1,8 @@
+/*  Frank Bardelli
+ *  CIS 22 Data Structures
+ *  Assignment #6
+ *  May 5, 2010
+ */
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -40,11 +45,6 @@ class SortCompare {
     SortPerformance sortAnalyze(char type);
     void runSorts();
 };
-
-vector<int> makeReversed(int size);
-vector<int> makeSorted(int size);
-vector<int> makeAlmostSorted(int size);
-vector<int> makeRandom( int size );
 
 void SortCompare::printArray(vector<int> & array, int size){
   for(int i = 0; i < size; i++){
@@ -114,7 +114,6 @@ void SortCompare::heapSort(vector<int> & array, int size) {
     siftDown(array, 0, i-1);
   }
 }
- 
  
 void SortCompare::siftDown(vector<int> & array, int root, int bottom) {
   int done, maxChild, temp;
@@ -213,7 +212,7 @@ void SortCompare::sortReport(vector<SortPerformance> sp){
       midSwaps = sp[i];
   }
   
-  cout << "\nfor a " << listType << " list of " << size << " items:\n"
+  cout << "\n" << listType << " list of " << size << " items:\n"
        << " The Most Comparisons occur with " << sortDesc[mostComps.type] 
        << " with " << mostComps.comps << endl
        << " The Middle number of Comparisons occur with " << sortDesc[midComps.type] 
@@ -226,10 +225,14 @@ void SortCompare::sortReport(vector<SortPerformance> sp){
        << " with " << midSwaps.swaps << endl
        << " The Least Swaps occur with " << sortDesc[leastSwaps.type]  
        << " with " << leastSwaps.swaps << endl;
-
-
-
 }
+
+/* Main Program */
+void seedRandom();
+vector<int> makeReversed(int size);
+vector<int> makeSorted(int size);
+vector<int> makeAlmostSorted(int size);
+vector<int> makeRandom( int size );
 
 vector <int> makeReversed(int size){
   vector <int> array;
@@ -282,8 +285,6 @@ vector <int> makeRandom( int size ) {
   return array;
 }
 
-void seedRandom();
-
 void seedRandom(){
   struct timeval time; 
   gettimeofday(&time, 0);
@@ -311,4 +312,3 @@ int main(){
 
   return 0;
 }
-
