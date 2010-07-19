@@ -29,18 +29,52 @@ public class PFact
             current++;
             while (next_potential_prime < skip_set[(int)current]+1){
                 foreach(long n in skip_set){
-                    next_possible_prime = potential_prime + n; 
-                    if (next_possible_prime > (int) limit){
+                    next_potential_prime = potential_prime + n; 
+                    if (next_potential_prime > limit){
                         break;
                     }
-                    if (next_possible_prime <= skip_set[(int)current]+1){
-                         potential_prime = next_possible_prime; 
+                    if (next_potential_prime <= skip_set[(int)current]+1){
+                         potential_prime = next_potential_prime; 
                     }
-                    long sqrtnpp = sqrt(next_possibe_prime);
+                    long sqrtnpp = (long)Math.Sqrt(next_potential_prime);
                     bool test    = true;
- 
+                    foreach(long q in verified_primes){
+                        if ( sqrtnpp<q ){
+                            break;
+                        } else if ( next_potential_prime % q == 0){
+                            test = false;
+                            break;
+                        }
+                    }
+                    if(test){
+                        if ( next_potential_prime <= sqrtlimit ){
+                            verified_primes.Add(next_potential_prime);
+                        }else{
+                            extended_primes.Add(next_potential_prime);
+                        }
+                    }
                 }
-            
+
+                if (next_potential_prime > limit){ 
+                    break;
+                }
+            }
+            if (next_potential_prime > limit){ 
+                break;
+            }
+        }
+        long last_relevant_prime        = potential_prime;
+        List <long> next_skip_set       = new List <long>();
+        while ( potential_prime < (skip_range[current]+1) * 2 - 1 ){
+            foreach(long n in skip_set){
+                next_potential_prime = potential_prime + n;
+                if (next_potential_prime > limit){ 
+                    break;
+                }
+                long sqrtnpp = Math.Sqrt(next_potential_prime);
+                bool test = true;
+                foreach(){
+                }
             }
         }
     }
@@ -188,6 +222,8 @@ while npp<int(lim):
             limit for the verification process. """
             test=True
             """ Set the verification flag to True. """
+*/
+/*
             for q in tp:
             """ Loop through the array of the primes necessary for verification of the 
             next potential prime. """
