@@ -29,7 +29,16 @@ public class PFact
             current++;
             while (next_potential_prime < skip_set[(int)current]+1){
                 foreach(long n in skip_set){
-                
+                    next_possible_prime = potential_prime + n; 
+                    if (next_possible_prime > (int) limit){
+                        break;
+                    }
+                    if (next_possible_prime <= skip_set[(int)current]+1){
+                         potential_prime = next_possible_prime; 
+                    }
+                    long sqrtnpp = sqrt(next_possibe_prime);
+                    bool test    = true;
+ 
                 }
             
             }
