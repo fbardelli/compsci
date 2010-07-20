@@ -1,22 +1,23 @@
 use constant TOP => 20;
+
 my @primes;
-
-
-NUM: for my $num (2..TOP){
-  for my $p(@primes) {
-      next NUM if $num % $p == 0;
-  }
-  push @primes, $num;
-}
-
 $product = 1;
 
-for my $p (@primes){
-    my $i = 1;
-    my $pn = $p;
-    while($pn*$p < TOP){
-        $pn *= $p;
-    }
-    $product *= $pn;
+NUM: for my $num (2..TOP){
+  #prime if it does not divide evenly into seen primes
+  my $sqrt = sqrt($num);
+  for my $p(@primes) {
+      last if $p > $sqrt;
+      next NUM if $num % $p == 0;
+  }
+  push @primes,$num;
+  my $i = 1;
+  my $pn = $num;
+  #get largest exponent of prime that is < TOP
+  while($pn*$num < TOP){
+      $pn *= $num;
+  }
+  $product *= $pn;
 }
+
 print "$product\n";
