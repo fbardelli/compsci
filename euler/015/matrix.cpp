@@ -4,7 +4,7 @@ using namespace std;
 int main()
 {
     const int GRID_SIZE = 20;
-    int grid[GRID_SIZE+1][GRID_SIZE+1];
+    long long grid[GRID_SIZE+1][GRID_SIZE+1];
     grid[0][0] = 1;
     for(int x = 0; x <= GRID_SIZE; x++){
         for(int y = 0; y <= GRID_SIZE; y++){
@@ -14,6 +14,9 @@ int main()
               grid[x][y] = grid[x-1][y]+grid[x][y-1];
             }
         }
+    }
+    for(int i=1;i <= GRID_SIZE; i++){
+        cout << i << "," << i << ":" << grid[i][i] << endl;
     }
     cout << grid[GRID_SIZE][GRID_SIZE] << endl;
 }
