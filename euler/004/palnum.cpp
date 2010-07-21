@@ -15,6 +15,9 @@ int main()
     for(int i = MAX; i > LOW; i--){
         for(int j = MAX; j > LOW; j--){
            int product = i * j;
+           if (product < max_pal){
+               break;
+           }
            //cout << i << "*" << j << " = " << product;
            if( is_palindrome(product) ){
                cout << "found pal " << product << endl;
