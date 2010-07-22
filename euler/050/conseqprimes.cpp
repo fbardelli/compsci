@@ -4,11 +4,6 @@
 #include<string>
 #include<cmath>
 using namespace std;
-struct highest_prime {
-    int primeval;
-    int start_idx;
-    int end_idx;
-};
 
 int main(){
     const int TOP_NUM = 1000000;
@@ -31,33 +26,33 @@ int main(){
         primes.push_back(num);
         prime_map[num]=true;
     }
+
     int total_primes = primes.size();
-    int max_range = 0;
-    int small_sum = 0;
-    for (int j = 0; j < total_primes ; j++){
-        small_sum += primes[j];
-        if(small_sum < TOP_NUM){
-            max_range++;
-        }else{
-            break;
-        }
-    }
-    int start_prime, end_prime;
-    int max_sum     = 0;
+    int start_idx, end_idx, top_sum;
+    int max_consecutive = 0;
     NEXTNUM: for (int i = 0; i < total_primes ; i++){
-        start_prime = i;
         int sum = primes[i];
-        for(int j = 1; j < max_range; j++){
-            sum += primes[i+j];
-            if(sum > TOP_NUM){
-                goto NEXTNUM;
-            }
+        int j = 0;
+        while(sum < TOP_NUM && (i+j)< total_primes ) {
+            j++;
             if(prime_map[sum]){
-                cout << sum << "is the prime result of " << i << "through" << j << endl;
+                //cout << sum << "is the prime result of " << i << "through" << i+j << endl;
+                if(j>max_consecutive){
+                    max_consecutive = j;
+                    start_idx = i;
+                    end_idx = i+j;
+                    top_sum = sum;
+                }
             }
+            sum += primes[i+j];
         }
     }
-    cout << max_range << ":"<< small_sum;
-   //   cout << j << ": is " << (prime_map.count(j)? "":"not ")<< "prime\n";
+    cout << top_sum << " is the prime result of " << end_idx-start_idx << " terms " << endl;
+    int s = 0;
+    for (int i=start_idx; i < end_idx; i++){
+       s += primes[i];
+       cout << primes[i] << " + ";
+    }
+    cout << " = " << s << endl;
     return 0;
 }
