@@ -1,3 +1,4 @@
+use strict;
 my %words = (
    1 => "one", 2 => "two", 3 => "three",4 => "four",5 => "five",
    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
@@ -7,11 +8,19 @@ my %words = (
    90 => "ninety", 100 => "hundred", 1000 => "thousand"
 );
 
+my $big_str ="";
 for my $i (1..1000){
-    my $small_num = $i % 100;
-    my $big_num   = int($i / 100);
-    print("$big_num:$small_num\n");
-    $string = "";
+    $big_str .= num_to_string($i);
+}
+
+$big_str =~ s/\s+//g;
+print length($big_str),"\n";
+
+sub num_to_string{
+    my $num = shift;
+    my $small_num = $num % 100;
+    my $big_num   = int($num / 100);
+    my $string = "";
     if($big_num){
         my $thousands = int($big_num / 10);
         my $hundreds  = $big_num % 10;
@@ -23,9 +32,15 @@ for my $i (1..1000){
         }
     }
     if($small_num){
-        if($small_num>20){
+        $string .= " and " if $big_num;
+        if($small_num > 19){
+            my $tens = int($small_num/10);
+            my $ones = $small_num % 10;
+            $string .= $words{($tens*10)};
+            $string .=  " $words{$ones}" if $ones;
         }else{
+            $string .= $words{$small_num};
         }
     }
-    print "$string";
+    return $string;
 }
