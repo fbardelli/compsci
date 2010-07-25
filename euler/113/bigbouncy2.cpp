@@ -19,13 +19,13 @@ int main(){
     memset(desc_bounces,0,sizeof(desc_bounces[0])*10);
     memset(flat_bounces,0,sizeof(flat_bounces[0])*10);
     int i = 1;
-    //init first 9
+    //init first 9 nonbouncy numbers.
     for(int n = 1; n <= 9; n++){
         flat_bounces[n][i]=1;
         nonbouncy++;
     }
     i++;
-    //init first 10-99
+    //init first 10-99 this will give us data to construct all the others
     for(char c='1'; c <= '9'; c++){
         for(char d='0'; d <= '9';d++){
             char dig[3] = {c,d,'\0'};
