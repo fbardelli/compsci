@@ -1,21 +1,27 @@
 #include<iostream>
 #include<cmath>
+#include<cstring>
 #include<map>
 using namespace std;
 
 int divisor_sum(int i);
 int main(){
-    map<int,int> cache;
+    int cache[10000];
+    memset(cache,0,sizeof(cache[0])*10000);
     for(int i = 1; i < 10000; i++){
         int sum = divisor_sum(i);
-        cache[i] = sum;
-//        cout << i << " = " << sum << endl;
-    }
-    for(int i = 1; i < 10000; i++){
-        if ( i == cache[cache[i]]){
-            cout << i << " and " << cache[i] << endl;
+        if(sum < 10000){
+            cache[i] = sum;
         }
     }
+    int amsum = 0;
+    for(int i = 1; i < 10000; i++){
+        if ( i != cache[i] && i == cache[cache[i]]){
+            cout << i << " and " << cache[i] << endl;
+            amsum += i;
+        }
+    }
+    cout << "Sum = "<< amsum <<endl;
     return 0;
 }
 
