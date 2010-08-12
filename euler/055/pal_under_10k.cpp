@@ -15,13 +15,13 @@ int main()
     for(unsigned long long i = 1; i < MAX; i++){
        unsigned long long sum = i + reverse_num(i);
        unsigned long long tries = 1;
-       cout << i << " + " << reverse_num(i) << " = " << sum << endl;
+       //cout << i << " + " << reverse_num(i) << " = " << sum << endl;
        while( ! is_palindrome(sum) ){
-           cout << "\t" << sum << " + " << reverse_num(sum) << " = ";
+           //cout << "\t" << sum << " + " << reverse_num(sum) << " = ";
            sum = (sum + reverse_num(sum));
-           cout << sum << endl;
+           //cout << sum << endl;
            if(tries++ > 50){
-               cout << i << " is a Lychrel number\n"; 
+               //cout << i << " is a Lychrel number\n"; 
                total++;
                break;
            }
