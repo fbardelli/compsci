@@ -21,34 +21,36 @@ void GameMenu::runSimulation(){
 }
 
 void GameMenu::keyPressEvent(QKeyEvent *e){
+    QRectF r = rect->rect();
     switch(e->key()){
         case Qt::Key_Up:
             qDebug() << "up pressed";
-            if(rect->y() > 0){
-                rect->setY(rect->y()-15);
-
+            if(r.y() > 0){
+                r.setY(r.y()-15);
             }
             break;
         case Qt::Key_Down:
             qDebug() << "down pressed";
-            if( (rect->y() + 65) < ui->graphicsView->height()){
-                rect->setY(rect->y()+15);
+            if( (r.y() + 65) < ui->graphicsView->height()){
+                r.setY(r.y()+15);
             }
             break;
         case Qt::Key_Left:
             qDebug() << "left pressed";
-            if(rect->x() > 0){
-                rect->setX(rect->x()-15);
+            if(r.x() > 0){
+                r.setX(r.x()-15);
             }
             break;
         case Qt::Key_Right:
             qDebug() << "right pressed";
-            if( (rect->x() + 65) < ui->graphicsView->width()){
-                rect->setX(rect->x()+15);
+            if( (r.x() + 65) < ui->graphicsView->width()){
+                r.setX(r.x()+15);
             }
             break;
     }
-
+    r.setWidth(50);
+    r.setHeight(50);
+    rect->setRect(r);
 
 }
 
