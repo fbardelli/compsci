@@ -13,31 +13,39 @@ GameMenu::GameMenu(QWidget *parent)
 
 void GameMenu::runSimulation(){
     qDebug("run Pressed");
-    rect = scene->addRect(QRectF(200, 200, 100, 100),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
-    scene->addText("Hello, world!", QFont("Times", 10, QFont::Bold));
+    rect = scene->addRect(QRectF(200, 200, 50, 50),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
     //QGraphicsItem *item = scene.itemAt(50, 50);
     this->ui->graphicsView->setScene(scene);
     this->ui->graphicsView->show();
-    //connect(this,SIGNAL(key_pressed(QKeyEvent&)),this,SLOT(handleKeyPress(QKeyEvent&)));
+    this->setFocus();
 }
 
 void GameMenu::keyPressEvent(QKeyEvent *e){
     switch(e->key()){
         case Qt::Key_Up:
             qDebug() << "up pressed";
-            rect->setY(rect->y()-10);
+            if(rect->y() > 0){
+                rect->setY(rect->y()-15);
+
+            }
             break;
         case Qt::Key_Down:
             qDebug() << "down pressed";
-            rect->setY(rect->y()+10);
+            if( (rect->y() + 65) < ui->graphicsView->height()){
+                rect->setY(rect->y()+15);
+            }
             break;
         case Qt::Key_Left:
             qDebug() << "left pressed";
-            rect->setX(rect->x()-10);
+            if(rect->x() > 0){
+                rect->setX(rect->x()-15);
+            }
             break;
         case Qt::Key_Right:
             qDebug() << "right pressed";
-            rect->setX(rect->x()+10);
+            if( (rect->x() + 65) < ui->graphicsView->width()){
+                rect->setX(rect->x()+15);
+            }
             break;
     }
 
