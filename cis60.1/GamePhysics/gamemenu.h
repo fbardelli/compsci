@@ -36,7 +36,8 @@ private slots:
 private:
     Ui::GameMenu *ui;
     QGraphicsScene *scene;
-    QGraphicsRectItem *rect;
+    QGraphicsRectItem *player;
+    QGraphicsRectItem *obstacle;
 };
 
 #endif // GAMEMENU_H
