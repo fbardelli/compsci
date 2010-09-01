@@ -20,6 +20,7 @@ class GameMenu : public QMainWindow
 public:
     GameMenu(QWidget *parent = 0);
     ~GameMenu();
+    bool objectsCollide(QRectF p, QRectF o);
 
 private slots:
     void runSimulation();
