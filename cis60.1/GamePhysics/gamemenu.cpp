@@ -1,6 +1,7 @@
 #include "gamemenu.h"
 #include "ui_gamemenu.h"
 
+
 GameMenu::GameMenu(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::GameMenu)
 {
@@ -27,30 +28,31 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
     QRectF r = player->rect();
     int boardWidth  = ui->graphicsView->width();
     int boardHeight = ui->graphicsView->height();
+    Direction dir;
     switch(e->key()){
         case Qt::Key_Up:
-            qDebug() << "up pressed";
+            dir = Up;
             r.setY(r.y()-15);
             if(r.y() < 0){
                 r.setY(0);
             }
             break;
         case Qt::Key_Down:
-            qDebug() << "down pressed";
+            dir = Down;
             r.setY(r.y()+15);
             if( (r.y() + 50) > boardHeight){
                 r.setY(boardHeight-50);
             }
             break;
         case Qt::Key_Left:
-            qDebug() << "left pressed";
+            dir = Left;
             r.setX(r.x()-15);
             if(r.x()-15 < 0){
                 r.setX(0);
             }
             break;
         case Qt::Key_Right:
-            qDebug() << "right pressed";
+            dir = Right;
             r.setX(r.x()+15);
             if( (r.x() + 50) > boardWidth){
                 r.setX(boardWidth - 50);
@@ -63,11 +65,25 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
              << " h: " << this->ui->graphicsView->height();
     if(objectsCollide(r,obstacle->rect())){
         qDebug() << "Objects collide";
-
+        moveToEdge(r,obstacle->rect(),dir);
     }
     r.setWidth(50);
     r.setHeight(50);
     player->setRect(r);
+
+}
+
+void GameMenu::moveToEdge(QRectF &p, QRectF o, Direction dir){
+    if(dir == Right){
+        qDebug() << "px:" << p.x() << " ox:" << o.x() << " pw:" << p.width() << " ow:" << o.width();
+        p.setX( (o.x()-o.width()));
+    }else if (dir == Left){
+        p.setX(o.x()+o.width()+1);
+    }else if (dir == Down){
+        p.setY( (o.y()-o.height()) );
+    }else if (dir == Up){
+        p.setY(o.y()+o.height()+1);
+    }
 
 }
 

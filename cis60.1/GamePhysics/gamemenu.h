@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <qevent.h>
 
+enum Direction { Right, Left, Up, Down };
 namespace Ui
 {
     class GameMenu;
@@ -20,6 +21,7 @@ class GameMenu : public QMainWindow
 public:
     GameMenu(QWidget *parent = 0);
     ~GameMenu();
+    void moveToEdge(QRectF &p, QRectF o, Direction dir);
     bool objectsCollide(QRectF p, QRectF o);
 
 private slots:
