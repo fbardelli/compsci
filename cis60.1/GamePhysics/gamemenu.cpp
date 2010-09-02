@@ -76,11 +76,11 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
 void GameMenu::moveToEdge(QRectF &p, QRectF o, Direction dir){
     if(dir == Right){
         qDebug() << "px:" << p.x() << " ox:" << o.x() << " pw:" << p.width() << " ow:" << o.width();
-        p.setX( (o.x()-o.width()));
+        p.setX( (o.x()-o.width()-1));
     }else if (dir == Left){
         p.setX(o.x()+o.width()+1);
     }else if (dir == Down){
-        p.setY( (o.y()-o.height()) );
+        p.setY( (o.y()-o.height()-1) );
     }else if (dir == Up){
         p.setY(o.y()+o.height()+1);
     }
@@ -90,11 +90,11 @@ void GameMenu::moveToEdge(QRectF &p, QRectF o, Direction dir){
 bool GameMenu::objectsCollide(QRectF p, QRectF o){
     int pLeft = p.x();
     int oLeft = o.x();
-    int pRight = p.x() + p.width();
+    int pRight = p.x() + o.width();
     int oRight = o.x() + o.width();
     int pTop   = p.y();
     int oTop   = o.y();
-    int pBottom = p.y() + p.height();
+    int pBottom = p.y() + o.height();
     int oBottom = o.y() + o.height();
     // is player fully above obstacle?
     if (pBottom < oTop) return false;
