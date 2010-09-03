@@ -8,6 +8,7 @@
 #include <QtGui/QGraphicsView>
 #include <QDebug>
 #include <qevent.h>
+#include <QList>
 
 enum Direction { Right, Left, Up, Down };
 
@@ -41,7 +42,7 @@ private:
     QGraphicsView  *mainView;
     QGraphicsScene *scene;
     QGraphicsRectItem *player;
-    QGraphicsRectItem *obstacle;
+    QList<QGraphicsRectItem *> obstacles;
 };
 
 #endif // GAMEMENU_H

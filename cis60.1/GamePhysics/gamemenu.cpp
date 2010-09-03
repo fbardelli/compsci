@@ -25,7 +25,15 @@ void GameMenu::runSimulation(){
     mainView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scene->setSceneRect(0,0,this->ui->mainFrame->width(),this->ui->mainFrame->height());
     player = scene->addRect(QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
-    obstacle = scene->addRect(QRectF(200, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+    QGraphicsRectItem *obstacle1, *obstacle2, *obstacle3, *obstacle4;
+    obstacle1 = scene->addRect(QRectF(200, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+    obstacles.push_back(obstacle1);
+    obstacle2 = scene->addRect(QRectF(400, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+    obstacles.push_back(obstacle2);
+    obstacle3 = scene->addRect(QRectF(400, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+    obstacles.push_back(obstacle3);
+    obstacle4 = scene->addRect(QRectF(200, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+    obstacles.push_back(obstacle4);
     this->mainView->show();
     this->setFocus();
 }
@@ -69,9 +77,11 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
              << " Y: " << r.y()
              << " w: " << this->mainView->width()
              << " h: " << this->mainView->height();
-    if(objectsCollide(r,obstacle->rect())){
-        qDebug() << "Objects collide";
-        moveToEdge(r,obstacle->rect(),dir);
+    for (int i = 0; i < obstacles.size(); ++i) {
+        if(objectsCollide(r,obstacles.at(i)->rect())){
+            qDebug() << "Objects collide";
+            moveToEdge(r,obstacles.at(i)->rect(),dir);
+        }
     }
     //r.setWidth(SQUARE_SIZE);
     //r.setHeight(SQUARE_SIZE);
@@ -117,7 +127,6 @@ bool GameMenu::objectsCollide(QRectF p, QRectF o){
 GameMenu::~GameMenu()
 {
     delete player;
-    delete obstacle;
     delete scene;
     delete ui;
 }
