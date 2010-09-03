@@ -9,6 +9,7 @@
 #include <qevent.h>
 
 enum Direction { Right, Left, Up, Down };
+
 namespace Ui
 {
     class GameMenu;
