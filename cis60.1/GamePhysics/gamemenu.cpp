@@ -25,15 +25,14 @@ void GameMenu::runSimulation(){
     mainView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scene->setSceneRect(0,0,this->ui->mainFrame->width(),this->ui->mainFrame->height());
     player = scene->addRect(QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
-    QGraphicsRectItem *obstacle1, *obstacle2, *obstacle3, *obstacle4;
-    obstacle1 = scene->addRect(QRectF(200, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
-    obstacles.push_back(obstacle1);
-    obstacle2 = scene->addRect(QRectF(400, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
-    obstacles.push_back(obstacle2);
-    obstacle3 = scene->addRect(QRectF(400, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
-    obstacles.push_back(obstacle3);
-    obstacle4 = scene->addRect(QRectF(200, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
-    obstacles.push_back(obstacle4);
+    for (int x = 75; x < this->ui->mainFrame->width(); x += 150) {
+        for(int y = 0; y < this->ui->mainFrame->height(); y+= 150) {
+            QGraphicsRectItem *obstacle;
+            obstacle = scene->addRect(QRectF(x, y, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+            obstacles.push_back(obstacle);
+        }
+
+    }
     this->mainView->show();
     this->setFocus();
 }
