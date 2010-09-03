@@ -17,19 +17,23 @@ GameMenu::GameMenu(QWidget *parent)
 void GameMenu::runSimulation(){
     qDebug("run Pressed");
     //QGraphicsItem *item = scene.itemAt(50, 50);
-    this->ui->graphicsView->setScene(scene);
-    this->ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    scene->setSceneRect(0,0,this->ui->graphicsView->width(),this->ui->graphicsView->height());
+    scene->clear();
+    mainView = new QGraphicsView(scene,this->ui->mainFrame);
+    //this->ui->graphicsView->setScene(scene);
+    mainView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    mainView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mainView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scene->setSceneRect(0,0,this->ui->mainFrame->width(),this->ui->mainFrame->height());
     player = scene->addRect(QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
     obstacle = scene->addRect(QRectF(200, 200, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
-    this->ui->graphicsView->show();
+    this->mainView->show();
     this->setFocus();
 }
 
 void GameMenu::keyPressEvent(QKeyEvent *e){
     QRectF r = player->rect();
-    int boardWidth  = ui->graphicsView->width();
-    int boardHeight = ui->graphicsView->height();
+    int boardWidth  = mainView->width();
+    int boardHeight = mainView->height();
     Direction dir;
     switch(e->key()){
         case Qt::Key_Up:
@@ -43,7 +47,7 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
             dir = Down;
             r.moveTo(r.x(),r.y()+MOVE_DISTANCE);
             if( (r.y() + SQUARE_SIZE) > boardHeight){
-                r.moveTo(r.x(),boardHeight-SQUARE_SIZE);
+                r.moveTo(r.x(),boardHeight-SQUARE_SIZE-1);
             }
             break;
         case Qt::Key_Left:
@@ -57,14 +61,14 @@ void GameMenu::keyPressEvent(QKeyEvent *e){
             dir = Right;
             r.moveTo(r.x()+MOVE_DISTANCE,r.y());
             if( (r.x() + SQUARE_SIZE) > boardWidth){
-                r.moveTo(boardWidth - SQUARE_SIZE,r.y());
+                r.moveTo(boardWidth - SQUARE_SIZE-1,r.y());
             }
             break;
     }
     qDebug() << " X: " << r.x()
              << " Y: " << r.y()
-             << " w: " << this->ui->graphicsView->width()
-             << " h: " << this->ui->graphicsView->height();
+             << " w: " << this->mainView->width()
+             << " h: " << this->mainView->height();
     if(objectsCollide(r,obstacle->rect())){
         qDebug() << "Objects collide";
         moveToEdge(r,obstacle->rect(),dir);
@@ -112,6 +116,8 @@ bool GameMenu::objectsCollide(QRectF p, QRectF o){
 
 GameMenu::~GameMenu()
 {
-    delete ui;
+    delete player;
+    delete obstacle;
     delete scene;
+    delete ui;
 }

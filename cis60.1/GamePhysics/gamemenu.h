@@ -5,6 +5,7 @@
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsItem>
 #include <QtGui/QGraphicsRectItem>
+#include <QtGui/QGraphicsView>
 #include <QDebug>
 #include <qevent.h>
 
@@ -27,8 +28,6 @@ public:
 
 private slots:
     void runSimulation();
-    //void moveRect();
-    //void handleKeyPress(QKeyEvent& e);
 
 //signals:
     //void key_pressed(QKeyEvent& e);
@@ -39,6 +38,7 @@ private slots:
 
 private:
     Ui::GameMenu *ui;
+    QGraphicsView  *mainView;
     QGraphicsScene *scene;
     QGraphicsRectItem *player;
     QGraphicsRectItem *obstacle;
