@@ -4,6 +4,8 @@
 TARGET = GamePhysics
 TEMPLATE = app
 SOURCES += main.cpp \
-    gamemenu.cpp
-HEADERS += gamemenu.h
+    gamemenu.cpp \
+    simplecollisionview.cpp
+HEADERS += gamemenu.h \
+    simplecollisionview.h
 FORMS += gamemenu.ui
