@@ -7,6 +7,8 @@ GameMenu::GameMenu(QWidget *parent)
 {
     ui->setupUi(this);
     ui->simulationComboBox->addItem("Simple Collision");
+    ui->simulationComboBox->addItem("Advanced Collision");
+
     connect(ui->runSimulation,SIGNAL(clicked()),this,SLOT(runSimulation()));
     mainView = NULL;
     scene = new QGraphicsScene(this);
@@ -15,6 +17,7 @@ GameMenu::GameMenu(QWidget *parent)
 
 void GameMenu::runSimulation(){
     scene->clear();
+    qDebug() << "val: " << ui->simulationComboBox->currentIndex() << " str: " << ui->simulationComboBox->currentText();
     if (mainView != NULL){
         delete mainView;
     }
