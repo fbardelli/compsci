@@ -8,7 +8,6 @@
 #include <qevent.h>
 #include "physicsutils.h"
 
-enum Direction { Right, Left, Up, Down };
 
 class SimpleCollisionView : public QGraphicsView
 {

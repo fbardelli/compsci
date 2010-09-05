@@ -8,8 +8,8 @@
 #include <QDebug>
 #include <qevent.h>
 #include <QList>
-#include "simplecollisionview.h"
-#include "advancedcollisionview.h"
+#include "views/simplecollisionview.h"
+#include "views/advancedcollisionview.h"
 
 
 namespace Ui

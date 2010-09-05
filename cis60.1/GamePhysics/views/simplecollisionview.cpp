@@ -62,25 +62,12 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
     for (int i = 0; i < obstacles.size(); ++i) {
         if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect())){
             qDebug() << "Objects collide";
-            moveToEdge(r,obstacles.at(i)->rect(),dir);
+            PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect(),dir);
         }
     }
     player->setRect(r);
 }
 
-void SimpleCollisionView::moveToEdge(QRectF &p, QRectF o, Direction dir){
-    if(dir == Right){
-        //qDebug() << "px:" << p.x() << " ox:" << o.x() << " pw:" << p.width() << " ow:" << o.width();
-        p.moveTo( (o.x()-SQUARE_SIZE-1),p.y());
-    }else if (dir == Left){
-        p.moveTo(o.x()+SQUARE_SIZE+1,p.y());
-    }else if (dir == Down){
-        p.moveTo(p.x(), (o.y()-SQUARE_SIZE-1) );
-    }else if (dir == Up){
-        p.moveTo(p.x(),o.y()+SQUARE_SIZE+1);
-    }
-
-}
 
 
 SimpleCollisionView::~SimpleCollisionView(){

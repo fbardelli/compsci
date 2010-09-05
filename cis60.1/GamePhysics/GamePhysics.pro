@@ -5,11 +5,11 @@ TARGET = GamePhysics
 TEMPLATE = app
 SOURCES += main.cpp \
     gamemenu.cpp \
-    simplecollisionview.cpp \
-    advancedcollisionview.cpp \
+    views/simplecollisionview.cpp \
+    views/advancedcollisionview.cpp \
     physicsutils.cpp
 HEADERS += gamemenu.h \
-    simplecollisionview.h \
-    advancedcollisionview.h \
+    views/simplecollisionview.h \
+    views/advancedcollisionview.h \
     physicsutils.h
 FORMS += gamemenu.ui

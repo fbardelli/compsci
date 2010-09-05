@@ -20,3 +20,19 @@ bool PhysicsUtils::objectsCollide(QRectF p, QRectF o){
     //otherwise player collides with obstacle.
     return true;
 }
+
+void PhysicsUtils::moveToEdge(QRectF &p, QRectF o, Direction dir){
+    int pHeight = p.height();
+    int pWidth = p.width();
+    if(dir == Right){
+        //qDebug() << "px:" << p.x() << " ox:" << o.x() << " pw:" << p.width() << " ow:" << o.width();
+        p.moveTo( (o.x()-pWidth-1),p.y());
+    }else if (dir == Left){
+        p.moveTo(o.x()+pWidth+1,p.y());
+    }else if (dir == Down){
+        p.moveTo(p.x(), (o.y()-pHeight-1) );
+    }else if (dir == Up){
+        p.moveTo(p.x(),o.y()+pHeight+1);
+    }
+
+}
