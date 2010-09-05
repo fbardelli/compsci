@@ -7,9 +7,12 @@ SOURCES += main.cpp \
     gamemenu.cpp \
     views/simplecollisionview.cpp \
     views/advancedcollisionview.cpp \
-    physicsutils.cpp
+    physicsutils.cpp \
+    sprites/movablerectangle.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
-    physicsutils.h
+    physicsutils.h \
+    sprites/movablerectangle.h \
+    gameConstants.h
 FORMS += gamemenu.ui

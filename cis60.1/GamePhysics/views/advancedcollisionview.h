@@ -2,6 +2,7 @@
 #define ADVANCEDCOLLISIONVIEW_H
 
 #include <QGraphicsView>
+#include "gameConstants.h"
 #include "simplecollisionview.h"
 
 

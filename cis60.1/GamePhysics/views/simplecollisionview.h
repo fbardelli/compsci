@@ -6,13 +6,15 @@
 #include <QtAlgorithms>
 #include <QDebug>
 #include <qevent.h>
+#include "gameConstants.h"
 #include "physicsutils.h"
+#include "sprites/movablerectangle.h"
 
 
 class SimpleCollisionView : public QGraphicsView
 {
 private:
-    QGraphicsRectItem *player;
+    MovableRectangle *player;
     QList<QGraphicsRectItem *> obstacles;
     void moveToEdge(QRectF &p, QRectF o, Direction dir);
     bool objectsCollide(QRectF p, QRectF o);

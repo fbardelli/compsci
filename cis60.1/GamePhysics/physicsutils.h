@@ -2,8 +2,7 @@
 #define PHYSICSUTILS_H
 
 #include <QtGui/QGraphicsRectItem>
-
-enum Direction { Right, Left, Up, Down };
+#include "gameConstants.h"
 
 class PhysicsUtils
 {

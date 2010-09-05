@@ -11,7 +11,16 @@ SimpleCollisionView::SimpleCollisionView(QGraphicsScene *scene,QWidget *parent)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scene->setSceneRect(0,0,parent->width(),parent->height());
-    player = scene->addRect(QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::red,Qt::SolidPattern));
+    player = new MovableRectangle(
+                scene->addRect(
+                    QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),
+                    QPen(QColor(Qt::black)),
+                    QBrush(Qt::red,Qt::SolidPattern)),
+                10,
+                MOVE_DISTANCE,
+                Left,
+                this);
+
     for (int x = 75; x < parent->width(); x += 150) {
         for(int y = 0; y < parent->height(); y+= 150) {
             QGraphicsRectItem *obstacle;
@@ -24,48 +33,30 @@ SimpleCollisionView::SimpleCollisionView(QGraphicsScene *scene,QWidget *parent)
 
 
 void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
-    QRectF r = player->rect();
-    int boardWidth  = this->width();
-    int boardHeight = this->height();
+    QRectF r = player->rect->rect();
     Direction dir;
     switch(e->key()){
         case Qt::Key_Up:
             dir = Up;
-            r.moveTo(r.x(),r.y()-MOVE_DISTANCE);
-            if(r.y() < 0){
-                r.moveTo(r.x(),0);
-            }
             break;
         case Qt::Key_Down:
             dir = Down;
-            r.moveTo(r.x(),r.y()+MOVE_DISTANCE);
-            if( (r.y() + SQUARE_SIZE) > boardHeight){
-                r.moveTo(r.x(),boardHeight-SQUARE_SIZE-1);
-            }
             break;
         case Qt::Key_Left:
             dir = Left;
-            r.moveTo(r.x()-MOVE_DISTANCE,r.y());
-            if(r.x()-MOVE_DISTANCE < 0){
-                r.moveTo(0,r.y());
-            }
             break;
         case Qt::Key_Right:
             dir = Right;
-            r.moveTo(r.x()+MOVE_DISTANCE,r.y());
-            if( (r.x() + SQUARE_SIZE) > boardWidth){
-                r.moveTo(boardWidth - SQUARE_SIZE-1,r.y());
-            }
             break;
     }
-
+    r = player->move(dir);
     for (int i = 0; i < obstacles.size(); ++i) {
         if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect())){
             qDebug() << "Objects collide";
             PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect(),dir);
         }
     }
-    player->setRect(r);
+    player->rect->setRect(r);
 }
 
 
