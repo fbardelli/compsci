@@ -60,7 +60,7 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
     }
 
     for (int i = 0; i < obstacles.size(); ++i) {
-        if(objectsCollide(r,obstacles.at(i)->rect())){
+        if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect())){
             qDebug() << "Objects collide";
             moveToEdge(r,obstacles.at(i)->rect(),dir);
         }
@@ -82,26 +82,6 @@ void SimpleCollisionView::moveToEdge(QRectF &p, QRectF o, Direction dir){
 
 }
 
-bool SimpleCollisionView::objectsCollide(QRectF p, QRectF o){
-    int pLeft = p.x();
-    int oLeft = o.x();
-    int pRight = p.x() + SQUARE_SIZE;
-    int oRight = o.x() + SQUARE_SIZE;
-    int pTop   = p.y();
-    int oTop   = o.y();
-    int pBottom = p.y() + SQUARE_SIZE;
-    int oBottom = o.y() + SQUARE_SIZE;
-    // is player fully above obstacle?
-    if (pBottom < oTop) return false;
-    // is player fully below obstacle?
-    if (pTop > oBottom) return false;
-    //Is player to the right of obstacle?
-    if (pRight < oLeft) return false;
-    //Is player to the left of obstacle?
-    if (pLeft > oRight) return false;
-    //otherwise player collides with obstacle.
-    return true;
-}
 
 SimpleCollisionView::~SimpleCollisionView(){
 

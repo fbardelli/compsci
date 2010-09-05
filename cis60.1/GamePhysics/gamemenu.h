@@ -9,6 +9,7 @@
 #include <qevent.h>
 #include <QList>
 #include "simplecollisionview.h"
+#include "advancedcollisionview.h"
 
 
 namespace Ui

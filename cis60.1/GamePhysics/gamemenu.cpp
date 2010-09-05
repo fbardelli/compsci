@@ -21,9 +21,19 @@ void GameMenu::runSimulation(){
     if (mainView != NULL){
         delete mainView;
     }
-    mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
-    this->mainView->show();
-    this->mainView->setFocus();
+    switch(ui->simulationComboBox->currentIndex()){
+        case 0:
+            mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
+            break;
+        case 1:
+            mainView = new AdvancedCollisionView(scene,this->ui->mainFrame);
+            break;
+        default:
+            mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
+            break;
+    }
+    mainView->show();
+    mainView->setFocus();
 }
 
 

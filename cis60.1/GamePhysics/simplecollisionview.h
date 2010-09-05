@@ -6,6 +6,7 @@
 #include <QtAlgorithms>
 #include <QDebug>
 #include <qevent.h>
+#include "physicsutils.h"
 
 enum Direction { Right, Left, Up, Down };
 
