@@ -57,14 +57,7 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
             dir = Right;
             break;
     }
-    r = player->move(dir);
-    for (int i = 0; i < obstacles.size(); ++i) {
-        if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect->rect())){
-            qDebug() << "Objects collide";
-            PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect->rect(),dir);
-        }
-    }
-    player->rect->setRect(r);
+    player->move(dir,obstacles);
 }
 
 

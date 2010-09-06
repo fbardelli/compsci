@@ -9,12 +9,27 @@ MovableRectangle::MovableRectangle(QGraphicsRectItem *rect,
     this->world = w;
 }
 
-QRectF MovableRectangle::move(){
-    return move(direction);
+void MovableRectangle::move(){
+    move(direction);
 }
 
-QRectF MovableRectangle::move(Direction dir){
+void MovableRectangle::move(Direction dir){
     direction = dir;
+    this->rect->setRect(_moveRect(dir));
+}
+
+void MovableRectangle::move(Direction dir,QList<MovableRectangle *> obstacles){
+    QRectF r = _moveRect(dir);
+    for (int i = 0; i < obstacles.size(); ++i) {
+        if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect->rect())){
+            qDebug() << "Objects collide";
+            PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect->rect(),dir);
+        }
+    }
+    this->rect->setRect(r);
+}
+
+QRectF MovableRectangle::_moveRect(Direction dir){
     QRectF r = this->rect->rect();
     int boardHeight = this->world->height();
     int boardWidth  = this->world->width();
@@ -46,3 +61,4 @@ QRectF MovableRectangle::move(Direction dir){
         }
     return r;
 }
+
