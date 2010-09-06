@@ -23,7 +23,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
     MovableRectangle *obstacleMovable, *obstacleStoppable, *obstacleUnstoppable;
     obstacleMovable = new MovableRectangle(
             scene->addRect(
-                QRectF(300, 50, SQUARE_SIZE, SQUARE_SIZE),
+                QRectF(300, 60, SQUARE_SIZE, SQUARE_SIZE),
                 QPen(QColor(Qt::black)),
                 QBrush(QColor(0,255,0,150),Qt::SolidPattern)),
                 5,
@@ -33,7 +33,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
     obstacles.push_back(obstacleMovable);
     obstacleStoppable = new MovableRectangle(
             scene->addRect(
-                QRectF(300, 200, SQUARE_SIZE, SQUARE_SIZE),
+                QRectF(300, 210, SQUARE_SIZE, SQUARE_SIZE),
                 QPen(QColor(Qt::black)),
                 QBrush(QColor(255,255,0,200),Qt::SolidPattern)),
             10,
@@ -43,7 +43,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
     obstacles.push_back(obstacleStoppable);
     obstacleUnstoppable = new MovableRectangle(
             scene->addRect(
-                QRectF(300, 350, SQUARE_SIZE, SQUARE_SIZE),
+                QRectF(300, 360, SQUARE_SIZE, SQUARE_SIZE),
                 QPen(QColor(Qt::black)),
                 QBrush(QColor(255,0,0,255),Qt::SolidPattern)),
             20,
@@ -59,7 +59,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
 void AdvancedCollisionView::startTimers(){
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveObstacles()));
-    timer->start(250);
+    timer->start(125);
 }
 
 
@@ -96,5 +96,6 @@ void AdvancedCollisionView::keyPressEvent(QKeyEvent *e){
 
 
 AdvancedCollisionView::~AdvancedCollisionView(){
-    delete player;
+    qDeleteAll(obstacles);
+    obstacles.clear();
 }

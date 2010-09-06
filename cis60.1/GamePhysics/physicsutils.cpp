@@ -38,13 +38,15 @@ void PhysicsUtils::moveToEdge(QRectF &p, QRectF o, Direction dir){
 }
 
 Direction PhysicsUtils::reverseDirection(Direction dir){
+    Direction newDirection;
     if(dir == Right){
-        return Left;
+        newDirection = Left;
     }else if (dir == Left){
-        return Right;
+        newDirection = Right;
     }else if (dir == Down){
-        return Up;
+        newDirection = Up;
     }else if (dir == Up){
-        return Down;
+        newDirection = Down;
     }
+    return newDirection;
 }
