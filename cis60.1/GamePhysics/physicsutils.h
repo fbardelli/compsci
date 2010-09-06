@@ -9,6 +9,7 @@ class PhysicsUtils
     public:
        static bool objectsCollide(QRectF p, QRectF o);
        static void moveToEdge(QRectF &p, QRectF o, Direction dir);
+       static Direction reverseDirection(Direction dir);
 
     private:
         PhysicsUtils(){}
