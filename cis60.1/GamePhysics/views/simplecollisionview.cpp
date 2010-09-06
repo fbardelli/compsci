@@ -23,8 +23,16 @@ SimpleCollisionView::SimpleCollisionView(QGraphicsScene *scene,QWidget *parent)
 
     for (int x = 75; x < parent->width(); x += 150) {
         for(int y = 0; y < parent->height(); y+= 150) {
-            QGraphicsRectItem *obstacle;
-            obstacle = scene->addRect(QRectF(x, y, SQUARE_SIZE, SQUARE_SIZE),QPen(QColor(Qt::black)),QBrush(Qt::blue,Qt::SolidPattern));
+            MovableRectangle *obstacle;
+            obstacle = new MovableRectangle(
+                    scene->addRect(
+                    QRectF(x, y, SQUARE_SIZE, SQUARE_SIZE),
+                    QPen(QColor(Qt::black)),
+                    QBrush(Qt::blue,Qt::SolidPattern)),
+                    20,
+                    0,
+                    Right,
+                    this);
             obstacles.push_back(obstacle);
         }
 
@@ -51,9 +59,9 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
     }
     r = player->move(dir);
     for (int i = 0; i < obstacles.size(); ++i) {
-        if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect())){
+        if(PhysicsUtils::objectsCollide(r,obstacles.at(i)->rect->rect())){
             qDebug() << "Objects collide";
-            PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect(),dir);
+            PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect->rect(),dir);
         }
     }
     player->rect->setRect(r);
@@ -62,5 +70,8 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
 
 
 SimpleCollisionView::~SimpleCollisionView(){
+    delete player;
+    qDeleteAll(obstacles);
+    obstacles.clear();
 
 }

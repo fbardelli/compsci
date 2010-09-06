@@ -15,7 +15,7 @@ class SimpleCollisionView : public QGraphicsView
 {
 private:
     MovableRectangle *player;
-    QList<QGraphicsRectItem *> obstacles;
+    QList<MovableRectangle *> obstacles;
     void moveToEdge(QRectF &p, QRectF o, Direction dir);
     bool objectsCollide(QRectF p, QRectF o);
 public:
