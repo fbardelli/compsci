@@ -12,7 +12,8 @@
 
 class AdvancedCollisionView : public QGraphicsView
 {
-    //Q_OBJECT
+
+Q_OBJECT
 
 private:
     MovableRectangle *player;
@@ -23,8 +24,8 @@ public:
     void startTimers();
  protected:
     void keyPressEvent (QKeyEvent* e);
- //private slots:
-    //void moveObstacles();
+ private slots:
+    void moveObstacles();
 };
 
 #endif // ADVANCEDCOLLISIONVIEW_H
