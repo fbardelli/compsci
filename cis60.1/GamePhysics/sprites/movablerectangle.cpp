@@ -18,10 +18,17 @@ void MovableRectangle::move(Direction dir){
     this->rect->setRect(_moveRect(dir));
 }
 
+void MovableRectangle::move(QList<MovableRectangle *> obstacles){
+    move(direction,obstacles);
+}
+
 void MovableRectangle::move(Direction dir,QList<MovableRectangle *> obstacles){
     QRectF r = _moveRect(dir);
     for (int i = 0; i < obstacles.size(); ++i) {
         MovableRectangle *ob = obstacles.at(i);
+        if (ob == this){
+            continue;
+        }
         if(PhysicsUtils::objectsCollide(r,ob->rect->rect())){
             qDebug() << "Objects collide";
             if(this->mass <= ob->mass){

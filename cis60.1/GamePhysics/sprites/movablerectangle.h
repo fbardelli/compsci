@@ -21,6 +21,7 @@ public:
     void move();
     void move(Direction dir);
     void move(Direction dir,QList<MovableRectangle *> obstacles);
+    void move(QList<MovableRectangle *> obstacles);
 };
 
 #endif // MOVABLERECTANGLE_H

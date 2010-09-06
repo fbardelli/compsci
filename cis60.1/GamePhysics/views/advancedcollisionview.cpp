@@ -19,6 +19,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
                 MOVE_DISTANCE,
                 Left,
                 this);
+    obstacles.push_back(player);
     MovableRectangle *obstacleMovable, *obstacleStoppable, *obstacleUnstoppable;
     obstacleMovable = new MovableRectangle(
             scene->addRect(
@@ -66,7 +67,8 @@ void AdvancedCollisionView::moveObstacles(){
     qDebug() << "timer fired";
     for (int i = 0; i < obstacles.size(); ++i) {
         MovableRectangle *ob = obstacles.at(i);
-        ob->move();
+        if(ob != player)
+            ob->move(obstacles);
     }
 }
 
