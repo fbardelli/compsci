@@ -53,12 +53,6 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
     obstacles.push_back(obstacleUnstoppable);
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveObstacles()));
-    timer->start(250);
-}
-
-void AdvancedCollisionView::startTimers(){
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(moveObstacles()));
     timer->start(125);
 }
 
