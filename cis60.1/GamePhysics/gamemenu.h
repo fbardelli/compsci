@@ -10,6 +10,8 @@
 #include <QList>
 #include "views/simplecollisionview.h"
 #include "views/advancedcollisionview.h"
+#include "views/accelerateview.h"
+
 
 
 namespace Ui

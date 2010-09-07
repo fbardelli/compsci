@@ -21,7 +21,6 @@ private:
 public:
     AdvancedCollisionView(QGraphicsScene *scene,QWidget *parent);
     ~AdvancedCollisionView();
-    void startTimers();
  protected:
     void keyPressEvent (QKeyEvent* e);
  private slots:

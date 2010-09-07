@@ -8,6 +8,7 @@ GameMenu::GameMenu(QWidget *parent)
     ui->setupUi(this);
     ui->simulationComboBox->addItem("Simple Collision");
     ui->simulationComboBox->addItem("Advanced Collision");
+    ui->simulationComboBox->addItem("Acceleration");
 
     connect(ui->runSimulation,SIGNAL(clicked()),this,SLOT(runSimulation()));
     mainView = NULL;
@@ -27,6 +28,9 @@ void GameMenu::runSimulation(){
             break;
         case 1:
             mainView = new AdvancedCollisionView(scene,this->ui->mainFrame);
+            break;
+        case 2:
+            mainView = new AccelerateView(scene,this->ui->mainFrame);
             break;
         default:
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
