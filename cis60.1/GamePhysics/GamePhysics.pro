@@ -18,3 +18,5 @@ HEADERS += gamemenu.h \
     gameConstants.h \
     views/accelerateview.h
 FORMS += gamemenu.ui
+OTHER_FILES += 
+RESOURCES += images/images.qrc

@@ -2,12 +2,19 @@
 #define ACCELERATEVIEW_H
 
 #include <QGraphicsView>
+#include <QPixmap>
+#include <QGraphicsPixmapItem>
+#include <qevent.h>
 
 class AccelerateView : public QGraphicsView
 {
+private:
+     QGraphicsPixmapItem * car;
 public:
     AccelerateView(QGraphicsScene *scene,QWidget *parent);
     ~AccelerateView();
+ protected:
+    void keyPressEvent (QKeyEvent* e);
 };
 
 #endif // ACCELERATEVIEW_H
