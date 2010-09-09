@@ -14,25 +14,44 @@ AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent)
     car->rotate(180);
     currentAngle = 0;
     car->setPos(250,175);
+    car->setOffset( -0.5 * QPointF(  car->boundingRect().width(), car->boundingRect().height() ) );
+    speed = 0;
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(decelerate()));
+    timer->start(250);
+}
+
+void AccelerateView::decelerate() {
+    QPointF point = car->pos();
+    if(speed > 0){
+        speed -= 3;
+    }else if (speed < 0){
+        speed += 2;
+    }
+    double currentRads = currentAngle * (M_PI / 180);
+    double xDelta        = currentAngle % 180 == 90 ? 0 : cos(currentRads) * speed;
+    double yDelta        = currentAngle % 180 == 0 ? 0  : sin(currentRads) * speed;
+    car->setOffset( -0.5 * QPointF(  car->boundingRect().width(), car->boundingRect().height() ) );
+    point.setY(point.y()+yDelta);
+    point.setX(point.x()+xDelta);
+    car->setPos(point);
 }
 
 void AccelerateView::keyPressEvent(QKeyEvent *e){
-    QPointF point = car->pos();
-    double currentRads = currentAngle * (M_PI / 180);
-    double xDelta        = currentAngle % 180 == 90 ? 0 : cos(currentRads) * 15;
-    double yDelta        = currentAngle % 180 == 0 ? 0  : sin(currentRads) * 15;
+
     switch(e->key()){
         case Qt::Key_Up:
-            point.setY(point.y()+yDelta);
-            point.setX(point.x()+xDelta);
-            car->setPos(point);
+            if(speed < 40){
+                speed += 6;
+            }
             break;
         case Qt::Key_Down:
-            point.setY(point.y()+10);
-            car->setPos(point);
+            if(speed > -15){
+                speed -= 5;
+            }
             break;
         case Qt::Key_Left:
-            //car->translate(car->boundingRect().width()/2,car->boundingRect().height()/2);
+            //car->translate(car->boundingRect().width()/2,car->boundingRect().height()/2);         
             car->rotate(360-6);
             /*car->setTransform(QTransform().translate(
                                             car->pos().x() - ( car->boundingRect().width()/2),
@@ -49,7 +68,7 @@ void AccelerateView::keyPressEvent(QKeyEvent *e){
             currentAngle = (currentAngle+6) % 360;
             break;
     }
-
+    /*
     qDebug() << "\ncurrentAngle: " << currentAngle
              << "\ncurrent Rads: " << currentRads
              << "\ncurrent x:"     << car->pos().x()
@@ -58,6 +77,7 @@ void AccelerateView::keyPressEvent(QKeyEvent *e){
              << "\nnew Y:"         << yDelta
              << "\nbr width"       << car->boundingRect().width()
              << "\nbr height"      << car->boundingRect().height();
+             */
 
 }
 
