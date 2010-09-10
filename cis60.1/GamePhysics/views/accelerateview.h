@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <qevent.h>
 #include <QDebug>
-#include <cmath>
+#include <sprites/sportscar.h>
 
 class AccelerateView : public QGraphicsView
 {
@@ -16,17 +16,15 @@ class AccelerateView : public QGraphicsView
 Q_OBJECT
 
 private:
-     QGraphicsPixmapItem * car;
-     int currentAngle;
-     int speed;
-     bool canTurn;
+     SportsCar * car;
+
 public:
     AccelerateView(QGraphicsScene *scene,QWidget *parent);
     ~AccelerateView();
 protected:
     void keyPressEvent (QKeyEvent* e);
-private slots:
-    void decelerate();
+public slots:
+    void redraw();
 };
 
 #endif // ACCELERATEVIEW_H
