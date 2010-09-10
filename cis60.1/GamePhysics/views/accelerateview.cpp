@@ -16,6 +16,7 @@ AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent)
     car->setPos(250,175);
     car->setOffset( -0.5 * QPointF(  car->boundingRect().width(), car->boundingRect().height() ) );
     speed = 0;
+    canTurn = true;
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(decelerate()));
     timer->start(250);
@@ -44,28 +45,34 @@ void AccelerateView::keyPressEvent(QKeyEvent *e){
             if(speed < 40){
                 speed += 6;
             }
+            canTurn = true;
             break;
         case Qt::Key_Down:
             if(speed > -15){
                 speed -= 5;
             }
+            canTurn = true;
             break;
         case Qt::Key_Left:
-            //car->translate(car->boundingRect().width()/2,car->boundingRect().height()/2);         
-            car->rotate(360-6);
-            /*car->setTransform(QTransform().translate(
-                                            car->pos().x() - ( car->boundingRect().width()/2),
-                                            car->pos().y() - ( car->boundingRect().height()/2)
-                                          ).rotate(360-6));.translate(
-                                                  -(car->pos().x() + ( car->boundingRect().width()/2)),
-                                                  -(car->pos().y() + ( car->boundingRect().height()/2))
-                                          ));*/
-            currentAngle = (currentAngle-6 +360) % 360;
+            //car->translate(car->boundingRect().width()/2,car->boundingRect().height()/2);
+            if(canTurn){
+                car->rotate(360-6);
+                currentAngle = (currentAngle-6 +360) % 360;
+                if(speed < 5){
+                    canTurn = false;
+                }
+            }
             break;
         case Qt::Key_Right:
             //car->translate(car->boundingRect().width()/2,car->boundingRect().height()/2);
-            car->rotate(6);
-            currentAngle = (currentAngle+6) % 360;
+            if(canTurn){
+                car->rotate(6);
+                currentAngle = (currentAngle+6) % 360;
+                if(speed < 5){
+                    canTurn = false;
+                }
+
+            }
             break;
     }
     /*

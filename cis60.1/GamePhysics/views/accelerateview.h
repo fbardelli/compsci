@@ -19,6 +19,7 @@ private:
      QGraphicsPixmapItem * car;
      int currentAngle;
      int speed;
+     bool canTurn;
 public:
     AccelerateView(QGraphicsScene *scene,QWidget *parent);
     ~AccelerateView();
