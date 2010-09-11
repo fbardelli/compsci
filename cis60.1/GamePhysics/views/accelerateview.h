@@ -17,6 +17,7 @@ Q_OBJECT
 
 private:
      SportsCar * car;
+     QTimer    * timer;
 
 public:
     AccelerateView(QGraphicsScene *scene,QWidget *parent);

@@ -18,6 +18,7 @@ Q_OBJECT
 private:
     MovableRectangle *player;
     QList<MovableRectangle *> obstacles;
+    QTimer *timer;
 public:
     AdvancedCollisionView(QGraphicsScene *scene,QWidget *parent);
     ~AdvancedCollisionView();

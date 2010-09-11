@@ -8,14 +8,16 @@ AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scene->setSceneRect(0,0,parent->width(),parent->height());
-    car = new SportsCar(scene->addPixmap(QPixmap(":ferrari.png")), scene );
-    QTimer *timer = new QTimer(this);
+    QPixmap p = QPixmap(":ferrari.png");
+    car = new SportsCar(p);
+    scene->addItem(car);
+    timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
     timer->start(250);
 }
 
 void AccelerateView::redraw(){
-    car->redraw();
+    car->updatePosition();
 }
 
 void AccelerateView::keyPressEvent(QKeyEvent *e){
@@ -38,5 +40,5 @@ void AccelerateView::keyPressEvent(QKeyEvent *e){
 }
 
 AccelerateView::~AccelerateView(){
-    delete car;
+    delete timer;
 }

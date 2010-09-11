@@ -3,10 +3,10 @@
 
 #include <QGraphicsPixmapItem>
 #include <cmath>
+#include <QDebug>
 
 class SportsCar : public QGraphicsPixmapItem
 {
-
 
 private:
     int currentAngle;
@@ -15,12 +15,13 @@ private:
     bool canTurn;
 
 public:
-    explicit SportsCar( QGraphicsItem  * parent = 0, QGraphicsScene  * scene = 0);
+    explicit SportsCar(const QPixmap &pixmap, QGraphicsItem *parent = 0,
+               QGraphicsScene *scene = 0);
     void accelerate();
     void reverse();
     void rightTurn(int degrees);
     void leftTurn(int degrees);
-    void redraw();
+    void updatePosition();
 
 };
 

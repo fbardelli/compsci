@@ -51,7 +51,7 @@ AdvancedCollisionView::AdvancedCollisionView(QGraphicsScene *scene,QWidget *pare
             Right,
             this);
     obstacles.push_back(obstacleUnstoppable);
-    QTimer *timer = new QTimer(this);
+    timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveObstacles()));
     timer->start(125);
 }
@@ -92,4 +92,5 @@ void AdvancedCollisionView::keyPressEvent(QKeyEvent *e){
 AdvancedCollisionView::~AdvancedCollisionView(){
     qDeleteAll(obstacles);
     obstacles.clear();
+    delete timer;
 }

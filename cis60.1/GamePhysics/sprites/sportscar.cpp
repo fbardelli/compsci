@@ -1,9 +1,8 @@
 #include "sportscar.h"
 
-SportsCar::SportsCar( QGraphicsItem  * parent, QGraphicsScene  * scene) :
-    QGraphicsPixmapItem(parent,scene)
-{
-
+SportsCar::SportsCar( const QPixmap &pixmap, QGraphicsItem *parent,
+                      QGraphicsScene *scene)
+     : QGraphicsPixmapItem(pixmap, parent, scene) {
     this->translate(this->boundingRect().width()/2,this->boundingRect().height()/2);
     this->rotate(180);
     currentAngle = 0;
@@ -34,7 +33,7 @@ void SportsCar::leftTurn(int degrees){
     if(canTurn){
         this->rotate(360-degrees);
         currentAngle = (currentAngle-degrees +360) % 360;
-        if(speed < 5){
+        if(abs(speed) < 5){
             canTurn = false;
         }
     }
@@ -45,14 +44,14 @@ void SportsCar::rightTurn(int degrees){
     if(canTurn){
         this->rotate(degrees);
         currentAngle = (currentAngle+degrees) % 360;
-        if(speed < 5){
+        if(abs(speed) < 5){
             canTurn = false;
         }
 
     }
 }
 
-void SportsCar::redraw(){
+void SportsCar::updatePosition(){
     QPointF point = this->pos();
     if(speed > 0){
         speed -= 3;
