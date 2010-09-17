@@ -1,13 +1,8 @@
 #include "accelerateview.h"
 
-AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent)
+AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent):
+        CommonView(scene,parent)
 {
-    this->setParent(parent);
-    this->setScene(scene);
-    this->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scene->setSceneRect(0,0,parent->width(),parent->height());
     QPixmap p = QPixmap(":ferrari.png");
     car = new SportsCar(p);
     scene->addItem(car);

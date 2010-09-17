@@ -6,11 +6,11 @@
 #include <QTimer>
 #include <qevent.h>
 #include "gameConstants.h"
-#include "simplecollisionview.h"
 #include "sprites/movablerectangle.h"
+#include "views/commonview.h"
 
 
-class AdvancedCollisionView : public QGraphicsView
+class AdvancedCollisionView : public CommonView
 {
 
 Q_OBJECT

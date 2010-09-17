@@ -3,14 +3,9 @@
 #define SQUARE_SIZE 50
 #define MOVE_DISTANCE 10
 
-SimpleCollisionView::SimpleCollisionView(QGraphicsScene *scene,QWidget *parent)
+SimpleCollisionView::SimpleCollisionView(QGraphicsScene *scene,QWidget *parent) :
+        CommonView(scene,parent)
 {
-    this->setParent(parent);
-    this->setScene(scene);
-    this->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scene->setSceneRect(0,0,parent->width(),parent->height());
     player = new MovableRectangle(
                 scene->addRect(
                     QRectF(0, 0, SQUARE_SIZE, SQUARE_SIZE),

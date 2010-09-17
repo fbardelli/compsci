@@ -8,9 +8,10 @@
 #include <QTimer>
 #include <qevent.h>
 #include <QDebug>
-#include <sprites/sportscar.h>
+#include "sprites/sportscar.h"
+#include "views/commonview.h"
 
-class AccelerateView : public QGraphicsView
+class AccelerateView : public CommonView
 {
 
 Q_OBJECT

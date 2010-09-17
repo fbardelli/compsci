@@ -11,7 +11,7 @@
 #include "views/simplecollisionview.h"
 #include "views/advancedcollisionview.h"
 #include "views/accelerateview.h"
-
+#include "views/gravityview.h"
 
 
 namespace Ui
@@ -21,7 +21,7 @@ namespace Ui
 
 class GameMenu : public QMainWindow
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     GameMenu(QWidget *parent = 0);
@@ -30,11 +30,6 @@ public:
 
 private slots:
     void runSimulation();
-
-//signals:
-    //void key_pressed(QKeyEvent& e);
-
-
 
 
 private:

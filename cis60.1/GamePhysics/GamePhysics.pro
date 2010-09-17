@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     sprites/movablerectangle.cpp \
     views/accelerateview.cpp \
     sprites/sportscar.cpp \
-    views/gravityview.cpp
+    views/gravityview.cpp \
+    views/commonview.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -20,7 +21,8 @@ HEADERS += gamemenu.h \
     gameConstants.h \
     views/accelerateview.h \
     sprites/sportscar.h \
-    views/gravityview.h
+    views/gravityview.h \
+    views/commonview.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc

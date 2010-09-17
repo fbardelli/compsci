@@ -9,9 +9,9 @@
 #include "gameConstants.h"
 #include "physicsutils.h"
 #include "sprites/movablerectangle.h"
+#include "views/commonview.h"
 
-
-class SimpleCollisionView : public QGraphicsView
+class SimpleCollisionView : public CommonView
 {
 private:
     MovableRectangle *player;
