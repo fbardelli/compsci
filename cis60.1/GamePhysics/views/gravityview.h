@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QObject>
 #include <QTimer>
+#include <QDebug>
 #include <qevent.h>
 #include "gameConstants.h"
 #include "sprites/movablerectangle.h"
@@ -21,6 +22,7 @@ public:
     GravityView(QGraphicsScene *scene,QWidget *parent);
 
 private slots:
+    void redraw();
 
 };
 
