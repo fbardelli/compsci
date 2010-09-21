@@ -8,6 +8,7 @@
 #include <qevent.h>
 #include "gameConstants.h"
 #include "sprites/movablerectangle.h"
+#include "sprites/jumpingman.h"
 #include "views/commonview.h"
 
 class GravityView : public CommonView
@@ -17,7 +18,7 @@ Q_OBJECT
 private:
     double gravity;
     QTimer *timer;
-    MovableRectangle *player;
+    JumpingMan *jumper;
 public:
     GravityView(QGraphicsScene *scene,QWidget *parent);
 

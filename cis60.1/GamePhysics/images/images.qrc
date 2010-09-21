@@ -1,6 +1,6 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource>
+<RCC>
+    <qresource prefix="/">
         <file>ferrari.png</file>
+        <file>faceguy.png</file>
     </qresource>
 </RCC>
