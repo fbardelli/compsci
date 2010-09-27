@@ -1,23 +1,31 @@
 #include "jumpingman.h"
 
-JumpingMan::JumpingMan( const QPixmap &pixmap, QGraphicsItem *parent,
+JumpingMan::JumpingMan( const QPixmap &pixmap,
                         QGraphicsScene *scene)
-       : QGraphicsPixmapItem(pixmap, parent, scene) {
-      //this->translate(this->boundingRect().width()/2,this->boundingRect().height()/2);
-      //this->rotate(180);
-      this->setPos(250,175);
+       : QGraphicsPixmapItem(pixmap, 0, scene) {
       this->setOffset( -0.5 * QPointF(  this->boundingRect().width(), this->boundingRect().height() ) );
+      this->setPos(0,scene->height()-this->boundingRect().height()/2);
+
       horizontalSpeed = 0;
       verticalSpeed = 0;
       jumping = false;
+      facingRight = true;
 }
 
 void JumpingMan::moveForward() {
-    horizontalSpeed = 6;
+    horizontalSpeed = 9;
+    if(!facingRight){
+        this->scale(-1,1);
+        facingRight=true;
+    }
 }
 
 void JumpingMan::moveBackward(){
-    horizontalSpeed = -6;
+    horizontalSpeed = -9;
+    if(facingRight){
+        this->scale(-1,1);
+        facingRight=false;
+    }
 }
 
 int JumpingMan::getHorizonalSpeed(){
@@ -32,9 +40,9 @@ void JumpingMan::stop(){
     horizontalSpeed = 0;
 }
 
-void JumpingMan::applyGravity(int gravity){
-    if(this->y() > 0){
-        verticalSpeed -= gravity;
+void JumpingMan::applyGravity(double gravity){
+    if( (this->pos().y()+this->boundingRect().height()) < this->scene()->height() ){
+        verticalSpeed -= (20 * gravity);
     }
 }
 
@@ -43,12 +51,23 @@ bool JumpingMan::isJumping(){
 }
 
 void JumpingMan::jump(){
-    verticalSpeed = 50;
-    jumping = true;
+    if(!jumping){
+        verticalSpeed = 75;
+        jumping = true;
+    }
 }
 
 void JumpingMan::updatePosition(){
     QPointF point = this->pos();
-    point.setX(this->x()+this->horizontalSpeed);
-    point.setY(this->y()-this->verticalSpeed);
+    point.setX(this->x() + this->horizontalSpeed);
+
+    qDebug()<< "y is " << this->y() << " vspeed is " << this->verticalSpeed;
+    if( (this->pos().y() + this->boundingRect().height()/2 - verticalSpeed) > this->scene()->height() ){
+        point.setY(this->scene()->height() - this->boundingRect().height()/2);
+        this->verticalSpeed = 0;
+        this->jumping = false;
+    }else{
+        point.setY(this->y() - this->verticalSpeed);
+    }
+    this->setPos(point);
 }

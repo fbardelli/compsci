@@ -9,7 +9,7 @@ SportsCar::SportsCar( const QPixmap &pixmap, QGraphicsItem *parent,
     this->setPos(250,175);
     this->setOffset( -0.5 * QPointF(  this->boundingRect().width(), this->boundingRect().height() ) );
     speed = 0;
-    topSpeed = 40;
+    topSpeed = 60;
     canTurn = true;
 }
 

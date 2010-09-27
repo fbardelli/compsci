@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QGraphicsView>
 #include <QTimer>
-#include <qevent.h>
+#include <QEvent>
+#include <QKeyEvent>
 #include "gameConstants.h"
 #include "sprites/movablerectangle.h"
 #include "views/commonview.h"

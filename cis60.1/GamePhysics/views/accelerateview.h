@@ -6,7 +6,8 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QTimer>
-#include <qevent.h>
+#include <QEvent>
+#include <QKeyEvent>
 #include <QDebug>
 #include "sprites/sportscar.h"
 #include "views/commonview.h"

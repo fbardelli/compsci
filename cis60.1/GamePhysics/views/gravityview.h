@@ -5,7 +5,8 @@
 #include <QObject>
 #include <QTimer>
 #include <QDebug>
-#include <qevent.h>
+#include <QEvent>
+#include <QKeyEvent>
 #include "gameConstants.h"
 #include "sprites/movablerectangle.h"
 #include "sprites/jumpingman.h"
@@ -19,8 +20,11 @@ private:
     double gravity;
     QTimer *timer;
     JumpingMan *jumper;
+protected:
+   void keyPressEvent (QKeyEvent* e);
 public:
     GravityView(QGraphicsScene *scene,QWidget *parent);
+    ~GravityView();
 
 private slots:
     void redraw();

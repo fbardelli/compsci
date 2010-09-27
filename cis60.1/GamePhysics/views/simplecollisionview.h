@@ -5,7 +5,8 @@
 #include <QtGui/QGraphicsRectItem>
 #include <QtAlgorithms>
 #include <QDebug>
-#include <qevent.h>
+#include <QEvent>
+#include <QKeyEvent>
 #include "gameConstants.h"
 #include "physicsutils.h"
 #include "sprites/movablerectangle.h"
