@@ -7,16 +7,22 @@ GravityView::GravityView(QGraphicsScene *scene,QWidget *parent) :
     gravity = 1.0;
     jumper = new JumpingMan(p,scene);
     scene->addItem(jumper);
+    text = scene->addText("Gravity: 1.0");
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
+    connect(jumper, SIGNAL(landed()), this, SLOT(detectLanding()));
     timer->start(250);
 }
 
-void GravityView::keyPressEvent(QKeyEvent *e){
+void GravityView::detectLanding(){
+    text->setPlainText("LANDED");
+}
 
+void GravityView::keyPressEvent(QKeyEvent *e){
     switch(e->key()){
         case Qt::Key_Space:
             jumper->jump();
+            text->setPlainText("JUUUUUUMP");
             break;
         case Qt::Key_Left:
             jumper->moveBackward();

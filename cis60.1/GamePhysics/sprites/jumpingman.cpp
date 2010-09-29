@@ -2,7 +2,7 @@
 
 JumpingMan::JumpingMan( const QPixmap &pixmap,
                         QGraphicsScene *scene)
-       : QGraphicsPixmapItem(pixmap, 0, scene) {
+       : QObject(0), QGraphicsPixmapItem(pixmap, 0, scene){
       this->setOffset( -0.5 * QPointF(  this->boundingRect().width(), this->boundingRect().height() ) );
       this->setPos(0,scene->height()-this->boundingRect().height()/2);
 
@@ -66,6 +66,7 @@ void JumpingMan::updatePosition(){
         point.setY(this->scene()->height() - this->boundingRect().height()/2);
         this->verticalSpeed = 0;
         this->jumping = false;
+        emit landed();
     }else{
         point.setY(this->y() - this->verticalSpeed);
     }

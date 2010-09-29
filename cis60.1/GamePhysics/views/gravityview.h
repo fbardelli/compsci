@@ -20,6 +20,7 @@ private:
     double gravity;
     QTimer *timer;
     JumpingMan *jumper;
+    QGraphicsTextItem *text;
 protected:
    void keyPressEvent (QKeyEvent* e);
 public:
@@ -28,6 +29,7 @@ public:
 
 private slots:
     void redraw();
+    void detectLanding();
 
 };
 
