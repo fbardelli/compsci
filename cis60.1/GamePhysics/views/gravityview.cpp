@@ -11,7 +11,7 @@ GravityView::GravityView(QGraphicsScene *scene,QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
     connect(jumper, SIGNAL(landed()), this, SLOT(detectLanding()));
-    connect(this,SIGNAL(gravityChanged()), this, SLOT(updateGravity()));
+    connect(this, SIGNAL(gravityChanged()), this, SLOT(updateGravity()));
     timer->start(250);
 }
 
@@ -73,6 +73,5 @@ void GravityView::redraw(){
 }
 
 GravityView::~GravityView(){
-    //delete jumper;
     delete timer;
 }
