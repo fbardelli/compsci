@@ -26,10 +26,15 @@ protected:
 public:
     GravityView(QGraphicsScene *scene,QWidget *parent);
     ~GravityView();
-
+    QString getGravityReading();
+    void increaseGravity();
+    void decreaseGravity();
+signals:
+    void gravityChanged();
 private slots:
     void redraw();
     void detectLanding();
+    void updateGravity();
 
 };
 

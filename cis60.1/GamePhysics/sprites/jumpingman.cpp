@@ -4,7 +4,7 @@ JumpingMan::JumpingMan( const QPixmap &pixmap,
                         QGraphicsScene *scene)
        : QObject(0), QGraphicsPixmapItem(pixmap, 0, scene){
       this->setOffset( -0.5 * QPointF(  this->boundingRect().width(), this->boundingRect().height() ) );
-      this->setPos(0,scene->height()-this->boundingRect().height()/2);
+      this->setPos(50,scene->height()-this->boundingRect().height()/2);
 
       horizontalSpeed = 0;
       verticalSpeed = 0;
@@ -42,7 +42,7 @@ void JumpingMan::stop(){
 
 void JumpingMan::applyGravity(double gravity){
     if( (this->pos().y()+this->boundingRect().height()) < this->scene()->height() ){
-        verticalSpeed -= (20 * gravity);
+        verticalSpeed -= (18 * gravity);
     }
 }
 
@@ -52,7 +52,7 @@ bool JumpingMan::isJumping(){
 
 void JumpingMan::jump(){
     if(!jumping){
-        verticalSpeed = 75;
+        verticalSpeed = 50;
         jumping = true;
     }
 }
