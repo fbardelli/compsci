@@ -10,6 +10,7 @@ GameMenu::GameMenu(QWidget *parent)
     ui->simulationComboBox->addItem("Advanced Collision");
     ui->simulationComboBox->addItem("Acceleration");
     ui->simulationComboBox->addItem("Gravity");
+    ui->simulationComboBox->addItem("Projectile");
 
 
     connect(ui->runSimulation,SIGNAL(clicked()),this,SLOT(runSimulation()));
@@ -36,6 +37,9 @@ void GameMenu::runSimulation(){
             break;
         case 3:
             mainView = new GravityView(scene,this->ui->mainFrame);
+            break;
+        case 4:
+            mainView = new ProjectileView(scene,this->ui->mainFrame);
             break;
         default:
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);

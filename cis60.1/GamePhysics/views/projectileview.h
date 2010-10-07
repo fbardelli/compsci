@@ -9,11 +9,15 @@
 #include <QKeyEvent>
 #include "gameConstants.h"
 #include "views/commonview.h"
+#include "sprites/cannon.h"
 
 class ProjectileView : public CommonView
 {
 Q_OBJECT
-
+private:
+    Cannon * cannon;
+protected:
+   void keyPressEvent (QKeyEvent* e);
 public:
     ProjectileView(QGraphicsScene *scene,QWidget *parent);
 

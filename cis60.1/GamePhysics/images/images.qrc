@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>ferrari.png</file>
         <file>faceguy.png</file>
+        <file>cannonbarrel.png</file>
+        <file>cannonbase.png</file>
     </qresource>
 </RCC>
