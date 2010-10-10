@@ -5,6 +5,13 @@ ProjectileView::ProjectileView(QGraphicsScene *scene,QWidget *parent):
 {
     cannon = new Cannon(scene);
     scene->addItem(cannon);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
+    timer->start(250);
+}
+
+void ProjectileView::redraw(){
+    cannon->updateProjectiles();
 }
 
 void ProjectileView::keyPressEvent(QKeyEvent *e){
@@ -14,6 +21,9 @@ void ProjectileView::keyPressEvent(QKeyEvent *e){
             break;
         case Qt::Key_Down:
             cannon->decline();
+            break;
+        case Qt::Key_Space:
+            cannon->fire();
             break;
     }
 

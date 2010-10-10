@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
+#include <sprites/projectile.h>
 
 class Cannon : public QObject, public QGraphicsItemGroup
 {
@@ -12,10 +13,14 @@ class Cannon : public QObject, public QGraphicsItemGroup
 private:
     QGraphicsPixmapItem * cannonbarrel;
     QGraphicsPixmapItem * cannonbase;
+    QList<Projectile *> projectiles;
+    int angle;
 public:
     explicit Cannon(QGraphicsScene *scene);
     void incline();
     void decline();
+    void fire();
+    void updateProjectiles();
 
 signals:
 

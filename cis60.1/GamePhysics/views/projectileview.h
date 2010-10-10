@@ -7,15 +7,18 @@
 #include <QDebug>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QTimer>
 #include "gameConstants.h"
 #include "views/commonview.h"
 #include "sprites/cannon.h"
+#include "sprites/projectile.h"
 
 class ProjectileView : public CommonView
 {
 Q_OBJECT
 private:
     Cannon * cannon;
+    QTimer *timer;
 protected:
    void keyPressEvent (QKeyEvent* e);
 public:
@@ -24,6 +27,7 @@ public:
 signals:
 
 public slots:
+    void redraw();
 
 };
 

@@ -8,27 +8,60 @@ AccelerateView::AccelerateView(QGraphicsScene *scene,QWidget *parent):
     scene->addItem(car);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
-    timer->start(250);
+    upPress = false;
+    downPress = false;
+    leftPress = false;
+    rightPress = false;
+    timer->start(100);
 }
 
 void AccelerateView::redraw(){
+    if(upPress){
+        car->accelerate();
+    }
+    if(downPress){
+        car->reverse();
+    }
+    if(leftPress){
+        car->leftTurn(6);
+    }
+    if(rightPress){
+        car->rightTurn(6);
+    }
     car->updatePosition();
 }
 
 void AccelerateView::keyPressEvent(QKeyEvent *e){
-
     switch(e->key()){
         case Qt::Key_Up:
-            car->accelerate();
+            upPress = true;
             break;
         case Qt::Key_Down:
-            car->reverse();
+            downPress = true;
             break;
         case Qt::Key_Left:
-            car->leftTurn(6);
+            leftPress = true;
             break;
         case Qt::Key_Right:
-            car->rightTurn(6);
+            rightPress = true;
+            break;
+    }
+
+}
+
+void AccelerateView::keyReleaseEvent(QKeyEvent *e){
+    switch(e->key()){
+        case Qt::Key_Up:
+            upPress = false;
+            break;
+        case Qt::Key_Down:
+            downPress = false;
+            break;
+        case Qt::Key_Left:
+            leftPress = false;
+            break;
+        case Qt::Key_Right:
+            rightPress = false;
             break;
     }
 
