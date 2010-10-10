@@ -26,5 +26,4 @@ void ProjectileView::keyPressEvent(QKeyEvent *e){
             cannon->fire();
             break;
     }
-
 }

@@ -24,7 +24,7 @@ void Cannon::fire(){
             35+horizontalOffset,
             this->scene()->height()-68-verticalOffset,
             angle,
-            65);
+            70);
     this->scene()->addItem(projectile);
     projectiles.append(projectile);
 }
@@ -37,10 +37,14 @@ void Cannon::updateProjectiles(){
 }
 
 void Cannon::incline(){
-    cannonbarrel->rotate(-5);
-    angle+=5;
+    if(angle < 90){
+        cannonbarrel->rotate(-5);
+        angle+=5;
+    }
 }
 void Cannon::decline(){
-    cannonbarrel->rotate(5);
-    angle-=5;
+    if(angle > -5){
+        cannonbarrel->rotate(5);
+        angle-=5;
+    }
 }
