@@ -8,3 +8,9 @@ CommonView::CommonView(QGraphicsScene *scene,QWidget *parent){
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scene->setSceneRect(0,0,parent->width(),parent->height());
 }
+
+
+const QString CommonView::getInstructions(){
+    return QString("Instruction go <i>here</i>");
+
+}

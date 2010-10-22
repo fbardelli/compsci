@@ -13,7 +13,7 @@ JumpingMan::JumpingMan( const QPixmap &pixmap,
 }
 
 void JumpingMan::moveForward() {
-    horizontalSpeed = 9;
+    horizontalSpeed = 5;
     if(!facingRight){
         this->scale(-1,1);
         facingRight=true;
@@ -21,7 +21,7 @@ void JumpingMan::moveForward() {
 }
 
 void JumpingMan::moveBackward(){
-    horizontalSpeed = -9;
+    horizontalSpeed = -5;
     if(facingRight){
         this->scale(-1,1);
         facingRight=false;
@@ -42,7 +42,7 @@ void JumpingMan::stop(){
 
 void JumpingMan::applyGravity(double gravity){
     if( (this->pos().y()+this->boundingRect().height()) < this->scene()->height() ){
-        verticalSpeed -= (18 * gravity);
+        verticalSpeed -= (4 * gravity);
     }
 }
 
@@ -52,7 +52,7 @@ bool JumpingMan::isJumping(){
 
 void JumpingMan::jump(){
     if(!jumping){
-        verticalSpeed = 50;
+        verticalSpeed = 25;
         jumping = true;
     }
 }

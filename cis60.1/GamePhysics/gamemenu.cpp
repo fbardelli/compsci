@@ -45,6 +45,7 @@ void GameMenu::runSimulation(){
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
             break;
     }
+    ui->textDisplay->setHtml(mainView->getInstructions());
     mainView->show();
     mainView->setFocus();
 }

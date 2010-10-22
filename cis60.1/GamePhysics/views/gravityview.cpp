@@ -12,7 +12,7 @@ GravityView::GravityView(QGraphicsScene *scene,QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
     connect(jumper, SIGNAL(landed()), this, SLOT(detectLanding()));
     connect(this, SIGNAL(gravityChanged()), this, SLOT(updateGravity()));
-    timer->start(250);
+    timer->start(50);
 }
 
 void GravityView::detectLanding(){

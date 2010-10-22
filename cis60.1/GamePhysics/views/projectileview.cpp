@@ -7,7 +7,7 @@ ProjectileView::ProjectileView(QGraphicsScene *scene,QWidget *parent):
     scene->addItem(cannon);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
-    timer->start(250);
+    timer->start(125);
 }
 
 void ProjectileView::redraw(){

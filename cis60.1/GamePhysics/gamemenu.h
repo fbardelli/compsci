@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <qevent.h>
 #include <QList>
+#include "views/commonview.h"
 #include "views/simplecollisionview.h"
 #include "views/advancedcollisionview.h"
 #include "views/accelerateview.h"
@@ -35,7 +36,7 @@ private slots:
 
 private:
     Ui::GameMenu *ui;
-    QGraphicsView  *mainView;
+    CommonView  *mainView;
     QGraphicsScene *scene;
 
 };
