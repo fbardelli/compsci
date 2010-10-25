@@ -8,9 +8,8 @@ Cannon::Cannon(QGraphicsScene *scene) :
     cannonbase = new QGraphicsPixmapItem(QPixmap(":cannonbase.png"),0, scene);
     this->addToGroup(cannonbase);
     cannonbarrel->setOffset( -0.5 * QPointF(  cannonbase->boundingRect().width(), cannonbase->boundingRect().height() ) );
-    cannonbarrel->setX(cannonbarrel->x()+55);
-    cannonbarrel->setY(cannonbarrel->y()+25);
-    this->setY(scene->height() - cannonbase->boundingRect().height());
+    cannonbarrel->setPos(cannonbarrel->x()+55,cannonbarrel->y()+25);
+    this->setPos(this->x(),scene->height() - cannonbase->boundingRect().height());
     angle = 0;
 }
 

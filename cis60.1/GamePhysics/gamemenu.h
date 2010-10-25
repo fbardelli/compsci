@@ -14,6 +14,7 @@
 #include "views/accelerateview.h"
 #include "views/gravityview.h"
 #include "views/projectileview.h"
+#include "views/inelasticcollisionview.h"
 
 
 namespace Ui

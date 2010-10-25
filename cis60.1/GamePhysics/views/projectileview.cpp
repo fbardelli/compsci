@@ -40,3 +40,7 @@ const QString ProjectileView::getInstructions(){
     );
 
 }
+
+ProjectileView::~ProjectileView(){
+    delete timer;
+}

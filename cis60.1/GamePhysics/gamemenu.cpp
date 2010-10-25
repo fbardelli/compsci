@@ -11,6 +11,8 @@ GameMenu::GameMenu(QWidget *parent)
     ui->simulationComboBox->addItem("Acceleration");
     ui->simulationComboBox->addItem("Gravity");
     ui->simulationComboBox->addItem("Projectile");
+    ui->simulationComboBox->addItem("Inelastic Collision");
+
 
     //this->setStyleSheet("QMainWindow { background-color: yellow }");
     connect(ui->runSimulation,SIGNAL(clicked()),this,SLOT(runSimulation()));
@@ -40,6 +42,9 @@ void GameMenu::runSimulation(){
             break;
         case 4:
             mainView = new ProjectileView(scene,this->ui->mainFrame);
+            break;
+        case 5:
+            mainView = new InelasticCollisionView(scene,this->ui->mainFrame);
             break;
         default:
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);

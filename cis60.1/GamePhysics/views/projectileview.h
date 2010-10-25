@@ -17,12 +17,13 @@ class ProjectileView : public CommonView
 {
 Q_OBJECT
 private:
-    Cannon * cannon;
+    Cannon *cannon;
     QTimer *timer;
 protected:
    void keyPressEvent (QKeyEvent* e);
 public:
     ProjectileView(QGraphicsScene *scene,QWidget *parent);
+    ~ProjectileView();
     const QString getInstructions();
 
 signals:

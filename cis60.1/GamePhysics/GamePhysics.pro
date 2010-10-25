@@ -16,7 +16,9 @@ SOURCES += main.cpp \
     sprites/jumpingman.cpp \
     views/projectileview.cpp \
     sprites/cannon.cpp \
-    sprites/projectile.cpp
+    sprites/projectile.cpp \
+    views/inelasticcollisionview.cpp \
+    sprites/bouncyball.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -30,7 +32,9 @@ HEADERS += gamemenu.h \
     sprites/jumpingman.h \
     views/projectileview.h \
     sprites/cannon.h \
-    sprites/projectile.h
+    sprites/projectile.h \
+    views/inelasticcollisionview.h \
+    sprites/bouncyball.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc
