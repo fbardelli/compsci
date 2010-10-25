@@ -6,6 +6,8 @@ BouncyBall::BouncyBall(int x, int y, QGraphicsView *w) : QObject(0)
     this->setRect(0,0,50,50);
     this->setPos(x,y);
     QLinearGradient myGradient = QLinearGradient(0,0,40,40);
+    myGradient.setColorAt(0, Qt::red);
+    myGradient.setColorAt(1, QColor(255,0,255));
     QPen myPen;
     this->setPen(myPen);
     this->setBrush(myGradient);
@@ -54,7 +56,7 @@ void BouncyBall::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void BouncyBall::updatePosition(){
     QPointF point = this->pos();
 
-    qDebug()<< "y is " << this->y() << " vspeed is " << this->verticalSpeed;
+    //qDebug()<< "y is " << this->y() << " vspeed is " << this->verticalSpeed;
     if( (this->pos().y() + this->boundingRect().height()- verticalSpeed) > this->scene()->height() ){
         point.setY(this->scene()->height() - this->boundingRect().height());
         this->verticalSpeed = -(this->verticalSpeed * bounciness);
