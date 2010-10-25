@@ -11,7 +11,7 @@ class CommonView : public QGraphicsView
 public:
     CommonView(QGraphicsScene *scene,QWidget *parent);
 
-    const QString getInstructions();
+    virtual const QString getInstructions();
 
 signals:
 

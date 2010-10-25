@@ -12,7 +12,7 @@ GameMenu::GameMenu(QWidget *parent)
     ui->simulationComboBox->addItem("Gravity");
     ui->simulationComboBox->addItem("Projectile");
 
-
+    //this->setStyleSheet("QMainWindow { background-color: yellow }");
     connect(ui->runSimulation,SIGNAL(clicked()),this,SLOT(runSimulation()));
     mainView = NULL;
     scene = new QGraphicsScene(this);

@@ -24,6 +24,7 @@ private:
 public:
     AccelerateView(QGraphicsScene *scene,QWidget *parent);
     ~AccelerateView();
+    const QString getInstructions();
 protected:
     void keyPressEvent (QKeyEvent* e);
     void keyReleaseEvent (QKeyEvent* e);

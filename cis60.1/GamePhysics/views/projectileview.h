@@ -23,6 +23,7 @@ protected:
    void keyPressEvent (QKeyEvent* e);
 public:
     ProjectileView(QGraphicsScene *scene,QWidget *parent);
+    const QString getInstructions();
 
 signals:
 

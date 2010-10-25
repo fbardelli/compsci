@@ -52,7 +52,7 @@ bool JumpingMan::isJumping(){
 
 void JumpingMan::jump(){
     if(!jumping){
-        verticalSpeed = 25;
+        verticalSpeed = 30;
         jumping = true;
     }
 }

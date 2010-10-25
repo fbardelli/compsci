@@ -22,6 +22,7 @@ private:
 public:
     SimpleCollisionView(QGraphicsScene *scene,QWidget *widget);
     ~SimpleCollisionView();
+    const QString getInstructions();
  protected:
     void keyPressEvent (QKeyEvent* e);
 };

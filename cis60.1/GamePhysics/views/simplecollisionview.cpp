@@ -55,11 +55,25 @@ void SimpleCollisionView::keyPressEvent(QKeyEvent *e){
     player->move(dir,obstacles);
 }
 
+const QString SimpleCollisionView::getInstructions(){
+    return QString(
+        "This is an example of simple collision detection"
+        "The <b><font color='#ff0000'>Red</font></b> rectagle will not be able to pass through any of the "
+        " <b><font color='#0000ff'>Blue</font></b> rectagles.  It will stop right at the edge of the obstacle and be forced to go around it."
+        "<br/><table border='1' cellpadding='1' cellspacing='1'>"
+            "<tr><th>Key</th><th>Action</th></tr>"
+            "<tr><td>Up</td><td>Move <b><font color='#ff0000'>Red</font></b> rectangle toward the top of the screen</td></tr>"
+            "<tr><td>Down</td><td>Move <b><font color='#ff0000'>Red</font></b> rectangle toward the bottom of the screen</td></tr>"
+            "<tr><td>Left</td><td>Move <b><font color='#ff0000'>Red</font></b> rectangle toward the left of the screen</td></tr>"
+            "<tr><td>Right</td><td>Move <b><font color='#ff0000'>Red</font></b> rectangle toward the right of the screen</td></tr>"
+        "</table>"
+    );
+
+}
 
 
 SimpleCollisionView::~SimpleCollisionView(){
     delete player;
     qDeleteAll(obstacles);
     obstacles.clear();
-
 }

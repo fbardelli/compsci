@@ -26,6 +26,7 @@ protected:
 public:
     GravityView(QGraphicsScene *scene,QWidget *parent);
     ~GravityView();
+    const QString getInstructions();
     QString getGravityReading();
     void increaseGravity();
     void decreaseGravity();

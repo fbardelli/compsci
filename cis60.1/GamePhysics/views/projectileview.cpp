@@ -27,3 +27,16 @@ void ProjectileView::keyPressEvent(QKeyEvent *e){
             break;
     }
 }
+
+const QString ProjectileView::getInstructions(){
+    return QString(
+        "This example simulates the path of a projectile fired from a cannon. "
+        "<br/><table border='1' cellpadding='1' cellspacing='1'>"
+            "<tr><th>Key</th><th>Action</th></tr>"
+            "<tr><td>Up</td><td>Raise the angle of the cannon</td></tr>"
+            "<tr><td>Down</td><td>Lower the angle of the cannon</td></tr>"
+            "<tr><td>Space</td><td>Fire cannon</td></tr>"
+        "</table>"
+    );
+
+}

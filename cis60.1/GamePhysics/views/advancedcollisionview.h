@@ -23,6 +23,7 @@ private:
 public:
     AdvancedCollisionView(QGraphicsScene *scene,QWidget *parent);
     ~AdvancedCollisionView();
+    const QString getInstructions();
  protected:
     void keyPressEvent (QKeyEvent* e);
  private slots:

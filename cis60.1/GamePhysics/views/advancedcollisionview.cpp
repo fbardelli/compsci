@@ -89,3 +89,21 @@ AdvancedCollisionView::~AdvancedCollisionView(){
     obstacles.clear();
     delete timer;
 }
+
+
+const QString AdvancedCollisionView::getInstructions(){
+    return QString(
+        "These moving rectangles react differently to the <b><font color='#4b0082'>Purple</font></b> rectangle. "
+        "The <b><font color='#00ff00'>Green</font></b> rectagle can be pushed by the <b><font color='#4b0082'>Purple</font></b> one."
+        "The <b><font color='#ffff00'>Yellow</font></b> rectagle can not push or be pushed by the <b><font color='#4b0082'>Purple</font></b> one."
+        "The <b><font color='#ff0000'>Red</font></b> rectagle can push the <b><font color='#4b0082'>Purple</font></b> one."
+        "<br/><table border='1' cellpadding='1' cellspacing='1'>"
+            "<tr><th>Key</th><th>Action</th></tr>"
+            "<tr><td>Up</td><td>Move <b><font color='#4b0082'>Purple</font></b> rectangle toward the top of the screen</td></tr>"
+            "<tr><td>Down</td><td>Move <b><font color='#4b0082'>Purple</font></b> rectangle toward the bottom of the screen</td></tr>"
+            "<tr><td>Left</td><td>Move <b><font color='#4b0082'>Purple</font></b> rectangle toward the left of the screen</td></tr>"
+            "<tr><td>Right</td><td>Move <b><font color='#4b0082'>Purple</font></b> rectangle toward the right of the screen</td></tr>"
+        "</table>"
+    );
+
+}
