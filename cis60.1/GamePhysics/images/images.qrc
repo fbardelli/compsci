@@ -4,5 +4,9 @@
         <file>faceguy.png</file>
         <file>cannonbarrel.png</file>
         <file>cannonbase.png</file>
+        <file>ship-bthrust.png</file>
+        <file>ship-lthrust.png</file>
+        <file>ship-rthrust.png</file>
+        <file>ship.png</file>
     </qresource>
 </RCC>
