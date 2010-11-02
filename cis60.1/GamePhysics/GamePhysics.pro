@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     sprites/projectile.cpp \
     views/inelasticcollisionview.cpp \
     sprites/bouncyball.cpp \
-    views/thrusterview.cpp
+    views/thrusterview.cpp \
+    sprites/spaceship.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -36,7 +37,8 @@ HEADERS += gamemenu.h \
     sprites/projectile.h \
     views/inelasticcollisionview.h \
     sprites/bouncyball.h \
-    views/thrusterview.h
+    views/thrusterview.h \
+    sprites/spaceship.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc

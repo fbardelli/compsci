@@ -7,7 +7,7 @@ BouncyBall::BouncyBall(int x, int y, QGraphicsView *w) : QObject(0)
     this->setPos(x,y);
     QLinearGradient myGradient = QLinearGradient(0,0,40,40);
     myGradient.setColorAt(0, QColor(255,102,0));
-    myGradient.setColorAt(1, QColor(255,51,0));
+    myGradient.setColorAt(1, QColor(255,25,0));
     QPen myPen;
     this->setPen(myPen);
     this->setBrush(myGradient);

@@ -60,7 +60,6 @@ void JumpingMan::jump(){
 void JumpingMan::updatePosition(){
     QPointF point = this->pos();
     point.setX(this->x() + this->horizontalSpeed);
-
     qDebug()<< "y is " << this->y() << " vspeed is " << this->verticalSpeed;
     if( (this->pos().y() + this->boundingRect().height()/2 - verticalSpeed) > this->scene()->height() ){
         point.setY(this->scene()->height() - this->boundingRect().height()/2);
@@ -70,5 +69,6 @@ void JumpingMan::updatePosition(){
     }else{
         point.setY(this->y() - this->verticalSpeed);
     }
+
     this->setPos(point);
 }

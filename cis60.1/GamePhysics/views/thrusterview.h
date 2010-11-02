@@ -9,9 +9,8 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include "gameConstants.h"
-#include "sprites/movablerectangle.h"
-#include "sprites/jumpingman.h"
 #include "views/commonview.h"
+#include "sprites/spaceship.h"
 
 class ThrusterView : public CommonView
 {
@@ -20,10 +19,11 @@ Q_OBJECT
 private:
     double gravity;
     QTimer *timer;
-    //SpaceShip *spaceship;
-    QGraphicsTextItem *text;
+    SpaceShip *spaceship;
+    bool upPress, rightPress, leftPress;
 protected:
    void keyPressEvent (QKeyEvent* e);
+   void keyReleaseEvent (QKeyEvent* e);
 public:
     ThrusterView(QGraphicsScene *scene,QWidget *parent);
     ~ThrusterView();
