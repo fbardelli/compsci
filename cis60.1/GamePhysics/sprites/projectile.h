@@ -18,6 +18,7 @@ private:
 public:
     Projectile(int x, int y, int angle, int velocity);
     void updatePosition();
+    void deflect();
 };
 
 #endif // PROJECTILE_H

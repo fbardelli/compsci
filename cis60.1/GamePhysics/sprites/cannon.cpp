@@ -30,10 +30,18 @@ void Cannon::fire(){
 
 void Cannon::updateProjectiles(){
     QListIterator<Projectile *> i(projectiles);
+    Projectile *p;
     while (i.hasNext()){
-        i.next()->updatePosition();
+        p = i.next();
+        QList<QGraphicsItem *> collisions = p->collidingItems();
+        if(collisions.size() > 0){
+            qDebug() << "collision detected!";
+            p->deflect();
+        }
+        p->updatePosition();
     }
 }
+
 
 void Cannon::incline(){
     if(angle < 90){

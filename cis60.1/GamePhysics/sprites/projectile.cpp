@@ -28,3 +28,7 @@ void Projectile::updatePosition(){
     this->setPos(x2,y2);
     time++;
 }
+
+void Projectile::deflect(){
+    horizontalVelocity = -horizontalVelocity;
+}

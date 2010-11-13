@@ -4,6 +4,7 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsView>
 #include <QPixmap>
+#include <QDebug>
 #include <QGraphicsPixmapItem>
 #include <sprites/projectile.h>
 
