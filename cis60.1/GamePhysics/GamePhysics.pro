@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     sprites/bouncyball.cpp \
     views/thrusterview.cpp \
     sprites/spaceship.cpp \
-    views/deflectionview.cpp
+    views/deflectionview.cpp \
+    sprites/fixedrectangle.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -40,7 +41,8 @@ HEADERS += gamemenu.h \
     sprites/bouncyball.h \
     views/thrusterview.h \
     sprites/spaceship.h \
-    views/deflectionview.h
+    views/deflectionview.h \
+    sprites/fixedrectangle.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc

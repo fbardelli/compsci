@@ -33,12 +33,23 @@ void Cannon::updateProjectiles(){
     Projectile *p;
     while (i.hasNext()){
         p = i.next();
+        p->updatePosition();
         QList<QGraphicsItem *> collisions = p->collidingItems();
         if(collisions.size() > 0){
             qDebug() << "collision detected!";
-            p->deflect();
+            for (int i = 0; i < collisions.size(); ++i) {
+                QGraphicsItem *ob = collisions.at(i);
+                qDebug() << "type:"  << ob->type();
+                FixedRectangle *fr;
+                if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
+                    p->handleCollision(fr);
+                }else{
+                    qDebug() << ob;
+                    p->handleCollision(ob);
+                }
+
+            }
         }
-        p->updatePosition();
     }
 }
 

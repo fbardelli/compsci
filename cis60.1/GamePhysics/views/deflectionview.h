@@ -8,10 +8,13 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include "views/projectileview.h"
+#include "sprites/fixedrectangle.h"
 
 class DeflectionView : public ProjectileView
 {
     Q_OBJECT
+private:
+    FixedRectangle * wall;
 public:
     DeflectionView(QGraphicsScene *scene,QWidget *parent);
 
