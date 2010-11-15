@@ -17,6 +17,7 @@
 #include "views/inelasticcollisionview.h"
 #include "views/thrusterview.h"
 #include "views/deflectionview.h"
+#include "views/objectinteractionview.h"
 
 namespace Ui
 {

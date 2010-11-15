@@ -14,6 +14,7 @@ GameMenu::GameMenu(QWidget *parent)
     ui->simulationComboBox->addItem("Inelastic Collision");
     ui->simulationComboBox->addItem("Thrust and Lift");
     ui->simulationComboBox->addItem("Deflection");
+    ui->simulationComboBox->addItem("Object Interaction");
 
 
 
@@ -55,7 +56,10 @@ void GameMenu::runSimulation(){
         case 7:
             mainView = new DeflectionView(scene,this->ui->mainFrame);
             break;
-        default:
+        case 8:
+            mainView = new ObjectInteractionView(scene,this->ui->mainFrame);
+            break;
+    default:
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);
             break;
     }
