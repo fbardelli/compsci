@@ -36,15 +36,18 @@ void Cannon::updateProjectiles(){
         p->updatePosition();
         QList<QGraphicsItem *> collisions = p->collidingItems();
         if(collisions.size() > 0){
-            qDebug() << "collision detected!";
+            //qDebug() << "collision detected!";
             for (int i = 0; i < collisions.size(); ++i) {
                 QGraphicsItem *ob = collisions.at(i);
-                qDebug() << "type:"  << ob->type();
+                p->resolveCollisionType(ob);
                 FixedRectangle *fr;
+                StackableSphere *ss;
                 if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
                     p->handleCollision(fr);
+                }else if( (ss = qgraphicsitem_cast<StackableSphere *>(ob)) !=0){
+                    p->handleCollision(ss);
                 }else{
-                    qDebug() << ob;
+                    //qDebug() << ob;
                     p->handleCollision(ob);
                 }
 

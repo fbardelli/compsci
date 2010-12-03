@@ -18,14 +18,14 @@ class ProjectileView : public CommonView
 Q_OBJECT
 private:
     Cannon *cannon;
-    QTimer *timer;
 protected:
    void keyPressEvent (QKeyEvent* e);
+    QTimer *timer;
 public:
     ProjectileView(QGraphicsScene *scene,QWidget *parent);
     ~ProjectileView();
     const QString getInstructions();
-
+    void cleanupProjectiles();
 signals:
 
 public slots:

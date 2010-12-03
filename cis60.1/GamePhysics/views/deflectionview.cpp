@@ -8,3 +8,4 @@ DeflectionView::DeflectionView(QGraphicsScene *scene,QWidget *parent):
     wall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(wall);
 }
+

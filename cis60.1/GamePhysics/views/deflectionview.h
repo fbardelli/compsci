@@ -17,7 +17,6 @@ private:
     FixedRectangle * wall;
 public:
     DeflectionView(QGraphicsScene *scene,QWidget *parent);
-
 signals:
 
 public slots:

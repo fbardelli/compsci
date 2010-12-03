@@ -12,6 +12,22 @@ ProjectileView::ProjectileView(QGraphicsScene *scene,QWidget *parent):
 
 void ProjectileView::redraw(){
     cannon->updateProjectiles();
+    this->cleanupProjectiles();
+}
+
+void ProjectileView::cleanupProjectiles(){
+    QList<QGraphicsItem *> sceneItems = this->scene()->items();
+    if(sceneItems.size() > 0){
+        //remove items that fall below the bottom of the screen
+        //this greatly improves performance
+        for (int i = 0; i < sceneItems.size(); ++i) {
+            QGraphicsItem *p = sceneItems.at(i);
+            if(p->y() > this->scene()->height()+100){
+                //qDebug() << "removing junk";
+                this->scene()->removeItem(p);
+            }
+        }
+    }
 }
 
 void ProjectileView::keyPressEvent(QKeyEvent *e){
