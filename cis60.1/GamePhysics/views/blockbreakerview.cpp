@@ -6,22 +6,22 @@
 BlockBreakerView::BlockBreakerView(QGraphicsScene *scene,QWidget *parent):
         CommonView(scene,parent)
 {
-    topWall = new FixedRectangle(50, 0, scene->width()-100, 50);
+    topWall = new FixedRectangle(150, 0, scene->width()-300, 25);
     topWall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
     topWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(topWall);
 
-    leftWall = new FixedRectangle(0, 0, 50, scene->height());
+    leftWall = new FixedRectangle(0, 0, 150, scene->height());
     leftWall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
     leftWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(leftWall);
 
-    rightWall = new FixedRectangle(scene->width()-50, 0, 50, scene->height());
+    rightWall = new FixedRectangle(scene->width()-150, 0, 150, scene->height());
     rightWall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
     rightWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(rightWall);
 
-    bottomWall = new FixedRectangle(50, scene->height()-50, scene->width()-100, 50);
+    bottomWall = new FixedRectangle(150, scene->height()-50, scene->width()-300, 50);
     bottomWall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
     bottomWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(bottomWall);
@@ -32,7 +32,7 @@ BlockBreakerView::BlockBreakerView(QGraphicsScene *scene,QWidget *parent):
     p = NULL;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(redraw()));
-    timer->start(125);
+    timer->start(100);
 }
 
 void BlockBreakerView::redraw(){
@@ -41,37 +41,43 @@ void BlockBreakerView::redraw(){
 
 void BlockBreakerView::handleCollision(Projectile * p,FixedRectangle *obstacle){
     //handle collision with a wall covering the vertical plane
-    QVector2D impact = QVector2D(0.0,0.0);
-    QVector2D position = p->getPosition();
+    QVector2D newPosition = p->getPosition();
     QVector2D pVelocity = p->getVelocity();
+    QVector2D impact = pVelocity;
+    qDebug()<<"startv p: " << p->pos() << " v: "<< p->getVelocity();
     //qDebug() << "op:" << obstacle->boundingRect().x() << " p:" << p->position.x();
     if(obstacle == rightWall){
         qDebug()<<"hit right";
-        p->setPos(obstacle->boundingRect().x() - p->boundingRect().width() - 1,
-                  p->pos().y()
-                  );
-        impact = QVector2D(pVelocity.x(),0);
+        newPosition.setX(obstacle->boundingRect().x() - p->boundingRect().width() - 1);
+        impact = QVector2D(pVelocity.x(),0.0);
+        //impact = QVector2D(1.0,0.0);
+        //pVelocity.setX(-pVelocity.x());
     }else if(obstacle == leftWall){
         qDebug()<<"hit left";
-        p->setPos(obstacle->boundingRect().width() + obstacle->pos().x() + 1,
-                  p->pos().y()
-                  );
-        impact = QVector2D(pVelocity.x(),0);
+        newPosition.setX(obstacle->boundingRect().width() +  1);
+        qDebug()<<"p: " << p->pos() << " v: "<< p->getVelocity();
+        impact = QVector2D(pVelocity.x(),0.0);
+        //pVelocity.setX(-pVelocity.x());
+        //qDebug()<<"impact: " << impact;
     }else if(obstacle == topWall){
         qDebug()<<"hit top";
-        p->setPos(p->pos().x(),
-                  obstacle->boundingRect().height() + p->boundingRect().y() + 1
-                  );
-        impact = QVector2D(0,pVelocity.y());
+        newPosition.setY(obstacle->boundingRect().height() +  1);
+        impact = QVector2D(0.0,pVelocity.y());
+        //pVelocity.setY(-pVelocity.y());
     }else if(obstacle == bottomWall){
         qDebug()<<"hit bottom";
-        p->setPos(p->pos().x(),
-                  obstacle->boundingRect().height() - p->boundingRect().y() - 1
-                  );
-        impact = QVector2D(0,pVelocity.y());
+        newPosition.setY(obstacle->boundingRect().y() - p->boundingRect().height() - 1);
+        impact = QVector2D(0.0,pVelocity.y());
+        //pVelocity.setY(-pVelocity.y());
     }
+    p->setPosition(newPosition);
+    p->setPos(newPosition.x(),newPosition.y());
+    //p->updatePosition();
+    //p->setPos(newPosition.x(),newPosition.y());
     QVector2D deflectionVelocity = PhysicsUtils::resolveFixedCollision(pVelocity,impact);
     p->setVelocity(deflectionVelocity);
+    //p->setVelocity(pVelocity);
+    qDebug()<<"endv p: " << p->pos() << " v: "<< p->getVelocity();
 }
 
 
@@ -82,12 +88,12 @@ void BlockBreakerView::updateProjectiles(){
        if(collisions.size() > 0){
            for (int i = 0; i < collisions.size(); ++i) {
                QGraphicsItem *ob = collisions.at(i);
-               p->resolveCollisionType(ob);
+               //p->resolveCollisionType(ob);
                FixedRectangle *fr;
                if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
                    this->handleCollision(p,fr);
                }else{
-                   p->handleCollision(ob);
+                   //p->handleCollision(ob);
                }
 
            }
@@ -108,18 +114,18 @@ void BlockBreakerView::keyPressEvent(QKeyEvent *e){
             qDebug() << "spx:" << paddle->pos().x();
             qDebug() << "sbr:"  << paddle->sceneBoundingRect().x();
 
-            if((paddle->pos().x()) - 25 > 0){
+            if((paddle->pos().x()) - 25 > leftWall->boundingRect().width()){
                 paddle->moveBy(-25.0,0.0);
             }else{
-                paddle->setPos(0.0,paddle->pos().y());
+                paddle->setPos(leftWall->boundingRect().width(),paddle->pos().y());
             }
             break;
         case Qt::Key_Right:
-            qreal sceneWidth = this->scene()->width();
-            if((paddle->pos().x()+PADDLEWIDTH) + 25 < sceneWidth){
+            qreal rightWallStart = rightWall->boundingRect().x();
+            if((paddle->pos().x()+PADDLEWIDTH) + 25 < rightWallStart){
                 paddle->moveBy(25.0,0.0);
             }else{
-                paddle->setPos(sceneWidth-PADDLEWIDTH,paddle->pos().y());
+                paddle->setPos(rightWallStart-PADDLEWIDTH,paddle->pos().y());
             }
             break;
     }

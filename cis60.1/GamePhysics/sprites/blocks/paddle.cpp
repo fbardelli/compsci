@@ -12,9 +12,10 @@ Paddle::Paddle(qreal x, qreal y, qreal width, qreal height) :
  Projectile * Paddle::launchBall(){
     Projectile * projectile = new Projectile(
             this->pos().x()+(this->rect().width()/2),
-            this->pos().y()+1,
-            90,
-            70);
+            this->pos().y()+this->rect().height(),
+            25,
+            35);
+    projectile->pos().setY(projectile->pos().y()+projectile->boundingRect().height());
     projectile->setAcceleration(QVector2D(0.0,0.0));
     return projectile;
 }
