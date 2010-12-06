@@ -15,6 +15,7 @@ GameMenu::GameMenu(QWidget *parent)
     ui->simulationComboBox->addItem("Thrust and Lift");
     ui->simulationComboBox->addItem("Deflection");
     ui->simulationComboBox->addItem("Object Interaction");
+    ui->simulationComboBox->addItem("Block Breaker");
 
 
 
@@ -27,7 +28,7 @@ GameMenu::GameMenu(QWidget *parent)
 
 void GameMenu::runSimulation(){
     scene->clear();
-    qDebug() << "val: " << ui->simulationComboBox->currentIndex() << " str: " << ui->simulationComboBox->currentText();
+    //qDebug() << "val: " << ui->simulationComboBox->currentIndex() << " str: " << ui->simulationComboBox->currentText();
     if (mainView != NULL){
         delete mainView;
     }
@@ -58,6 +59,9 @@ void GameMenu::runSimulation(){
             break;
         case 8:
             mainView = new ObjectInteractionView(scene,this->ui->mainFrame);
+            break;
+        case 9:
+            mainView = new BlockBreakerView(scene,this->ui->mainFrame);
             break;
     default:
             mainView = new SimpleCollisionView(scene,this->ui->mainFrame);

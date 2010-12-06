@@ -7,7 +7,6 @@
 #include <QDebug>
 #include <QEvent>
 #include <QKeyEvent>
-#include <QTimer>
 #include "gameConstants.h"
 #include "views/commonview.h"
 #include "sprites/cannon.h"

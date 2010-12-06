@@ -50,3 +50,154 @@ Direction PhysicsUtils::reverseDirection(Direction dir){
     }
     return newDirection;
 }
+
+QVector2D PhysicsUtils::normalVector (QVector2D vector){
+   return QVector2D(-vector.y(),vector.x());
+}
+
+QVector2D PhysicsUtils::componentVector(QVector2D vector, QVector2D directionVector){
+    QVector2D v  = directionVector.normalized();
+    //return v * QVector2D::dotProduct(vector,directionVector);
+    return ( v * component(vector, directionVector));
+}
+
+double PhysicsUtils::component (QVector2D vector, QVector2D directionVector){
+    double alpha = atan2(directionVector.y(), directionVector.x());
+    double theta = atan2(vector.y(),vector.x());
+    qDebug() << "alpha:" << alpha << " theta:" << theta;
+    double mag   = magnitude(vector);
+    double a     = mag*cos(theta-alpha);
+    return a;
+}
+
+double PhysicsUtils::magnitude(QVector2D v){
+  double s = 0;
+  s+= v.x()*v.x();
+  s+= v.y()*v.y();
+  return sqrt(s);
+}
+
+QVector2D PhysicsUtils::resolveFixedCollision(QVector2D obVelocity, QVector2D normal){
+    QVector2D c  = componentVector(obVelocity,normal);
+    return QVector2D(obVelocity - 2*c);
+}
+
+/*
+function component ( vector, directionVector)
+  set alpha to atan(directionVector [2] , directionVector [1 ] )
+  set theta to atan(vector[ 2] ,vector[1 ] )
+  set mag to magnitude( vector)
+  set a to mag*cos( theta-alpha)
+  return a
+end function
+
+function componentVector( vector, directionVector)
+  set v to norm(directionVector)
+  return component( vector, directionVector) *v
+end function
+
+function normalVector (vector)
+return vector(- vector[ 2] , vector[ 1 ])
+end function
+
+function resolveFixedCollision(obj , n)
+  set c to componentVector(obj. velocity, n)
+  set obj. velocity to v- 2*c
+end function
+
+function intersectionPoint(a, b, c, d)
+    set tc1 to b[1 ] - a[1 ]
+    set tc2 to b[2] - a[2]
+    set sc1 to c[1 ] - d[1 ]
+    set sc2 to c[2] - s[2]
+    set con1 to c[ 1 ] - a[1 ]
+    set con2 to c[ 2] - a[2]
+    set det to (tc2*sc1 -tc1*sc2)
+    if det=0 then return " no unique solution"
+    set con to tc2*con1 -tc1*con2
+    set s to con/det
+    return c+s*(d-c)
+end function
+
+function resolveCollisionFree1 (obj 1 , obj 2, n)
+    set r to obj1 . mass/obj 2. mass
+    set un to componentVector(obj1 . velocity, n)
+    set ut to obj1 . velocity-un
+    set vn to un*(r- 1 )/(r+1)
+    set wn to un*2*r/ (r+1 )
+    set obj1 . velocity to ut+vn
+    set obj2. velocity to wn
+end function
+
+function resolveCollisionFree (obj 1 , obj 2, n)
+    set r to obj1 . mass/obj 2. mass
+    set u to obj1 . velocity-obj 2.velocity
+    set un to componentVector(u,n)
+    set ut to u-un
+    set vn to un*(r- 1 )/(r+1)
+    set wn to un*2*r/ (r+1 )
+    set obj1 . velocity to ut+vn+u2
+    set obj2. velocity to wn+u2
+end function
+
+function resolveCollisionEqualMass ( obj 1 , obj 2, n)
+    set u to obj1 . velocity-obj 2.velocity
+    set un to componentVector(u,n)
+    set ut to u-un
+    set obj1 . velocity to ut+obj 2. velocity
+    set obj2. velocity to un+obj 2. velocity
+end function
+
+function resolveInelasticCollisionFree (obj 1 , obj 2, n)
+    set r to obj1 . mass/obj 2. mass
+    set u to obj1 . velocity-obj 2.velocity
+    set e to obj1 . efficiency*obj2. efficiency
+    set un to component ( u,n)
+    set ut to mag(u- un*n)
+    set sq to r*r*un*un-( r+1 ) *( (r-e) *un*un+(1 - e) *ut*ut))
+    set vn to n*(sqrt(sq) - r*un) /(r+1 )
+    set wn to r*(n*un-vn)
+    set obj1 . velocity to ut+vn+ obj 2. velocity
+    set obj2. velocity to wn+ obj2. velocity
+end function
+
+function resolveInelasticCollisionFixed ( obj 1 , obj 2, n)
+    set e to obj1 . efficiency*obj2. efficiency
+    set un to component ( obj 1 . velocity, n)
+    set ut to mag(obj 1. velocity -un*n)
+    set sq to  (e*un*un+( e-1 ) *ut*ut) )
+    set vn to n*sqrt( sq)
+    set obj1 . velocity to ut+vn
+end function
+
+function addVectors (v1, v2)
+   // assume v1 and v2 are arrays of the same length
+   set newVector to an empty array
+   repeat for i=1 to the length of v1
+      append v1[i]+v2[i] to newVector
+   end repeat
+   return newVector
+end function
+
+function scaleVector (v, s)
+   repeat for i=1 to the length of v
+      multiply v[i] by s
+   end repeat
+   return v
+end function
+
+function magnitude (v)
+   set s to 0
+   repeat with i=1 to the length of v
+      add v[i]*v[i] to s
+   end repeat
+   return sqrt(s)
+end function
+
+function norm (v)
+   set m to magnitude(v)
+   if m=0 then return "error" // you can't normalize a zero vector
+   return scaleVector(v,1/m)
+end function
+
+*/

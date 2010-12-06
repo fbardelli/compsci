@@ -18,6 +18,7 @@
 #include "views/thrusterview.h"
 #include "views/deflectionview.h"
 #include "views/objectinteractionview.h"
+#include "views/blockbreakerview.h"
 
 namespace Ui
 {

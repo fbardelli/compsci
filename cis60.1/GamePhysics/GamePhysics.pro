@@ -24,7 +24,10 @@ SOURCES += main.cpp \
     views/deflectionview.cpp \
     sprites/fixedrectangle.cpp \
     views/objectinteractionview.cpp \
-    sprites/stackablesphere.cpp
+    sprites/stackablesphere.cpp \
+    views/blockbreakerview.cpp \
+    sprites/blocks/blockbase.cpp \
+    sprites/blocks/paddle.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -46,7 +49,10 @@ HEADERS += gamemenu.h \
     views/deflectionview.h \
     sprites/fixedrectangle.h \
     views/objectinteractionview.h \
-    sprites/stackablesphere.h
+    sprites/stackablesphere.h \
+    views/blockbreakerview.h \
+    sprites/blocks/blockbase.h \
+    sprites/blocks/paddle.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc

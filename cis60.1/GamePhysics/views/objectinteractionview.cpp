@@ -4,18 +4,19 @@ ObjectInteractionView::ObjectInteractionView(QGraphicsScene *scene,QWidget *pare
         ProjectileView(scene,parent)
 {
     //pyramid = new QList<StackableSphere *>();
-    int bottom = scene->height() - 42;
+    int bottom = scene->height() - 40;
     int xstart = 0; int xstop = 320;
-    for(int h = 0; h <= 280; h += 37 ){
-        for(int i = xstart; i <= xstop; i +=42){
+    for(int h = 0; h <= 300; h += 40 ){
+        //for(int i = xstart; i <= xstop; i +=40){
             StackableSphere * sphere = new StackableSphere();
             scene->addItem(sphere);
-            sphere->setPos(400+i,bottom-h);
-            //sphere->setVelocity(0.0,0.0);
-            pyramid.append(sphere);
-        }
-        xstart+= 20;
-        xstop -= 20;
+            //sphere->setPos(400+i,bottom-h);
+            sphere->setPos(400,bottom-h);
+            sphere->setPosition(QVector2D(sphere->pos()));
+            pyramid.push_front(sphere);
+        //}
+        xstart+= 40;
+        xstop -= 40;
     }
     connect(timer,SIGNAL(timeout()),this,SLOT(updatePyramid()));
     //wall = new FixedRectangle(700, -200, 50, scene->height()+400);
@@ -27,9 +28,12 @@ ObjectInteractionView::ObjectInteractionView(QGraphicsScene *scene,QWidget *pare
 void ObjectInteractionView::updatePyramid(){
     for (int i = 0; i < pyramid.size(); ++i) {
         StackableSphere *s = pyramid.at(i);
-        QVector2D position = QVector2D(s->pos().x(),s->pos().y());
-        position += s->getVelocity();
-        s->setPos(position.x(),position.y());
+        s->setCollisionState(false);
+        s->updatePosition();
+    }
+    for (int i = 0; i < pyramid.size(); ++i) {
+        StackableSphere *s = pyramid.at(i);
+        s->applyGravity();
     }
 }
 

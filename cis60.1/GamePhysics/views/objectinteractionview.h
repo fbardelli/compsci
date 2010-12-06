@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QVector2D>
 #include "views/projectileview.h"
 #include "sprites/stackablesphere.h"
 
