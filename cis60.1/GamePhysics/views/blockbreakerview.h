@@ -20,9 +20,10 @@ private:
     FixedRectangle * rightWall;
     FixedRectangle * bottomWall;
     Paddle *paddle;
-    Projectile *p;
-    bool rightPress, leftPress;
+    Projectile *projectile;
+    bool rightPress, leftPress, ballInPlay;
     void handleCollision(Projectile * p,FixedRectangle *obstacle);
+    void handleCollision(Projectile *p, Paddle *obstacle);
 public:
     BlockBreakerView(QGraphicsScene *scene,QWidget *parent);
     ~BlockBreakerView();

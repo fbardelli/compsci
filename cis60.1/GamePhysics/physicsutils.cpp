@@ -64,7 +64,7 @@ QVector2D PhysicsUtils::componentVector(QVector2D vector, QVector2D directionVec
 double PhysicsUtils::component (QVector2D vector, QVector2D directionVector){
     double alpha = atan2(directionVector.y(), directionVector.x());
     double theta = atan2(vector.y(),vector.x());
-    qDebug() << "alpha:" << alpha << " theta:" << theta;
+    //qDebug() << "alpha:" << alpha << " theta:" << theta;
     double mag   = magnitude(vector);
     double a     = mag*cos(theta-alpha);
     return a;
