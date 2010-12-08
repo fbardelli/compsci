@@ -7,7 +7,7 @@
 BlockBreakerView::BlockBreakerView(QGraphicsScene *scene,QWidget *parent):
         CommonView(scene,parent)
 {
-    topWall = new FixedRectangle(150, 0, scene->width()-300, 10);
+    topWall = new FixedRectangle(150, -15, scene->width()-300, 25);
     topWall->setBrush(QBrush(Qt::black,Qt::SolidPattern));
     topWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(topWall);
@@ -22,7 +22,7 @@ BlockBreakerView::BlockBreakerView(QGraphicsScene *scene,QWidget *parent):
     rightWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(rightWall);
 
-    bottomWall = new FixedRectangle(150, scene->height()-10, scene->width()-300, 10);
+    bottomWall = new FixedRectangle(150, scene->height()-10, scene->width()-300, 25);
     bottomWall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
     bottomWall->setPen(QPen(QColor(Qt::black)));
     scene->addItem(bottomWall);
@@ -44,15 +44,21 @@ void BlockBreakerView::redraw(){
 void BlockBreakerView::handleCollision(Projectile *p, Paddle *pad){
     qreal centerDiff = pad->sceneBoundingRect().center().x() -
                            p->sceneBoundingRect().center().x();
-
     QVector2D pVelocity = p->getVelocity();
     QVector2D newPosition = p->getPosition();
     qDebug() << "hit paddle with velocity " << pVelocity
              << " centerdiff "<< centerDiff << " *radius* " << pad->sceneBoundingRect().width()/2;
     qDebug() << "pbr:" << pad->boundingRect() << "psbr:" << pad->sceneBoundingRect();
 
+    QVector2D impact = QVector2D(p->sceneBoundingRect().center().x() -
+                                 pVelocity.x() -
+                                 pad->sceneBoundingRect().center().x(),
+                                 p->sceneBoundingRect().center().y() -
+                                 pVelocity.y() -
+                                 pad->sceneBoundingRect().center().y());
+    qDebug() << "impact velocity:" << impact;
     newPosition.setY(pad->sceneBoundingRect().y() - p->boundingRect().height() - 1);
-    QVector2D impact = QVector2D(0.0,pVelocity.y());
+    //QVector2D impact = QVector2D(0.0,pVelocity.y());
     p->setPosition(newPosition);
     p->setPos(newPosition.x(),newPosition.y());
     QVector2D deflectionVelocity = PhysicsUtils::resolveFixedCollision(pVelocity,impact);
@@ -133,17 +139,13 @@ void BlockBreakerView::keyPressEvent(QKeyEvent *e){
     switch(e->key()){
         case Qt::Key_Space:
             if (! ballInPlay ){
-                projectile = paddle->launchBall();
+                projectile = paddle->launchBall(90);
                 qDebug()<<"adding new p:" << projectile;
                 this->scene()->addItem(projectile);
                 ballInPlay = true;
             }
             break;
         case Qt::Key_Left:
-            qDebug() << "spx:" << paddle->scenePos().x();
-            qDebug() << "spx:" << paddle->pos().x();
-            qDebug() << "sbr:"  << paddle->sceneBoundingRect().x();
-
             if((paddle->pos().x()) - PADDLESPEED > leftWall->boundingRect().width()){
                 paddle->moveBy(-PADDLESPEED,0.0);
             }else{

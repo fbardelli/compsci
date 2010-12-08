@@ -10,7 +10,7 @@ class Paddle : public BlockBase
     Q_OBJECT
 public:
     Paddle( qreal x, qreal y, qreal width, qreal height);
-    Projectile * launchBall();
+    Projectile * launchBall(int angle);
 signals:
 
 public slots:

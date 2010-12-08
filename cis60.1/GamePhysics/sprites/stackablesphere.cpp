@@ -4,7 +4,7 @@ StackableSphere::StackableSphere()
 {
     this->setRect(0,0,40,40);
     //this->setPos(x,y);
-    mass = 15.0;
+    mass = 5.0;
     QLinearGradient myGradient = QLinearGradient(0,0,50,50);
     myGradient.setColorAt(0, QColor(0,102,255));
     myGradient.setColorAt(1, QColor(0,0,255));
