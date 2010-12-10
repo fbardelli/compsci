@@ -41,6 +41,9 @@ public:
     void setAcceleration(QVector2D a);
     QVector2D getPosition();
     void setPosition(QVector2D p);
+    // Enable the use of qgraphicsitem_cast with this item.
+    enum { Type = UserType + 2 };
+    int type() const {return Type;};
 };
 
 #endif // PROJECTILE_H

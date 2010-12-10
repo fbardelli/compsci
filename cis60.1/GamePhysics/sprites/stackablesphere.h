@@ -32,6 +32,9 @@ public:
     QVector2D getAcceleration();
     void applyGravity();
     void setCollisionState(bool s);
+    // Enable the use of qgraphicsitem_cast with this item.
+    enum { Type = UserType + 3 };
+    int type() const {return Type;};
 };
 
 #endif // STACKABLESPHERE_H

@@ -8,6 +8,7 @@
 #include <QList>
 #include "sprites/blocks/paddle.h"
 #include "sprites/projectile.h"
+#include "sprites/blocks/standardblock.h"
 #include "views/commonview.h"
 
 class BlockBreakerView: public CommonView
@@ -22,10 +23,12 @@ private:
     Paddle *paddle;
     Projectile *projectile;
     bool rightPress, leftPress, ballInPlay;
-    void handleCollision(Projectile * p,FixedRectangle *obstacle);
-    void handleCollision(Projectile *p, Paddle *obstacle);
+    void handleCollision(Projectile * p, FixedRectangle *obstacle);
+    void handleCollision(Projectile *p,  Paddle *obstacle);
+    void handleCollision(Projectile * p, StandardBlock *obstacle);
 public:
     BlockBreakerView(QGraphicsScene *scene,QWidget *parent);
+    const QString getInstructions();
     ~BlockBreakerView();
     void updateProjectiles();
 protected:

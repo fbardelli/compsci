@@ -18,7 +18,7 @@ private:
     QList<StackableSphere *> pyramid;
 public:
     ObjectInteractionView(QGraphicsScene *scene,QWidget *parent);
-
+    const QString getInstructions();
 signals:
 
 public slots:

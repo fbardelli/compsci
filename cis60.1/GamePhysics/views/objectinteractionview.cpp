@@ -37,13 +37,15 @@ void ObjectInteractionView::updatePyramid(){
     }
 }
 
-/*
+const QString ObjectInteractionView::getInstructions(){
+    return QString(
+        "This example simulates the reaction of moveable objects when hit by a projectile. "
+        "<br/><table border='1' cellpadding='1' cellspacing='1'>"
+            "<tr><th>Key</th><th>Action</th></tr>"
+            "<tr><td>Up</td><td>Raise the angle of the cannon</td></tr>"
+            "<tr><td>Down</td><td>Lower the angle of the cannon</td></tr>"
+            "<tr><td>Space</td><td>Fire cannon</td></tr>"
+        "</table>"
+    );
 
-function resolveCollisionEqualMass (obj1, obj2, n)
-   set u to obj1.velocity-obj2.velocity
-   set un to componentVector(u,n)
-   set ut to u-un
-   set obj1.velocity to ut+obj2.velocity
-   set obj2.velocity to un+obj2.velocity
-end function
-*/
+}

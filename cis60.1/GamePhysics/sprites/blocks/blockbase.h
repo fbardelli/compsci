@@ -17,7 +17,12 @@ private:
     int health;
 public:
     BlockBase( qreal x, qreal y, qreal width, qreal height, QObject * parent = 0);
-
+    enum { Type = UserType + 4 };
+    int type() const {return Type;}
+    int getHealth(){ return health; }
+    int getPoints(){ return points; }
+    void setPoints(int p){ points = p;}
+    void setHealth(int h){ health = h;}
 signals:
 
 public slots:

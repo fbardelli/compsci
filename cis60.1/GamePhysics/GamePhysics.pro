@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     sprites/stackablesphere.cpp \
     views/blockbreakerview.cpp \
     sprites/blocks/blockbase.cpp \
-    sprites/blocks/paddle.cpp
+    sprites/blocks/paddle.cpp \
+    sprites/blocks/standardblock.cpp
 HEADERS += gamemenu.h \
     views/simplecollisionview.h \
     views/advancedcollisionview.h \
@@ -52,7 +53,8 @@ HEADERS += gamemenu.h \
     sprites/stackablesphere.h \
     views/blockbreakerview.h \
     sprites/blocks/blockbase.h \
-    sprites/blocks/paddle.h
+    sprites/blocks/paddle.h \
+    sprites/blocks/standardblock.h
 FORMS += gamemenu.ui
 OTHER_FILES += 
 RESOURCES += images/images.qrc
