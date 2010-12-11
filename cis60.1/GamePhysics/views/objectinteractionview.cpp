@@ -4,25 +4,22 @@ ObjectInteractionView::ObjectInteractionView(QGraphicsScene *scene,QWidget *pare
         ProjectileView(scene,parent)
 {
     //pyramid = new QList<StackableSphere *>();
-    int bottom = scene->height() - 40;
-    int xstart = 0; int xstop = 320;
-    for(int h = 0; h <= 300; h += 40 ){
-        //for(int i = xstart; i <= xstop; i +=40){
+    int bottom = scene->height();
+    //int xstart = 0; int xstop = 320;
+    int xstart = 0; int xstop = 0;
+    for(int h = 40; h <= 300; h += 40 ){
+        for(int i = xstart; i <= xstop; i +=40){
             StackableSphere * sphere = new StackableSphere();
             scene->addItem(sphere);
-            //sphere->setPos(400+i,bottom-h);
-            sphere->setPos(400,bottom-h);
+            sphere->setPos(400+i,bottom-h);
+            //sphere->setPos(400,bottom-h);
             sphere->setPosition(QVector2D(sphere->pos()));
             pyramid.push_front(sphere);
-        //}
-        xstart+= 40;
-        xstop -= 40;
+        }
+        //xstart+= 20;
+        //xstop -= 20;
     }
     connect(timer,SIGNAL(timeout()),this,SLOT(updatePyramid()));
-    //wall = new FixedRectangle(700, -200, 50, scene->height()+400);
-    //wall->setBrush(QBrush(Qt::red,Qt::SolidPattern));
-    //wall->setPen(QPen(QColor(Qt::black)));
-    //scene->addItem(wall);
 }
 
 void ObjectInteractionView::updatePyramid(){

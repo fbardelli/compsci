@@ -16,12 +16,14 @@ private:
     QGraphicsPixmapItem * cannonbase;
     QList<Projectile *> projectiles;
     int angle;
+    int projectileSpeed;
 public:
     explicit Cannon(QGraphicsScene *scene);
     void incline();
     void decline();
     void fire();
     void updateProjectiles();
+    void setProjectileSpeed(int speed);
 
 signals:
 

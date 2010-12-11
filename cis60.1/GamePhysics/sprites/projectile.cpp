@@ -59,47 +59,21 @@ void Projectile::updatePosition(){
     this->setPos(position.x(),position.y());
 }
 
-/*double Projectile::getImpactAngle(){
-    int currentX = this->pos().x();
-    int currentY = this->pos().y();
-    int xDelta = currentX - lastX;
-    int yDelta = currentY - lastY;
-    double currentRadian = (double)-yDelta/(double)xDelta;
-    double impactAngle = currentRadian * (180 / M_PI);
-    return impactAngle;
-}*/
-
-void Projectile::handleCollision(FixedRectangle *obstacle){
-    //handle collision with a wall covering the vertical plane
-    qDebug() << "op:" << obstacle->boundingRect().x() << " p:" << this->position.x();
+QVector2D Projectile::handleCollision(FixedRectangle *obstacle){
+    QVector2D newVelocity = this->getVelocity();
     if(obstacle->boundingRect().x() < this->position.x() + this->boundingRect().width()){
         position.setX( obstacle->boundingRect().x() - this->boundingRect().width() - 1);
         this->setPos(position.x(),position.y());
         QVector2D impact = QVector2D(pVelocity.x(),0);
-        QVector2D deflectionVelocity = PhysicsUtils::resolveFixedCollision(pVelocity,impact);
-        deflectionVelocity *= 0.5;
-        this->setVelocity(deflectionVelocity);
+        newVelocity = PhysicsUtils::resolveFixedCollision(pVelocity,impact);
+        newVelocity *= 0.5;
     }
+    qDebug()<<"new velocity:"<<newVelocity;
+    return newVelocity;
 }
 
-void Projectile::handleCollision(StackableSphere *obstacle){
-        /*
-        //this->scene()->addLine(QLineF(center,obCenter),QPen(QColor(Qt::red)));
-        double massDiff  = this->getMass()/obstacle->getMass();
-        QVector2D vDiff  = this->getVelocity() - obstacle->getVelocity();
-        qDebug() << "vdiff:"<<vDiff;
-        QVector2D un     = componentVector(vDiff,this->getVelocity());
-        qDebug() << "un:"<<(un);
-        QVector2D ut     = vDiff - un;
-        qDebug() << "ut:"<<(ut);
-        QVector2D vn     = un * (massDiff-1)/(massDiff+1);
-        qDebug() << "vn:"<<(vn);
-        QVector2D wn     = un * 2 * massDiff /(massDiff+1);
-        qDebug() << "wn:"<<(wn);
-        qDebug() << "v:"<< this->getVelocity();
-        qDebug() << "new v:"<<(ut+vn);
-        this->setVelocity(ut+vn);
-        obstacle->setVelocity(wn*-1);*/
+QVector2D Projectile::handleCollision(StackableSphere *obstacle){
+        QVector2D newVelocity = this->getVelocity();
         double massDiff  = this->getMass()/obstacle->getMass();
         QVector2D obCenter = QVector2D(obstacle->sceneBoundingRect().center());
         QVector2D pCenter = QVector2D(this->sceneBoundingRect().center());
@@ -116,19 +90,12 @@ void Projectile::handleCollision(StackableSphere *obstacle){
         QVector2D wn     = un * 2 * massDiff /(massDiff+1);
         qDebug() << "ut:"<<(ut);
         qDebug()<<"(ut+obVelocity)"<<"("<<ut<<"+"<<obVelocity<<"):"<<(ut+obVelocity);
-        //this->setVelocity((ut+obVelocity));
-        this->setVelocity((ut+vn));
-        this->updatePosition();
+        newVelocity = (ut+vn);
+        //this->updatePosition();
         qDebug()<<"(un+obVelocity)"<<"("<<un<<"+"<<obVelocity<<"):"<<(un+obVelocity);
-        //obstacle->setVelocity((un+obVelocity));
         obstacle->setVelocity(wn);
         obstacle->updatePosition();
-
-    /*set u to obj1 . velocity-obj 2.velocity
-    set un to componentVector(u,n)
-    set ut to u-un
-    set obj1 . velocity to ut+obj 2. velocity
-    set obj2. velocity to un+obj 2. velocity*/
+        return newVelocity;
 }
 
 
@@ -145,7 +112,6 @@ void Projectile::resolveCollisionType(QGraphicsItem *ob){
     }else if( (ss = qgraphicsitem_cast<StackableSphere *>(ob)) !=0){
         this->handleCollision(ss);
     }else{
-        //qDebug() << ob;
         this->handleCollision(ob);
     }
 }

@@ -10,7 +10,7 @@ class Paddle : public BlockBase
     Q_OBJECT
 public:
     Paddle( qreal x, qreal y, qreal width, qreal height);
-    Projectile * launchBall(int angle);
+    Projectile * launchBall(int speed, int angle);
     // Enable the use of qgraphicsitem_cast with this item.
     enum { Type = UserType + 6 };
     int type() const {return Type;};

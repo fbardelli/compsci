@@ -16,10 +16,10 @@ class ProjectileView : public CommonView
 {
 Q_OBJECT
 private:
-    Cannon *cannon;
 protected:
+   Cannon *cannon;
    void keyPressEvent (QKeyEvent* e);
-    QTimer *timer;
+   QTimer *timer;
 public:
     ProjectileView(QGraphicsScene *scene,QWidget *parent);
     ~ProjectileView();

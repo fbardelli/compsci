@@ -11,6 +11,11 @@ Cannon::Cannon(QGraphicsScene *scene) :
     cannonbarrel->setPos(cannonbarrel->x()+55,cannonbarrel->y()+25);
     this->setPos(this->x(),scene->height() - cannonbase->boundingRect().height());
     angle = 0;
+    projectileSpeed = 70;
+}
+
+void Cannon::setProjectileSpeed(int speed){
+    projectileSpeed = speed;
 }
 
 void Cannon::fire(){
@@ -23,7 +28,7 @@ void Cannon::fire(){
             35+horizontalOffset,
             this->scene()->height()-68-verticalOffset,
             angle,
-            70);
+            projectileSpeed);
     this->scene()->addItem(projectile);
     projectiles.append(projectile);
 }
@@ -36,22 +41,24 @@ void Cannon::updateProjectiles(){
         p->updatePosition();
         QList<QGraphicsItem *> collisions = p->collidingItems();
         if(collisions.size() > 0){
-            //qDebug() << "collision detected!";
+            qDebug()<<"collision size:"<<collisions.size();
+            QVector2D newVelocity = p->getVelocity();
             for (int i = 0; i < collisions.size(); ++i) {
                 QGraphicsItem *ob = collisions.at(i);
-                p->resolveCollisionType(ob);
+                //p->resolveCollisionType(ob);
                 FixedRectangle *fr;
                 StackableSphere *ss;
                 if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
-                    p->handleCollision(fr);
+                    newVelocity = p->handleCollision(fr);
                 }else if( (ss = qgraphicsitem_cast<StackableSphere *>(ob)) !=0){
-                    p->handleCollision(ss);
+                    newVelocity = p->handleCollision(ss);
                 }else{
                     //qDebug() << ob;
                     p->handleCollision(ob);
                 }
-
             }
+            p->setVelocity(newVelocity);
+            //p->updatePosition();
         }
     }
 }
