@@ -10,10 +10,9 @@ Paddle::Paddle(qreal x, qreal y, qreal width, qreal height) :
 
 
  Projectile * Paddle::launchBall(int speed,int angle){
-    qDebug() << "launching with rect" << this->rect();
-    double radians = (angle * M_PI) /180;
-    int horizontalOffset = (cos(radians) * angle);
-    int verticalOffset = (sin(radians) * angle);
+    //double radians = (angle * M_PI) /180;
+    //int horizontalOffset = (cos(radians) * angle);
+    //int verticalOffset = (sin(radians) * angle);
     Projectile * projectile = new Projectile(
             this->pos().x()+(this->rect().width()/2),
             this->pos().y()-this->rect().height(),

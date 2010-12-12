@@ -20,6 +20,7 @@ private:
 public:
     InelasticCollisionView(QGraphicsScene *scene,QWidget *parent);
     ~InelasticCollisionView();
+    const QString getInstructions();
 protected:
     void keyPressEvent(QKeyEvent *e);
 private slots:

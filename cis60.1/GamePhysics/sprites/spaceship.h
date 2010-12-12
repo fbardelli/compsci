@@ -13,7 +13,7 @@ private:
     QGraphicsPixmapItem * leftThruster;
     QGraphicsPixmapItem * rightThruster;
     QGraphicsPixmapItem * mainThruster;
-    QGraphicsRectItem   * bounding;
+    //QGraphicsRectItem   * bounding;
     int angle, verticalSpeed, horizontalSpeed;
     bool mainThrusterOn, rightThrusterOn, leftThrusterOn;
 

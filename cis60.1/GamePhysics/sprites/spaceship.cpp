@@ -15,11 +15,11 @@ SpaceShip::SpaceShip(QGraphicsScene *scene) :
     mainThruster->setOpacity(0.25);
     this->addToGroup(mainThruster);
     this->setPos(scene->width()/2,scene->height() - ship->sceneBoundingRect().height());
-    bounding = this->scene()->addRect(
+    /*bounding = this->scene()->addRect(
         this->sceneBoundingRect(),
         QPen(QColor(Qt::black)),
         QBrush(QColor(75,0,130,25),Qt::SolidPattern)
-    );
+    );*/
     angle = 0;
     verticalSpeed = horizontalSpeed = 0;
     mainThrusterOn = rightThrusterOn = leftThrusterOn = false;
@@ -129,6 +129,6 @@ void SpaceShip::updatePosition(){
 
     this->setPos(this->getNextPosition(point));
     //qDebug() << "pos is " << this->pos();
-    bounding->setRect(this->sceneBoundingRect());
+    //bounding->setRect(this->sceneBoundingRect());
 }
 

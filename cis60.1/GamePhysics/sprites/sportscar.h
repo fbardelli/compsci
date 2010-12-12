@@ -4,6 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <cmath>
 #include <QDebug>
+#include <QVector2D>
 
 class SportsCar : public QGraphicsPixmapItem
 {

@@ -30,7 +30,6 @@ void MovableRectangle::move(Direction dir,QList<MovableRectangle *> obstacles){
             continue;
         }
         if(PhysicsUtils::objectsCollide(r,ob->rect->rect())){
-            qDebug() << "Objects collide";
             if(this->mass <= ob->mass){
                 PhysicsUtils::moveToEdge(r,obstacles.at(i)->rect->rect(),dir);
             }else{

@@ -53,7 +53,7 @@ void SportsCar::rightTurn(int degrees){
 
 void SportsCar::updatePosition(){
     QPointF point = this->pos();
-    //Friction is always acting to decrease speed
+    //Friction is always acting to decrease speed toward 0
     if(speed > 0){
         speed -= FRICTION;
     }else if (speed < 0){

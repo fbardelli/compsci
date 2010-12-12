@@ -46,3 +46,20 @@ void InelasticCollisionView::redraw(){
 InelasticCollisionView::~InelasticCollisionView(){
     delete timer;
 }
+
+const QString InelasticCollisionView::getInstructions(){
+    return QString(
+        "This example models a collision between a ball and the ground."
+        " You can increase the elasticity(bounciness) of the collision."
+        " At 1.0 the collision is fully elastic, meaning no energy is lost when the"
+        " ball hits the ground.  At lower levels energy is lost with each bounce."
+        "<br/><table border='1' cellpadding='1' cellspacing='1'>"
+            "<tr><th>Key</th><th>Action</th></tr>"
+            "<tr><td>Left Mouse Click</td><td>Grab ball</td></tr>"
+            "<tr><td>Left Mouse Release</td><td>Drop ball</td></tr>"
+            "<tr><td>Up</td><td>Raise the elasticity of the ball</td></tr>"
+            "<tr><td>Down</td><td>Lower the elasticity of the ball</td></tr>"
+        "</table>"
+    );
+
+}
