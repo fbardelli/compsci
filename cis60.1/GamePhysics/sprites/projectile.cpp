@@ -1,7 +1,14 @@
 #include "projectile.h"
 
 
+/**
+           Create a new projectile
 
+           @param x    Starting x position
+           @param y    Starting y position
+           @param angle Angle the projectile is fired at
+           @param velocity Starting velocity the projectile is fired at, this will be converted to a vector based on angle of fire
+*/
 Projectile::Projectile(int x, int y, int angle, int velocity) :
 x(x), y(y), angle(angle), velocity(velocity)
 {
@@ -21,37 +28,73 @@ x(x), y(y), angle(angle), velocity(velocity)
     this->setBrush(myGradient);
 }
 
+
+/**
+           Reset the velocity of the projectile
+
+           @param v    Vector describing new Velocity
+*/
 void Projectile::setVelocity(QVector2D v){
     this->pVelocity = v;
 }
 
+/**
+           Return the velocity of a projectile
+
+           @return    Vector describing current Velocity
+*/
 QVector2D Projectile::getVelocity(){
-    //qDebug() << "pv: " << pVelocity << " qv:" <<  QVector2D(horizontalVelocity,verticalVelocity);
-    //return QVector2D(horizontalVelocity,verticalVelocity);
     return pVelocity;
 }
 
+/**
+           Return the velocity of a projectile at time of fire
+
+           @return    Vector describing initial Velocity
+*/
 QVector2D Projectile::getInitialVelocity(){
     return initialVelocity;
 }
 
+/**
+           Reset the current position of the projectile
 
+           @param p    Vector describing new Position
+*/
 void Projectile::setPosition(QVector2D p){
     position = p;
 }
 
+/**
+           Return the position of the projectile
+
+           @return    Vector describing current Position
+*/
 QVector2D Projectile::getPosition(){
     return QVector2D(this->pos());
 }
 
+/**
+           Return the acceleration of a projectile, generally used to apply gravity to the projectile
+
+           @return    Vector describing acceleration
+*/
 QVector2D Projectile::getAcceleration(){
     return acceleration;
 }
 
+/**
+           Resets the acceleration of a projectile
+
+           @param a    Vector describing acceleration
+*/
 void Projectile::setAcceleration(QVector2D a){
     this->acceleration = a;
 }
 
+/**
+           Apply velocity and acceleration to projectile changing its position
+*/
 void Projectile::updatePosition(){
     lastPosition = position;
     pVelocity += acceleration;
@@ -59,6 +102,11 @@ void Projectile::updatePosition(){
     this->setPos(position.x(),position.y());
 }
 
+/**
+           Resolves the collision of the projectile with a FixedRectangle (wall)
+
+           @param obstacle    FixedRectangle the projecile hit
+*/
 QVector2D Projectile::handleCollision(FixedRectangle *obstacle){
     QVector2D newVelocity = this->getVelocity();
     if(obstacle->boundingRect().x() < this->position.x() + this->boundingRect().width()){
@@ -68,58 +116,73 @@ QVector2D Projectile::handleCollision(FixedRectangle *obstacle){
         newVelocity = PhysicsUtils::resolveFixedCollision(pVelocity,impact);
         newVelocity *= 0.5;
     }
-    qDebug()<<"new velocity:"<<newVelocity;
     return newVelocity;
 }
 
+/**
+           Resolves the collision of the projectile with a StackableSphere
+
+           @param obstacle    StackableSphere the projecile hit
+*/
 QVector2D Projectile::handleCollision(StackableSphere *obstacle){
         QVector2D newVelocity = this->getVelocity();
         double massDiff  = this->getMass()/obstacle->getMass();
         QVector2D obCenter = QVector2D(obstacle->sceneBoundingRect().center());
         QVector2D pCenter = QVector2D(this->sceneBoundingRect().center());
         QVector2D obVelocity = obstacle->getVelocity();
-        qDebug() << "obV:"<<obVelocity;
         QVector2D vDiff  = this->getVelocity() - obVelocity;
-        qDebug() << "vdiff:"<<vDiff;
-        QVector2D impact = QVector2D(obCenter-pCenter);
-        qDebug() << "impact:"<<impact;
+        QVector2D impact = QVector2D((obCenter-obVelocity)-pCenter);
         QVector2D un     = PhysicsUtils::componentVector(vDiff,impact);
-        qDebug() << "un:"<<(un);
         QVector2D ut     = vDiff - un;
         QVector2D vn     = un * (massDiff-1)/(massDiff+1);
         QVector2D wn     = un * 2 * massDiff /(massDiff+1);
-        qDebug() << "ut:"<<(ut);
-        qDebug()<<"(ut+obVelocity)"<<"("<<ut<<"+"<<obVelocity<<"):"<<(ut+obVelocity);
         newVelocity = (ut+vn);
-        //this->updatePosition();
-        qDebug()<<"(un+obVelocity)"<<"("<<un<<"+"<<obVelocity<<"):"<<(un+obVelocity);
         obstacle->setVelocity(wn);
         obstacle->updatePosition();
         return newVelocity;
 }
 
 
-void Projectile::handleCollision(QGraphicsItem *obstacle){
+QVector2D Projectile::handleCollision(QGraphicsItem *obstacle){
+    return this->getVelocity();
 
 }
 
+/**
+           Determine and execute the correct collision for a generic obstacle
 
-void Projectile::resolveCollisionType(QGraphicsItem *ob){
+           @param ob    QGraphicsItem hit by the projectile
+           @returns new velocity of the current projectile post collision
+*/
+QVector2D Projectile::resolveCollisionType(QGraphicsItem *ob){
     FixedRectangle *fr;
     StackableSphere *ss;
+    QVector2D newVelocity = this->getVelocity();
     if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
-        this->handleCollision(fr);
+        newVelocity = this->handleCollision(fr);
     }else if( (ss = qgraphicsitem_cast<StackableSphere *>(ob)) !=0){
-        this->handleCollision(ss);
+        newVelocity = this->handleCollision(ss);
     }else{
-        this->handleCollision(ob);
+        newVelocity = this->handleCollision(ob);
     }
+    return newVelocity;
 }
 
+
+/**
+           Reset the mass of the projectile
+
+           param m    Value describing mass
+*/
 void Projectile::setMass(double m){
     mass = m;
 }
 
+/**
+           Return the mass of the projectile
+
+           @return    Value describing mass
+*/
 double Projectile::getMass(){
     return mass;
 }

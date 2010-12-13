@@ -1,5 +1,13 @@
 #include "physicsutils.h"
 
+
+/**
+  Given two rectangles returns true if they intersect
+
+  @param p QRectF representing first Rectangle
+  @param o QRectF representing second Rectangle
+
+*/
 bool PhysicsUtils::objectsCollide(QRectF p, QRectF o){
     int pLeft = p.x();
     int oLeft = o.x();
@@ -21,11 +29,18 @@ bool PhysicsUtils::objectsCollide(QRectF p, QRectF o){
     return true;
 }
 
+/**
+  Given two rectangles moves the first to the edge of the second based on the direction of movement
+
+  @param p QRectF representing first Rectangle
+  @param o QRectF representing second Rectangle
+  @param dir Direction the first rectangle is moving in
+
+*/
 void PhysicsUtils::moveToEdge(QRectF &p, QRectF o, Direction dir){
     int pHeight = p.height();
     int pWidth = p.width();
     if(dir == Right){
-        //qDebug() << "px:" << p.x() << " ox:" << o.x() << " pw:" << p.width() << " ow:" << o.width();
         p.moveTo( (o.x()-pWidth-1),p.y());
     }else if (dir == Left){
         p.moveTo(o.x()+pWidth+1,p.y());
@@ -34,9 +49,15 @@ void PhysicsUtils::moveToEdge(QRectF &p, QRectF o, Direction dir){
     }else if (dir == Up){
         p.moveTo(p.x(),o.y()+pHeight+1);
     }
-
 }
 
+/**
+  Given a direction returns the opposite direction
+
+  @param dir original Direction
+  @returns new Direction
+
+*/
 Direction PhysicsUtils::reverseDirection(Direction dir){
     Direction newDirection;
     if(dir == Right){
@@ -51,25 +72,50 @@ Direction PhysicsUtils::reverseDirection(Direction dir){
     return newDirection;
 }
 
+/**
+  Given a 2D Vector returns the Vector perpendicular to it
+
+  @param vector Original Vector
+  @returns Normal Vector
+
+*/
 QVector2D PhysicsUtils::normalVector (QVector2D vector){
    return QVector2D(-vector.y(),vector.x());
 }
 
+/**
+  Determine projection of initial vector along the direction vector
+
+  @param vector Initial Vector
+  @param directionVector
+  @returns New component vector
+*/
 QVector2D PhysicsUtils::componentVector(QVector2D vector, QVector2D directionVector){
     QVector2D v  = directionVector.normalized();
-    //return v * QVector2D::dotProduct(vector,directionVector);
     return ( v * component(vector, directionVector));
 }
 
+/**
+  Determine component value of initial vector along the direction vector
+
+  @param vector Initial Vector
+  @param directionVector
+  @returns component
+*/
 double PhysicsUtils::component (QVector2D vector, QVector2D directionVector){
     double alpha = atan2(directionVector.y(), directionVector.x());
     double theta = atan2(vector.y(),vector.x());
-    //qDebug() << "alpha:" << alpha << " theta:" << theta;
     double mag   = magnitude(vector);
     double a     = mag*cos(theta-alpha);
     return a;
 }
 
+/**
+  Determine magnitude of given vector.  Equivlent to the hypotenuse of a triangle made up of the x and y components
+
+  @param vector a 2D Vector
+  @returns magnitude of the vector
+*/
 double PhysicsUtils::magnitude(QVector2D v){
   double s = 0;
   s+= v.x()*v.x();
@@ -77,9 +123,16 @@ double PhysicsUtils::magnitude(QVector2D v){
   return sqrt(s);
 }
 
-QVector2D PhysicsUtils::resolveFixedCollision(QVector2D obVelocity, QVector2D normal){
-    QVector2D c  = componentVector(obVelocity,normal);
-    return QVector2D(obVelocity - 2*c);
+/**
+  Returns new direction of an object impacting another object at a given tangental vector
+
+  @param direction directional velocity of the original object
+  @param normal normal vector of the impact point
+  @returns new direction of the original object
+*/
+QVector2D PhysicsUtils::resolveFixedCollision(QVector2D direction, QVector2D normal){
+    QVector2D c  = componentVector(direction,normal);
+    return QVector2D(direction - 2*c);
 }
 
 /*

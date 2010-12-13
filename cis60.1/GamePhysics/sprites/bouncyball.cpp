@@ -53,10 +53,12 @@ void BouncyBall::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     this->setCursor(QCursor(Qt::OpenHandCursor));
 }
 
+/**
+  Updates position of the ball based on the current vertical speed.  If a ground hit is detected, reverses speed based on current bounciness level
+  */
 void BouncyBall::updatePosition(){
     QPointF point = this->pos();
 
-    //qDebug()<< "y is " << this->y() << " vspeed is " << this->verticalSpeed;
     if( (this->pos().y() + this->boundingRect().height()- verticalSpeed) > this->scene()->height() ){
         point.setY(this->scene()->height() - this->boundingRect().height());
         this->verticalSpeed = -(this->verticalSpeed * bounciness);
@@ -70,15 +72,23 @@ void BouncyBall::updatePosition(){
 }
 
 
-
+/**
+  @returns Current vertical speed of the ball.
+  */
 int BouncyBall::getVerticalSpeed(){
     return verticalSpeed;
 }
 
+/**
+  @returns Current Bounciness of the ball
+  */
 float BouncyBall::getBounciness(){
     return bounciness;
 }
 
+/**
+  Increase bounciness(elasticity) of the ball by increments of 0.125 up to a maximum of 1
+  */
 void BouncyBall::increaseBounciness(){
     if (bounciness < 1){
         bounciness += 0.125;
@@ -86,6 +96,9 @@ void BouncyBall::increaseBounciness(){
     }
 }
 
+/**
+  Decrease bounciness(elasticity) of the ball by increments of 0.125 up to a minimum of 0
+  */
 void BouncyBall::decreaseBounciness(){
     if (bounciness > 0){
         bounciness -= 0.125;
@@ -93,6 +106,9 @@ void BouncyBall::decreaseBounciness(){
     }
 }
 
+/**
+  Apply the force of gravity to the bouncing ball, reducing vertical velocity
+  */
 void BouncyBall::applyGravity(){
     if(dragged){
         verticalSpeed = 0;

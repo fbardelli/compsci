@@ -1,5 +1,11 @@
 #include "movablerectangle.h"
 
+/**
+  Creates a new movable rectangle
+  @param rect QGraphicsRectItem representing this rectangles
+  @param m Mass of the new Rectangle
+  @param v Starting speed of the rectangle
+  */
 MovableRectangle::MovableRectangle(QGraphicsRectItem *rect,
                                    int m, int v,
                                    Direction dir,
@@ -9,19 +15,35 @@ MovableRectangle::MovableRectangle(QGraphicsRectItem *rect,
     this->world = w;
 }
 
+/**
+  Move the rectangle along its current heading
+  */
 void MovableRectangle::move(){
     move(direction);
 }
 
+/**
+  Move the rectangle along the direction supplied
+  @param dir Direction to move
+  */
 void MovableRectangle::move(Direction dir){
     direction = dir;
     this->rect->setRect(_moveRect(dir));
 }
 
+/**
+  Move the in the current direction, testing for collisions with the supplied obstacles
+  @param obstacles QList of other MovableRectangles
+  */
 void MovableRectangle::move(QList<MovableRectangle *> obstacles){
     move(direction,obstacles);
 }
 
+/**
+  Move the in the direction supplied, testing for collisions with the supplied obstacles
+  @param dir Direction to move
+  @param obstacles QList of other MovableRectangles
+  */
 void MovableRectangle::move(Direction dir,QList<MovableRectangle *> obstacles){
     QRectF r = _moveRect(dir);
     for (int i = 0; i < obstacles.size(); ++i) {

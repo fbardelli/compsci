@@ -23,7 +23,6 @@ void ProjectileView::cleanupProjectiles(){
         for (int i = 0; i < sceneItems.size(); ++i) {
             QGraphicsItem *p = sceneItems.at(i);
             if(p->y() > this->scene()->height()+100){
-                //qDebug() << "removing junk";
                 this->scene()->removeItem(p);
             }
         }
@@ -33,10 +32,10 @@ void ProjectileView::cleanupProjectiles(){
 void ProjectileView::keyPressEvent(QKeyEvent *e){
     switch(e->key()){
         case Qt::Key_Up:
-            cannon->incline();
+            cannon->raise();
             break;
         case Qt::Key_Down:
-            cannon->decline();
+            cannon->lower();
             break;
         case Qt::Key_Space:
             cannon->fire();

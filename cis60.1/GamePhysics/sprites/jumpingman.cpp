@@ -1,5 +1,10 @@
 #include "jumpingman.h"
 
+/**
+           Create a new jumping man
+
+           @param pixmap    QPixmap containing graphic representation of this sprite
+*/
 JumpingMan::JumpingMan( const QPixmap &pixmap,
                         QGraphicsScene *scene)
        : QObject(0), QGraphicsPixmapItem(pixmap, 0, scene){
@@ -12,6 +17,9 @@ JumpingMan::JumpingMan( const QPixmap &pixmap,
       facingRight = true;
 }
 
+/**
+  Move the sprite forward
+  */
 void JumpingMan::moveForward() {
     horizontalSpeed = 5;
     if(!facingRight){
@@ -20,6 +28,9 @@ void JumpingMan::moveForward() {
     }
 }
 
+/**
+  Move the sprite backwards
+  */
 void JumpingMan::moveBackward(){
     horizontalSpeed = -5;
     if(facingRight){
@@ -28,28 +39,50 @@ void JumpingMan::moveBackward(){
     }
 }
 
+/**
+  Get horizontal speed of JumpingMan
+
+  @returns horizonal speed
+  */
 int JumpingMan::getHorizonalSpeed(){
     return horizontalSpeed;
 }
 
+/**
+  Get vertical speed of JumpingMan
+
+  @returns vertical speed
+  */
 int JumpingMan::getVerticalSpeed(){
     return verticalSpeed;
 }
 
+/**
+  Halts horizontal movement
+  */
 void JumpingMan::stop(){
     horizontalSpeed = 0;
 }
 
+/**
+  Applies current gravity constant to Jumping Man
+  */
 void JumpingMan::applyGravity(double gravity){
     if( (this->pos().y()+this->boundingRect().height()) < this->scene()->height() ){
         verticalSpeed -= (4 * gravity);
     }
 }
 
+/**
+  @returns true if JumpingMan is jumping false otherwise
+  */
 bool JumpingMan::isJumping(){
     return jumping;
 }
 
+/**
+  Causes Jumping man to jump
+  */
 void JumpingMan::jump(){
     if(!jumping){
         verticalSpeed = 30;
@@ -57,6 +90,9 @@ void JumpingMan::jump(){
     }
 }
 
+/**
+  Update position of Jumping man based on horizontal speed vertical speed
+  */
 void JumpingMan::updatePosition(){
     QPointF point = this->pos();
     point.setX(this->x() + this->horizontalSpeed);

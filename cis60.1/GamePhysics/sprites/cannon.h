@@ -19,8 +19,8 @@ private:
     int projectileSpeed;
 public:
     explicit Cannon(QGraphicsScene *scene);
-    void incline();
-    void decline();
+    void raise();
+    void lower();
     void fire();
     void updateProjectiles();
     void setProjectileSpeed(int speed);

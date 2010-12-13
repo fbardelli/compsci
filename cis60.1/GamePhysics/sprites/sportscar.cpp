@@ -1,6 +1,11 @@
 #include "sportscar.h"
 #define FRICTION 3
 
+/**
+           Create a new sports car
+
+           @param pixmap    QPixmap containing graphic representation of this car
+*/
 SportsCar::SportsCar( const QPixmap &pixmap, QGraphicsItem *parent,
                       QGraphicsScene *scene)
      : QGraphicsPixmapItem(pixmap, parent, scene) {
@@ -13,8 +18,10 @@ SportsCar::SportsCar( const QPixmap &pixmap, QGraphicsItem *parent,
     canTurn = true;
 }
 
+/**
+           Apply the gas pedal increasing forward velocity towards the cars top speed
 
-
+*/
 void SportsCar::accelerate(){
     if(speed < topSpeed){
         speed += 6;
@@ -22,6 +29,10 @@ void SportsCar::accelerate(){
     canTurn = true;
 }
 
+/**
+           Apply the brake pedal reducing forward velocity, if car is stopped, puts car in reverse
+
+*/
 void SportsCar::reverse(){
     if(speed > -(topSpeed*0.5)){
         speed -= 5;
@@ -29,6 +40,12 @@ void SportsCar::reverse(){
     canTurn = true;
 }
 
+/**
+           Turns the wheel left changing the cars heading
+
+           @param degrees Degrees to turn the wheel
+
+*/
 void SportsCar::leftTurn(int degrees){
     if(canTurn){
         this->rotate(360-degrees);
@@ -40,6 +57,12 @@ void SportsCar::leftTurn(int degrees){
     }
 }
 
+/**
+           Turns the wheel right changing the cars heading
+
+           @param degrees Degrees to turn the wheel
+
+*/
 void SportsCar::rightTurn(int degrees){
     if(canTurn){
         this->rotate(degrees);
@@ -51,6 +74,10 @@ void SportsCar::rightTurn(int degrees){
     }
 }
 
+/**
+           Update the cars postion based on current speed, current heading, and friction with the road
+
+*/
 void SportsCar::updatePosition(){
     QPointF point = this->pos();
     //Friction is always acting to decrease speed toward 0

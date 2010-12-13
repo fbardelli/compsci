@@ -1,5 +1,7 @@
 #include "cannon.h"
-
+/**
+  Creat new cannon object
+  */
 Cannon::Cannon(QGraphicsScene *scene) :
     QObject(0), QGraphicsItemGroup(0, scene)
 {
@@ -14,10 +16,18 @@ Cannon::Cannon(QGraphicsScene *scene) :
     projectileSpeed = 70;
 }
 
+/**
+  Sets the initial speed at which cannon Projectiles will leave the barrel
+  @param speed Projectile speed
+  */
 void Cannon::setProjectileSpeed(int speed){
     projectileSpeed = speed;
 }
 
+/**
+  Fire new Projectile from cannon at the current projectileSpeed
+  Projectile start position is adjusted to match the end of the cannon barrel
+  */
 void Cannon::fire(){
     //Start centered at 50,50 from the bottom right, adjust position
     //to match the angle of the barrel
@@ -33,6 +43,9 @@ void Cannon::fire(){
     projectiles.append(projectile);
 }
 
+/**
+  Modify the position of all active projectiles,
+  */
 void Cannon::updateProjectiles(){
     QListIterator<Projectile *> i(projectiles);
     Projectile *p;
@@ -41,36 +54,31 @@ void Cannon::updateProjectiles(){
         p->updatePosition();
         QList<QGraphicsItem *> collisions = p->collidingItems();
         if(collisions.size() > 0){
-            qDebug()<<"collision size:"<<collisions.size();
+            //qDebug()<<"collision size:"<<collisions.size();
             QVector2D newVelocity = p->getVelocity();
             for (int i = 0; i < collisions.size(); ++i) {
                 QGraphicsItem *ob = collisions.at(i);
-                //p->resolveCollisionType(ob);
-                FixedRectangle *fr;
-                StackableSphere *ss;
-                if( (fr = qgraphicsitem_cast<FixedRectangle *>(ob)) !=0){
-                    newVelocity = p->handleCollision(fr);
-                }else if( (ss = qgraphicsitem_cast<StackableSphere *>(ob)) !=0){
-                    newVelocity = p->handleCollision(ss);
-                }else{
-                    //qDebug() << ob;
-                    p->handleCollision(ob);
-                }
+                newVelocity = p->resolveCollisionType(ob);
             }
             p->setVelocity(newVelocity);
-            //p->updatePosition();
         }
     }
 }
 
-
-void Cannon::incline(){
+/**
+  increases the angle of incline on the Cannon barrel to a maximum of 90 degrees, changing the angle new Projectiles will be fired at
+*/
+void Cannon::raise(){
     if(angle < 90){
         cannonbarrel->rotate(-5);
         angle+=5;
     }
 }
-void Cannon::decline(){
+
+/**
+  decreases the angle of incline on the Cannon barrel to a minimum of -5 degrees, changing the angle new Projectiles will be fired at
+*/
+void Cannon::lower(){
     if(angle > -5){
         cannonbarrel->rotate(5);
         angle-=5;

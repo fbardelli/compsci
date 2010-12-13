@@ -13,9 +13,9 @@ private:
     QGraphicsPixmapItem * leftThruster;
     QGraphicsPixmapItem * rightThruster;
     QGraphicsPixmapItem * mainThruster;
-    //QGraphicsRectItem   * bounding;
     int angle, verticalSpeed, horizontalSpeed;
     bool mainThrusterOn, rightThrusterOn, leftThrusterOn;
+    QPointF getNextPosition(QPointF point);
 
 public:
     explicit SpaceShip(QGraphicsScene *scene);
@@ -28,7 +28,6 @@ public:
     void levelSpaceship();
     void updatePosition();
     void applyDrag();
-    QPointF getNextPosition(QPointF point);
 signals:
 
 public slots:

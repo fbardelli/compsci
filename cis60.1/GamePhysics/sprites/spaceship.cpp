@@ -1,5 +1,8 @@
 #include "spaceship.h"
 
+/**
+  Constructs a new SpaceShip object and initializes all of its values
+  */
 SpaceShip::SpaceShip(QGraphicsScene *scene) :
         QObject(0), QGraphicsItemGroup(0, scene)
 {
@@ -25,6 +28,9 @@ SpaceShip::SpaceShip(QGraphicsScene *scene) :
     mainThrusterOn = rightThrusterOn = leftThrusterOn = false;
 }
 
+/**
+  Fires bottom thruster generating lift.  Thruster will glow while firing
+  */
 void SpaceShip::fireMainThruster(){
     mainThruster->setOpacity(1.0);
     if(verticalSpeed < 100){
@@ -33,6 +39,9 @@ void SpaceShip::fireMainThruster(){
     mainThrusterOn = true;
 }
 
+/**
+  Fires left thruster which pushes the spaceship right, rotating the ship slightly.  Thruster will glow while firing
+  */
 void SpaceShip::fireLeftThruster(){
     leftThruster->setOpacity(1.0);
     if(horizontalSpeed < 50){
@@ -48,6 +57,10 @@ void SpaceShip::fireLeftThruster(){
     leftThrusterOn = true;
 }
 
+
+/**
+  Fires left thruster which pushes the spaceship left, rotating the ship slightly.  Thruster will glow while firing
+  */
 void SpaceShip::fireRightThruster(){
     rightThruster->setOpacity(1.0);
     if(horizontalSpeed > -50){
@@ -63,21 +76,33 @@ void SpaceShip::fireRightThruster(){
     rightThrusterOn = true;
 }
 
+/**
+  Disables main thruster.
+  */
 void SpaceShip::cutMainThruster(){
     mainThruster->setOpacity(0.25);
     mainThrusterOn = false;
 }
 
+/**
+  Disables left thruster.
+  */
 void SpaceShip::cutLeftThruster(){
     leftThruster->setOpacity(0.25);
     leftThrusterOn = false;
 }
 
+/**
+  Disables right thruster.
+  */
 void SpaceShip::cutRightThruster(){
     rightThruster->setOpacity(0.25);
     rightThrusterOn = false;
 }
 
+/**
+  When thrusters are not firing this routine resets the shit to a level position.
+  */
 void SpaceShip::levelSpaceship(){
     if(rightThrusterOn == false && angle < 0){
         this->rotate(5);
@@ -89,6 +114,9 @@ void SpaceShip::levelSpaceship(){
     }
 }
 
+/**
+  Apply drag force reducing horizontal momentum.
+  */
 void SpaceShip::applyDrag(){
     if( horizontalSpeed > 0){
         horizontalSpeed--;
@@ -122,13 +150,14 @@ QPointF SpaceShip::getNextPosition(QPointF point){
     return point;
 }
 
+/**
+  Updates SpaceShip position on screen
+  */
 void SpaceShip::updatePosition(){
     QPointF point = this->pos();
     this->levelSpaceship();
     this->applyDrag();
 
     this->setPos(this->getNextPosition(point));
-    //qDebug() << "pos is " << this->pos();
-    //bounding->setRect(this->sceneBoundingRect());
 }
 

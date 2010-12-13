@@ -28,11 +28,10 @@ private:
 public:
     Projectile(int x, int y, int angle, int velocity);
     void updatePosition();
-    void handleCollision(QGraphicsItem *obstacle);
+    QVector2D handleCollision(QGraphicsItem *obstacle);
     QVector2D handleCollision(FixedRectangle *obstacle);
     QVector2D handleCollision(StackableSphere *obstacle);
-    void resolveCollisionType(QGraphicsItem *ob);
-    //double getImpactAngle();
+    QVector2D resolveCollisionType(QGraphicsItem *ob);
     void setMass(double m);
     double getMass();
     QVector2D getVelocity();

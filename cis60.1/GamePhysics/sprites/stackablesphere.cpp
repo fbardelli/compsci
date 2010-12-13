@@ -1,5 +1,8 @@
 #include "stackablesphere.h"
 
+/**
+  Create a new spherical sprite that can be stacked on top of other spites of the same type
+  */
 StackableSphere::StackableSphere()
 {
     this->setRect(0,0,40,40);
@@ -16,10 +19,20 @@ StackableSphere::StackableSphere()
     collisionState = false;
 }
 
+/**
+           Reset the mass of the projectile
+
+           param m    Value describing mass
+*/
 void StackableSphere::setMass(double m){
     mass = m;
 }
 
+/**
+           Return the mass of the projectile
+
+           @return    Value describing mass
+*/
 double StackableSphere::getMass(){
     return mass;
 }
@@ -32,22 +45,51 @@ int StackableSphere::getID(){
     return id;
 }
 
+
+
+
+
+/**
+           Set the velocity of a StackableSphere
+
+           @param    Vector describing Velocity
+*/
 void StackableSphere::setVelocity(QVector2D v){
     velocity = v;
 }
 
+/**
+           Return the velocity of the StackableSphere
+
+           @return    Vector describing current Velocity
+*/
 QVector2D StackableSphere::getVelocity(){
     return velocity;
 }
 
+/**
+           Reset the acceleration of a StackableSphere
+
+           @param    Vector describing acceleration
+*/
 void StackableSphere::setAcceleration(QVector2D a){
     acceleration = a;
 }
 
+/**
+           Return the acceleration of a StackableSphere
+
+           @return    Vector describing acceleration
+*/
 QVector2D StackableSphere::getAcceleration(){
     return acceleration;
 }
 
+/**
+           Reset the position of a StackableSphere
+
+           @param    Vector describing position
+*/
 void StackableSphere::setPosition(QVector2D p){
     position = p;
 }
@@ -64,9 +106,10 @@ QVector2D StackableSphere::getPosition(){
 void StackableSphere::applyGravity(){
 }
 
+/**
+  Update the position of the StackableSphere, stop when we hit the floor or another StackableSphere
+  */
 void StackableSphere::updatePosition(){
-    //QVector2D position = QVector2D(this->pos());
-    //velocity += acceleration;
     position += velocity;
     QList<QGraphicsItem *> collisions = this->collidingItems();
     bool objectsBelow = false;
@@ -79,28 +122,6 @@ void StackableSphere::updatePosition(){
                     objectsBelow = true;
                     position.setY(ss->getPosition().y()-ss->boundingRect().height());
                 }
-                //this->setPos(this->pos().x(),ss->pos().y()-ss->boundingRect().height()-2);
-                /*
-                QVector2D obCenter = QVector2D(ss->sceneBoundingRect().center());
-                QVector2D pCenter = QVector2D(this->sceneBoundingRect().center());
-                QVector2D obVelocity = ss->getVelocity();
-                qDebug() << "obV:" << obVelocity;
-                QVector2D vDiff  = velocity - obVelocity;
-                qDebug() << "vdiff:"<< vDiff;
-                QVector2D impact = QVector2D(obCenter-pCenter);
-                qDebug() << "impact:"<<impact;
-                QVector2D un = PhysicsUtils::componentVector(vDiff,impact);
-                qDebug() << "un:"<<(un);
-                QVector2D ut = vDiff - un;
-                qDebug() << "ut:"<<(ut);
-                qDebug()<<"(ut+obVelocity)"<<"("<<ut<<"+"<<obVelocity<<"):"<<(ut+obVelocity);
-                velocity = ut+obVelocity;
-                qDebug()<<"(un+obVelocity)"<<"("<<un<<"+"<<obVelocity<<"):"<<(un+obVelocity);
-                //this->setPos(position.x(),position.y());
-                ss->setVelocity((un+obVelocity));
-                //ss->setAcceleration(acceleration);
-                ss->updatePosition();
-                */
             }
         }
     }
