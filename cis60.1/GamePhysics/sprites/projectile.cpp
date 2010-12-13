@@ -131,7 +131,7 @@ QVector2D Projectile::handleCollision(StackableSphere *obstacle){
         QVector2D pCenter = QVector2D(this->sceneBoundingRect().center());
         QVector2D obVelocity = obstacle->getVelocity();
         QVector2D vDiff  = this->getVelocity() - obVelocity;
-        QVector2D impact = QVector2D((obCenter-obVelocity)-pCenter);
+        QVector2D impact = QVector2D(obCenter-(pCenter-newVelocity));
         QVector2D un     = PhysicsUtils::componentVector(vDiff,impact);
         QVector2D ut     = vDiff - un;
         QVector2D vn     = un * (massDiff-1)/(massDiff+1);
