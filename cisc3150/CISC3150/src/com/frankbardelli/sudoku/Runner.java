@@ -14,6 +14,7 @@ public class Runner {
 						"004010003";
 		g.parse(sudoku);
 		g.print();
+	    g.printVerbose();
 		int lastCountPossibleValues = g.totalCountPossibleValues();
 		g.solveNakedSingles();
 		g.solveHiddenSingles();
@@ -22,7 +23,6 @@ public class Runner {
 			g.solveNakedSingles();
 			g.solveHiddenSingles();
 		}
-		g.printVerbose();
 		g.print();
 	}
 

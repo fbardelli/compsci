@@ -8,7 +8,6 @@ public class Cell {
 	CellGroup parentRow;
 	CellGroup parentColumn;
 	public Cell(){
-		//System.err.println("in cell");
 		initializePossibleValues();
 		value = 0;
 	}

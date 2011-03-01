@@ -29,7 +29,7 @@ public class Grid {
 				cells[y][x].setParentRow(parentRow);
 				parentColumn.add(cells[y][x]);
 				cells[y][x].setParentColumn(parentColumn);
-				System.out.println("(" + x + "," + y + ")" + getGridIndexForCellAt(x,y));
+				//System.out.println("(" + x + "," + y + ")" + getGridIndexForCellAt(x,y));
 				parentGrid.add(cells[y][x]);
 				cells[y][x].setParentGrid(parentGrid);
 			}
@@ -66,7 +66,6 @@ public class Grid {
 	public void parse(String s){
 		int[][] grid = new int[9][9];
 		String[] fileRows = s.split("\n");
-		System.out.println(fileRows.length);
 		int i = 0;
 		for (String r : fileRows){
 			for (int j = 0; j < r.length(); j++){
@@ -129,21 +128,6 @@ public class Grid {
 			
 			
 			currentRow++;
-			/*
-			while(cellIterator.hasNext()){
-				Cell cell = cellIterator.next();
-				//System.out.print(cell.getValue());
-				HashMap<Integer,Boolean> possibles = cell.getPossibleValues();
-				Iterator<Integer> intIterator = possibles.iterator();
-				System.out.print("(");
-				while(intIterator.hasNext()){
-					Integer pValue = intIterator.next();
-					System.out.print(pValue.toString());
-				}
-				System.out.print(")");
-			}
-			System.out.println();
-			*/
 		}	
 	}
 	
