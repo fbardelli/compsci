@@ -15,17 +15,14 @@ public class Runner {
 		g.parse(sudoku);
 		g.print();
 	    g.printVerbose();
-		int lastCountPossibleValues = g.totalCountPossibleValues();
-		g.solveNakedSingles();
-		g.solveHiddenSingles();
-		while( g.totalCountPossibleValues()  < lastCountPossibleValues ){
+		int lastCountPossibleValues;
+		do {
 			lastCountPossibleValues = g.totalCountPossibleValues();
 			g.solveNakedSingles();
 			g.solveHiddenSingles();
-		}
+		} while( g.totalCountPossibleValues()  < lastCountPossibleValues );
 		g.print();
 	}
-
 }
 
 /*
