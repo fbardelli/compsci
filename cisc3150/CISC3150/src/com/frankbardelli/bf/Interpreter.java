@@ -4,39 +4,36 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Interpreter {
-	private String program;
-	private int programPointer;
-	private int localLoopStartPoint;
 	private Runtime runtime;
 	private String output;
+	private InputStream input;
 	
-	public Interpreter(String p){
+	public Interpreter(){
+		initialize();
+	}
+	
+	private void initialize(){
 		runtime = new Runtime();
-		initialize(p,runtime);		
+		initialize(runtime);		
 	}
 	
-	public Interpreter(String p, Runtime r){
-		initialize(p,r);
-	}
-	
-	public Interpreter(String p, Runtime r, InputStream i){
-		initialize(p,r);
-	}
-	
-	private void initialize(String p, Runtime r){
-		InputStream in  = System.in;
-		initialize(p, r, in);
-	}
-	
-	private void initialize(String p, Runtime r, InputStream i){
-		program = p;
-		programPointer = 0;
-		localLoopStartPoint = 0;
+	private void initialize(Runtime r){
+		input =  System.in;
 		runtime = r;
 		output = "";
 	}
 	
-	public String parse(){
+	public String parse(String p, InputStream i){
+		/* temporarily use an alternate Input Stream */
+		InputStream lastInput = input;
+		input = i;
+		String out = parse(p);
+		input = lastInput;
+		return out;	
+	}
+	
+	public String parse(String program){
+		int programPointer = 0;
 		while (programPointer < program.length()){
 			char op = program.charAt(programPointer);
 			switch (op){
@@ -57,37 +54,52 @@ public class Interpreter {
 					break;
 				case ',':
 					try {
-						int i = System.in.read();
+						int i = input.read();
 						runtime.putCellValue((char)i);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					break;
 				case '[':
-					int stackFrames = 0;
-					localLoopStartPoint = programPointer + 1;
+					int braces = 1;
+					int localLoopStartPoint = programPointer + 1;
 					int loopEndPoint = localLoopStartPoint;
-					while(stackFrames > 0){
+					/* find matching end bracket */
+					do {
 						loopEndPoint++;
 						char next = program.charAt(loopEndPoint);
 						if( next == '['){
-							stackFrames++;
+							braces++;
 						}else if (next == ']'){
-							stackFrames--;
+							braces--;
 						}
-					}
+					}while(braces > 0);
 					if(runtime.getCellValue() != (char)0){
 						if (localLoopStartPoint < loopEndPoint){
-							new Interpreter(program.substring(localLoopStartPoint, loopEndPoint-1),runtime).parse();
+							/* parse everything between the matching brackets */
+							parse(program.substring(localLoopStartPoint, loopEndPoint));
 						}
 					}else{
-						programPointer = loopEndPoint;
+						/* advance past end brace */
+						programPointer = loopEndPoint+1;
 					}
 					break;
 				case ']':
+					/* loop back if current cell is not 0 */					
 					if(runtime.getCellValue() != (char)0){
-						programPointer = localLoopStartPoint-1;
+						int loopStartPoint = programPointer;
+						/* find matching end bracket */
+						braces = 1;
+						do {
+							loopStartPoint--;
+							char next = program.charAt(loopStartPoint);
+							if( next == '['){
+								braces--;
+							}else if (next == ']'){
+								braces++;
+							}
+						}while(braces > 0);
+						programPointer = loopStartPoint;
 					}
 					break;
 			}
@@ -95,5 +107,4 @@ public class Interpreter {
 		}
 		return output;
 	}
-
 }

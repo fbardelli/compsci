@@ -36,7 +36,16 @@ public class Runtime {
 	public void putCellValue(char c){
 		memory[currentPosition] = c;
 	}
-
 	
+    public void showBuffer(int cellStart, int cellEnd){
+    	for(int i = cellStart; i <= cellEnd; i++){
+    		if(currentPosition == i){
+    		    System.out.print("["+ (int)memory[i]+"]");    			
+    		}else{
+    		    System.out.print(" "+ (int)memory[i]+" ");
+    		}
+    	}
+    	System.out.println();
+    }
 
 }
