@@ -146,6 +146,19 @@ public class Grid {
 		return totalPossibleValues;
 	}
 	
+	public void solveNakedPairs(){
+		for (int y = 0; y < 9; y++ ){
+			for (int x = 0; x < 9; x++){
+				Cell c = cells[y][x];
+				if( c.getPossibleValueCount() == 2 ){
+					CellGroup cRow = c.getParentRow();
+					CellGroup cCol = c.getParentColumn();
+					CellGroup cGrid = c.getParentGrid();
+				}
+			}
+		}
+	}
+	
 	public void solveNakedSingles(){
 		for (int y = 0; y < 9; y++ ){
 			for (int x = 0; x < 9; x++){

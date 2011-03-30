@@ -64,6 +64,20 @@ public class Cell {
 		return values;
 	}
 	
+	public int getPossibleValueCount(){
+		int pvCount = 0;
+		for ( boolean b : possibleValues ){
+			if(b){
+				pvCount++;
+			}
+		}
+		return pvCount;
+	}
+	
+	public boolean possibleValuesMatch(Cell c2){
+		return this.getPossibleValues().equals(c2.getPossibleValues());
+	}
+	
 	public int getValue(){
 		return value;
 	}
