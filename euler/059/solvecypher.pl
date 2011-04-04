@@ -1,5 +1,4 @@
 use strict;
-use Algorithm::Permute;
 
 my @msg = (
     79,59,12,2,79,35,8,28,20,2,3,68,8,9,68,45,0,12,9,67,68,4,7,5,23,27,1,21,79,85,78,79,
@@ -40,14 +39,12 @@ my @msg = (
     0,2,71,27,12,2,79,11,9,3,29,71,60,11,9,79,11,1,79,16,15,10,68,33,14,16,15,10,22,73
 );
 
-my $p = new Algorithm::Permute(['a'..'z'], 3);
-
-while ( my @key = $p->next ){
+for my $key ( 'aaa'..'zzz' ){
+    my @key = split //, $key;
     my $decyphered = "";
     my @mcopy = @msg;
     my @dcopy;
     while ( @mcopy > 0 ){
-        
         my @decrypt = (
             (shift @mcopy ^ ord($key[0])), 
             ( @mcopy>0 ? (shift @mcopy ^ ord($key[1])):()),
@@ -68,4 +65,3 @@ while ( my @key = $p->next ){
         print "sum = $sum\n";
     }
 }
-
