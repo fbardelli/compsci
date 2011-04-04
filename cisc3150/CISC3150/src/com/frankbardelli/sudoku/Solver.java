@@ -50,7 +50,6 @@ public class Solver {
     
     public void solveHiddenSingleInCellGroup(Cell c, CellGroup cg) {
         HashMap<Integer,Boolean> possibles = new HashMap<Integer,Boolean>();
-        //c.getPossibleValues();
         HashMap<Integer,Boolean> cellPossibles = c.getPossibleValues();
         for( Integer i : cellPossibles.keySet()){
             if( cellPossibles.get(i).booleanValue() ){
@@ -77,6 +76,9 @@ public class Solver {
         
     }
     
+    /* Based on Bob Carpenters backtracking sudoku solver 
+     * http://www.colloquial.com/games/sudoku/java_sudoku.html
+     */
     public void solveBacktracking(){
         if(! solveBT(0,0)){
             System.out.println("Failed to solve Puzzle");
