@@ -17,9 +17,10 @@ public class Window extends JFrame {
 	}
 	public Window(){
 		this.setSize(800, 800);
-		this.setVisible(true);
 		this.setLayout(new BorderLayout());
 		this.add(getSudokuGrid(),BorderLayout.CENTER);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	    this.setVisible(true);
 	}
 	
 	public JPanel getSudokuGrid(){

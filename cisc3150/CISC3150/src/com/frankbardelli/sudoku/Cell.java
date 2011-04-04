@@ -48,12 +48,14 @@ public class Cell {
 	
 	public void setValue(int value){
 		this.value = value;
-		for( int i = 0; i < 9; i++ ){
-			possibleValues[i] = ( (i+1) == value ? true : false );
+		if(value > 0){
+    		for( int i = 0; i < 9; i++ ){
+    			possibleValues[i] = ( (i+1) == value ? true : false );
+    		}
+    		parentGrid.solve(value);
+    		parentRow.solve(value);
+    		parentColumn.solve(value);
 		}
-		parentGrid.solve(value);
-		parentRow.solve(value);
-		parentColumn.solve(value);
 	}
 	
 	public HashMap<Integer,Boolean> getPossibleValues(){

@@ -1,16 +1,20 @@
 package com.frankbardelli.sudoku;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class Runner {
 	public static void main(String[] args){
 		Grid g = new Grid();
-		String sudoku = "200080300\n" +
-						"060070084\n" +
-						"030500209\n" +
-						"000105408\n" +
-						"000000000\n" +
-						"402706000\n" +
-						"301007040\n" +
-						"720040060\n" +
+		Solver solver = new Solver(g);
+		String sudoku = "200080300" +
+						"060070084" +
+						"030500209" +
+						"000105408" +
+						"000000000" +
+						"402706000" +
+						"301007040" +
+						"720040060" +
 						"004010003";
 		g.parse(sudoku);
 		g.print();
@@ -18,10 +22,33 @@ public class Runner {
 		int lastCountPossibleValues;
 		do {
 			lastCountPossibleValues = g.totalCountPossibleValues();
-			g.solveNakedSingles();
-			g.solveHiddenSingles();
+			solver.solveNakedSingles();
+			solver.solveHiddenSingles();
 		} while( g.totalCountPossibleValues()  < lastCountPossibleValues );
 		g.print();
+		System.out.println();
+		
+		Grid g2 = new Grid();
+		Solver solver2 = new Solver(g2);
+	    g2.parse(sudoku);
+	    solver2.solveBacktracking();
+	    System.out.println();
+	    g2.print();
+	    
+	    Problems problems = new Problems();
+	    List<String> problemList = problems.getProblemList();
+	    Iterator<String> pIter = problemList.iterator();
+	    int sum = 0;
+	    while(pIter.hasNext()){
+	        Grid g3 = new Grid();
+	        g3.parse(pIter.next());
+	        Solver solver3 = new Solver(g3);
+	        solver3.solveBacktracking();
+	        System.out.println();
+	        sum += g3.firstThree();
+	        g3.print();
+	    }
+	    System.out.println(sum);
 	}
 }
 

@@ -65,7 +65,11 @@ public class Grid {
 	
 	public void parse(String s){
 		int[][] grid = new int[9][9];
-		String[] fileRows = s.split("\n");
+		String[] fileRows = new String[9];
+		String clean = s.replaceAll("\n","");
+		for(int i=0; i<9; i++){
+		    fileRows[i] = clean.substring(i*9,i*9+9);
+		}
 		int i = 0;
 		for (String r : fileRows){
 			for (int j = 0; j < r.length(); j++){
@@ -74,6 +78,13 @@ public class Grid {
 			i++;
 		}
 		populate(grid);
+	}
+	
+	public int firstThree(){
+	    CellGroup cg = rows.get(0);
+	    return cg.getCells().get(0).getValue() * 100 +
+	    cg.getCells().get(1).getValue() * 10 +
+	    cg.getCells().get(2).getValue();
 	}
 	
 	public void print(){
@@ -146,85 +157,6 @@ public class Grid {
 		return totalPossibleValues;
 	}
 	
-	public void solveNakedPairs(){
-		for (int y = 0; y < 9; y++ ){
-			for (int x = 0; x < 9; x++){
-				Cell c = cells[y][x];
-				if( c.getPossibleValueCount() == 2 ){
-					CellGroup cRow = c.getParentRow();
-					CellGroup cCol = c.getParentColumn();
-					CellGroup cGrid = c.getParentGrid();
-				}
-			}
-		}
-	}
-	
-	public void solveNakedSingles(){
-		for (int y = 0; y < 9; y++ ){
-			for (int x = 0; x < 9; x++){
-				Cell c = cells[y][x];
-				if( c.getValue() < 1){
-					CellGroup cRow = c.getParentRow();
-					CellGroup cCol = c.getParentColumn();
-					CellGroup cGrid = c.getParentGrid();
-					ArrayList<Integer> allSolved = cRow.getSolved();
-					allSolved.addAll(cCol.getSolved());
-					allSolved.addAll(cGrid.getSolved());
-					for(Integer i : allSolved){
-						c.eliminatePossibleValue(i.intValue());
-						c.attemptSolve();
-					}
-				}
-				
-			}
-		}
-	}
-	
-	public void solveHiddenSingles(){
-		for (int y = 0; y < 9; y++ ){
-			for (int x = 0; x < 9; x++){
-				Cell c = cells[y][x];
-				if( c.getValue() < 1){
-					//System.out.println("checking cell ("+x+","+y+")for hiddens");
-					CellGroup cRow = c.getParentRow();
-					CellGroup cCol = c.getParentColumn();
-					CellGroup cGrid = c.getParentGrid();
-					solveHiddenSingleInCellGroup(c, cRow);
-					solveHiddenSingleInCellGroup(c, cCol);
-					solveHiddenSingleInCellGroup(c, cGrid);
-				}
-			}
-		}
-	}
-	
-	public void solveHiddenSingleInCellGroup(Cell c, CellGroup cg) {
-		HashMap<Integer,Boolean> possibles = new HashMap<Integer,Boolean>();
-		//c.getPossibleValues();
-		HashMap<Integer,Boolean> cellPossibles = c.getPossibleValues();
-		for( Integer i : cellPossibles.keySet()){
-			if( cellPossibles.get(i).booleanValue() ){
-				possibles.put(i, new Boolean(true));
-			}
-		}
-		for( Cell c2 : cg.getCells()){
-			if (! c.equals(c2) ){
-				HashMap<Integer,Boolean> cell2Possibles = c2.getPossibleValues();
-				for( Integer i : cellPossibles.keySet()){
-					if( cell2Possibles.get(i).booleanValue() ){
-						possibles.remove(i);
-					}
-				}
-			}
-		}
-		if(possibles.size() == 1){
-			for( Integer i : possibles.keySet()){
-				//System.out.println( " For Cell only possibility is " + i.toString() );
-				c.setValue(i.intValue());
-			}
-
-		}
-		
-	}
 	
 	public int countSolved(){
 		int countSolved = 0;
