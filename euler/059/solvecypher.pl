@@ -43,25 +43,20 @@ for my $key ( 'aaa'..'zzz' ){
     my @key = split //, $key;
     my $decyphered = "";
     my @mcopy = @msg;
-    my @dcopy;
     while ( @mcopy > 0 ){
         my @decrypt = (
             (shift @mcopy ^ ord($key[0])), 
             ( @mcopy>0 ? (shift @mcopy ^ ord($key[1])):()),
             ( @mcopy>0 ? (shift @mcopy ^ ord($key[2])):())
         );
-        $decyphered .= join( "",
-                        map{chr}
-                        @decrypt
-        );
-        push @dcopy,@decrypt;
+        $decyphered .= join("", map{chr} @decrypt);
     }
     if ($decyphered =~ m/ the / && $decyphered =~ m/ and /){
-        print "key: @key\nmessage: $decyphered\n";
         my $sum;
-        for my $digit (@dcopy){
+        for my $digit (map {ord} split //, $decyphered){
             $sum += $digit;
         }
-        print "sum = $sum\n";
+        print "key: @key\nmessage: $decyphered\nsum = $sum\n";
+        last;
     }
 }
