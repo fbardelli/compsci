@@ -17,6 +17,10 @@ public class Cell {
 		setValue(value);
 	}
 	
+	public void clear(){
+		initializePossibleValues();
+	}
+	
 	private void initializePossibleValues(){
 		possibleValues = new boolean[9];		
 		for( int i = 0; i < 9; i++ ){

@@ -2,65 +2,178 @@ package com.frankbardelli.sudoku;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.Random;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class Window extends JFrame {
+	Grid grid;
+	JPanel[] subgridPanel;
+	JPanel[][] cellPanel;
 	public static void main(String[] args){
-		Window w = new Window();
-		
+		Grid grid = new Grid();
+	    Problems problems = new Problems();
+	    List<String> problemList = problems.getProblemList();
+	    grid.parse(problemList.get(0));
+		Window w = new Window(grid);
 	}
-	public Window(){
-		this.setSize(800, 800);
+	public Window(Grid grid){
+		this.grid = grid;
+		this.subgridPanel = new JPanel[9];
+		this.cellPanel = new JPanel[9][9];
+		this.setSize(600, 600);
 		this.setLayout(new BorderLayout());
 		this.add(getSudokuGrid(),BorderLayout.CENTER);
+		JButton solveEasyButton = new JButton("Solve Simple");
+		solveEasyButton.addActionListener(new SolveEasyListener(this,this.grid));
+		JButton solveAnyButton = new JButton("Solve Any");
+		solveAnyButton.addActionListener(new SolveListener(this,this.grid));
+		this.add(solveEasyButton,BorderLayout.NORTH);
+		this.add(solveAnyButton,BorderLayout.SOUTH);
+		this.updateGrid();
+		createMenu();
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	    this.setVisible(true);
+	}
+	
+	public void createMenu(){
+		JMenuBar menuBar = new JMenuBar();
+		JMenu puzzles = new JMenu("Puzzles");
+		Problems problems = new Problems();
+		JMenu[] puzzleList = new JMenu[5];
+		for (int i = 0; i < 5; i++){
+			puzzleList[i] = new JMenu("Puzzles " + (10 * i + 1) + "-" + (10 * (i+1)) );
+			puzzles.add(puzzleList[i]);
+		}
+		int j = 0;
+		for (String p : problems.getProblemList()){
+			//a group of JMenuItems
+			JMenuItem menuItem = new JMenuItem("Puzzle #"+ (j+1));
+			puzzleList[j/10].add(menuItem);
+			menuItem.addActionListener(new PuzzleSelectListener(this,grid,p));
+			j++;
+		}
+		menuBar.add(puzzles);
+		this.setJMenuBar(menuBar);
+
 	}
 	
 	public JPanel getSudokuGrid(){
 		JPanel sudokuGrid = new JPanel();
 		sudokuGrid.setLayout(new GridLayout(3,3,2,2));
-		for (int y = 0; y < 3; y++){
-			for (int x = 0; x < 3; x++){
-				JPanel innerGrid = new JPanel();
-				innerGrid.setLayout(new GridLayout(3,3,1,1));
-				innerGrid.setBorder(new LineBorder(Color.BLACK));
-				sudokuGrid.add(innerGrid);
-				Random r = new Random();
-				for (int j = 0; j < 3; j++){
-					for (int k = 0; k < 3; k++){				
-						JPanel cell = new JPanel();
-						cell.setBorder(new LineBorder(Color.BLUE));
-						innerGrid.add(cell);
-						if(r.nextBoolean()){
-							cell.setLayout(new GridLayout(3,3));
-							for (int l = 1; l <= 9; l++){
-									JPanel pValue = new JPanel();
-									//pValue.setBorder(new LineBorder(Color.GRAY));
-									JLabel label = new JLabel(new Integer(l).toString());
-									//label.setSize(5, 5);
-									label.setForeground(Color.BLUE);
-									//label.setFont(Font.getFont(Font.MONOSPACED));
-									pValue.add(label);
-									cell.add(pValue);
-							}
-						} else {
-							JLabel label = new JLabel(new Integer(3*j+k+1).toString());
-							label.setFont(label.getFont().deriveFont(50.0f));
-							cell.add(label);
-							
-						}
-					}
-				}
+		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
+			subgridPanel[subgridIndex] = new JPanel();
+			subgridPanel[subgridIndex].setLayout(new GridLayout(3, 3, 1, 1));
+			subgridPanel[subgridIndex].setBorder(new LineBorder(Color.BLACK));
+			sudokuGrid.add(subgridPanel[subgridIndex]);
+			for (int cellIndex = 0; cellIndex < 9; cellIndex++) {
+				cellPanel[subgridIndex][cellIndex] = new JPanel();
+				cellPanel[subgridIndex][cellIndex].setBorder(new LineBorder(Color.BLUE));
+				subgridPanel[subgridIndex].add(cellPanel[subgridIndex][cellIndex]);
 			}
 		}
 		return sudokuGrid;
 	}
+	
+	public void updateGrid(){
+		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
+			CellGroup cg = grid.getGrid(subgridIndex);
+			ArrayList<Cell> cells = cg.getCells();
+			for (int cellIndex = 0; cellIndex < 9; cellIndex++) {
+				Cell c = cells.get(cellIndex);
+				JPanel cell = cellPanel[subgridIndex][cellIndex];
+				cell.removeAll();
+				if (c.getValue() == 0) { 
+					cell.setLayout(new GridLayout(3,3)); 
+					HashMap<Integer, Boolean> pValues = c.getPossibleValues(); 
+					for (int l = 1; l <= 9; l++) {
+						JPanel pValue = new JPanel();
+						JLabel label = new JLabel();
+						if(pValues.get(new Integer(l))) {
+							label.setText(new Integer(l).toString());
+						}
+						label.setForeground(Color.BLUE);
+						pValue.add(label);
+						cell.add(pValue); 
+					} 
+				} else {
+					cell.setLayout(new FlowLayout());
+					JLabel label = new JLabel(new Integer(c.getValue()).toString());
+					label.setFont(label.getFont().deriveFont(40.0f));
+					cell.add(label);
+				}
+				//Cell subcomponents and layout may have changed so repaint and revalidate
+				cell.repaint();
+				cell.revalidate();
+				 
+			}
+		}
+		
+	}
 
+	public class PuzzleSelectListener implements ActionListener{
+		Window window;
+		Grid grid;
+		String puzzle;
+		public PuzzleSelectListener(Window w, Grid g, String p){
+			this.window = w;
+			this.grid = g;
+			this.puzzle = p;
+		}
+		public void actionPerformed(ActionEvent e) {
+			this.grid.parse(puzzle);
+			this.window.updateGrid();
+		}
+		
+	}
+
+	public class SolveEasyListener implements ActionListener{
+		Window window;
+		Grid grid;
+		public SolveEasyListener(Window w, Grid g){
+			this.window = w;
+			this.grid = g;
+		}
+		public void actionPerformed(ActionEvent e) {
+			Solver s = new Solver(this.grid);
+			int lastCountPossibleValues;
+			do {
+				lastCountPossibleValues = this.grid.totalCountPossibleValues();
+				s.solveNakedSingles();
+				s.solveHiddenSingles();
+			} while( this.grid.totalCountPossibleValues()  < lastCountPossibleValues );
+			this.grid.print();
+			this.window.updateGrid();
+		}
+		
+	}
+	
+	public class SolveListener implements ActionListener{
+		Window window;
+		Grid grid;
+		public SolveListener(Window w, Grid g){
+			this.window = w;
+			this.grid = g;
+		}
+		public void actionPerformed(ActionEvent e) {
+			Solver s = new Solver(this.grid);
+			s.solveBacktracking();
+			this.grid.print();
+			this.window.updateGrid();
+		}
+		
+	}
 }

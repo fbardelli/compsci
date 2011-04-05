@@ -4,18 +4,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Problems {
-    String[] problems;
+    String[] projectEulerProblems;
     public Problems(){
         initializeData();
     }
     
     public List<String> getProblemList() {
-        List<String> pList = Arrays.asList(this.problems);
+        List<String> pList = Arrays.asList(this.projectEulerProblems);
         return pList;
     }
     
     private void initializeData(){
-        this.problems = new String[]{
+        this.projectEulerProblems = new String[]{
             "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
             "200080300060070084030500209000105408000000000402706000301007040720040060004010003",
             "000000907000420180000705026100904000050000040000507009920108000034059000507000000",
@@ -68,6 +68,10 @@ public class Problems {
             "300200000000107000706030500070009080900020004010800050009040301000702000000008006"
         };
         
+    }
+    
+    public String worstCaseScenario(){
+    	return "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
     }
 
 }

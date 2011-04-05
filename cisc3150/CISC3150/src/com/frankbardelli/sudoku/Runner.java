@@ -39,12 +39,12 @@ public class Runner {
 	    List<String> problemList = problems.getProblemList();
 	    Iterator<String> pIter = problemList.iterator();
 	    int sum = 0;
+	    Grid g3 = new Grid();
 	    while(pIter.hasNext()){
-	        Grid g3 = new Grid();
 	        g3.parse(pIter.next());
 	        Solver solver3 = new Solver(g3);
 	        solver3.solveBacktracking();
-	        System.out.println();
+	        System.out.println(g3.firstThree());
 	        sum += g3.firstThree();
 	        g3.print();
 	    }

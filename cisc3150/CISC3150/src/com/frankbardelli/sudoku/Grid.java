@@ -9,7 +9,13 @@ public class Grid {
 	private ArrayList<CellGroup> cols;
 	private ArrayList<CellGroup> grids;
 	private Cell[][] cells;
+	private boolean isPopulated;
+	
 	public Grid(){
+		reset();
+	}
+	
+	public void reset(){
 		rows = new ArrayList<CellGroup>();
 		cols = new ArrayList<CellGroup>();
 		grids = new ArrayList<CellGroup>();
@@ -29,11 +35,11 @@ public class Grid {
 				cells[y][x].setParentRow(parentRow);
 				parentColumn.add(cells[y][x]);
 				cells[y][x].setParentColumn(parentColumn);
-				//System.out.println("(" + x + "," + y + ")" + getGridIndexForCellAt(x,y));
 				parentGrid.add(cells[y][x]);
 				cells[y][x].setParentGrid(parentGrid);
 			}
 		}
+		isPopulated = false;
 	}
 	/*
 	 	 0             1             2
@@ -61,9 +67,13 @@ public class Grid {
 				}
 			}
 		}
+		isPopulated = true;
 	}
 	
 	public void parse(String s){
+		if(isPopulated){
+			reset();
+		}
 		int[][] grid = new int[9][9];
 		String[] fileRows = new String[9];
 		String clean = s.replaceAll("\n","");
