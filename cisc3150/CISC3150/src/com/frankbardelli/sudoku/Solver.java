@@ -5,9 +5,11 @@ import java.util.HashMap;
 
 public class Solver {
     private Grid grid;
+    private long solveCounter;
     
     public Solver(Grid grid){
         this.grid = grid;
+        this.solveCounter = 0;
     }
     
     public void solveNakedSingles(){
@@ -80,12 +82,15 @@ public class Solver {
      * http://www.colloquial.com/games/sudoku/java_sudoku.html
      */
     public void solveBacktracking(){
+    	this.solveCounter = 0;
         if(! solveBT(0,0)){
             System.out.println("Failed to solve Puzzle");
         }
+        System.out.println("Solved in " + this.solveCounter + " iterations");
     }
     
     private boolean solveBT(int y, int x) {
+    	this.solveCounter++;
         if (y == 9) {
             y = 0;
             if (++x == 9)

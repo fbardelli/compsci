@@ -1,19 +1,25 @@
+/*
+ * Frank Bardelli
+ * ThreeAxisControl
+ * Renders a canvas with a movable point
+ * March 20, 2011
+ * CISC 3150  
+ */
+
 package com.frankbardelli;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 
 public class ThreeAxisControl extends JFrame{
@@ -26,44 +32,27 @@ public class ThreeAxisControl extends JFrame{
 	}
 	
 	public ThreeAxisControl(){
-		this.setSize(550, 400);
-		this.x = 0;
-		this.y = 0;
-		this.z = 0;
-		this.canvas = new ThreeAxisCanvas(this);
-		this.canvas.setBackground(Color.BLACK);
+		this.setSize(600, 400);
+		x = y = z = 0;
+		
+		//Create 2d plane that allows movement along x and y axis
+		canvas = new ThreeAxisCanvas(this);
+		canvas.setBackground(Color.BLACK);
+		canvas.setBorder(new LineBorder(Color.BLACK, 1));
+		
 		this.setLayout(new BorderLayout());
 		JPanel controls = new JPanel();
-		controls.setLayout(new GridLayout(2,3));
-		controls.add(new JPanel());
-		
-		JButton upButton = new JButton("UP");
-		upButton.addActionListener(new upActionListener(this));
-		controls.add(upButton);
-		
-		controls.add(new JPanel());
-		
-		JButton leftButton = new JButton("LEFT");
-		leftButton.addActionListener(new leftActionListener(this));
-		controls.add(leftButton);
-		
-		JButton downButton = new JButton("DOWN");
-		downButton.addActionListener(new downActionListener(this));
-		controls.add(downButton);
-		
-		JButton rightButton = new JButton("RIGHT");
-		rightButton.addActionListener(new rightActionListener(this));
-		controls.add(rightButton);
-		
+		controls.add(new JLabel("Use arrow keys to move the point"));
 		this.add(controls,BorderLayout.SOUTH);
 		this.add(canvas,BorderLayout.CENTER);
 		
 		pIndicator = new PositionIndicator(x,y,z);
 		this.add(pIndicator,BorderLayout.EAST);
+		
+		//Handle Keyboard input
 		this.setFocusable(true);
 		this.addKeyListener(new motionKeyListener(this));
-		this.requestFocus();
-		
+		this.requestFocus();	
 		this.setVisible(true);
 	}
 	
@@ -101,64 +90,35 @@ public class ThreeAxisControl extends JFrame{
 		
 		public void keyPressed(KeyEvent e) {
 			System.out.println("key pressed "+e.getKeyCode());
-			switch(e.getKeyCode()){
-				case KeyEvent.VK_LEFT:
-					tac.moveLeft();
-					break;
-				case KeyEvent.VK_RIGHT:
-					tac.moveRight();
-					break;
-				case KeyEvent.VK_DOWN:
-					tac.moveDown();
-					break;
-				case KeyEvent.VK_UP:
+			int key = e.getKeyCode();
+			
+			if( key == KeyEvent.VK_LEFT ){
+				tac.moveLeft();
+			}
+			
+			if( key == KeyEvent.VK_RIGHT ){
+				tac.moveRight();
+			}
+			
+			if( key == KeyEvent.VK_DOWN ){
+				tac.moveDown();
+			}
+			
+			if( key == KeyEvent.VK_UP ){
 					tac.moveUp();
-					break;
 			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	}
 	
-	public class upActionListener implements ActionListener {
-		ThreeAxisControl tac;
-		public upActionListener(ThreeAxisControl tac){ this.tac = tac;}
-		public void actionPerformed(ActionEvent e) {
-			tac.moveUp();
-		}
-	}
-	public class downActionListener implements ActionListener {
-		ThreeAxisControl tac;
-		public downActionListener(ThreeAxisControl tac){ this.tac = tac;}
-		public void actionPerformed(ActionEvent e) {
-			tac.moveDown();
-		}
-	}	
-	public class leftActionListener implements ActionListener {
-		ThreeAxisControl tac;
-		public leftActionListener(ThreeAxisControl tac){ this.tac = tac;}
-		public void actionPerformed(ActionEvent e) {
-			tac.moveLeft();
-		}
-	}
-	public class rightActionListener implements ActionListener {
-		ThreeAxisControl tac;
-		public rightActionListener(ThreeAxisControl tac){ this.tac = tac;}
-		public void actionPerformed(ActionEvent e) {
-			tac.moveRight();
-		}
-	}
 	public int getX() {
 		return x;
 	}

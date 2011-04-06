@@ -37,12 +37,15 @@ public class Window extends JFrame {
 		this.setSize(600, 600);
 		this.setLayout(new BorderLayout());
 		this.add(getSudokuGrid(),BorderLayout.CENTER);
-		JButton solveEasyButton = new JButton("Solve Simple");
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BorderLayout());
+		JButton solveEasyButton = new JButton("Solve Deductively");
 		solveEasyButton.addActionListener(new SolveEasyListener(this,this.grid));
-		JButton solveAnyButton = new JButton("Solve Any");
+		JButton solveAnyButton = new JButton("Solve Brute Force");
 		solveAnyButton.addActionListener(new SolveListener(this,this.grid));
-		this.add(solveEasyButton,BorderLayout.NORTH);
-		this.add(solveAnyButton,BorderLayout.SOUTH);
+		buttonPanel.add(solveEasyButton,BorderLayout.NORTH);
+		buttonPanel.add(solveAnyButton,BorderLayout.SOUTH);
+		this.add(buttonPanel,BorderLayout.SOUTH);
 		this.updateGrid();
 		createMenu();
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -66,6 +69,9 @@ public class Window extends JFrame {
 			menuItem.addActionListener(new PuzzleSelectListener(this,grid,p));
 			j++;
 		}
+		JMenuItem worstCase = new JMenuItem("Worst Case Scenario");
+		worstCase.addActionListener(new PuzzleSelectListener(this,grid,problems.worstCaseScenario()));
+		puzzles.add(worstCase);
 		menuBar.add(puzzles);
 		this.setJMenuBar(menuBar);
 
@@ -155,7 +161,7 @@ public class Window extends JFrame {
 				s.solveNakedSingles();
 				s.solveHiddenSingles();
 			} while( this.grid.totalCountPossibleValues()  < lastCountPossibleValues );
-			this.grid.print();
+			//this.grid.print();
 			this.window.updateGrid();
 		}
 		
@@ -171,7 +177,7 @@ public class Window extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Solver s = new Solver(this.grid);
 			s.solveBacktracking();
-			this.grid.print();
+			//this.grid.print();
 			this.window.updateGrid();
 		}
 		
