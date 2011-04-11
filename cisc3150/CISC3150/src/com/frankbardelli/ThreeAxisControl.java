@@ -12,13 +12,19 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
 
@@ -26,6 +32,8 @@ public class ThreeAxisControl extends JFrame{
 	private int x, y, z;
 	private ThreeAxisCanvas canvas;
 	private PositionIndicator pIndicator;
+	private boolean leftPressed, rightPressed, upPressed, downPressed;
+	private List<Point> line;
 
 	public static void main(String[] args){
 		ThreeAxisControl tac = new ThreeAxisControl();
@@ -33,12 +41,20 @@ public class ThreeAxisControl extends JFrame{
 	
 	public ThreeAxisControl(){
 		this.setSize(600, 400);
-		x = y = z = 0;
+		leftPressed = rightPressed = upPressed = downPressed = false;
 		
 		//Create 2d plane that allows movement along x and y axis
 		canvas = new ThreeAxisCanvas(this);
 		canvas.setBackground(Color.BLACK);
 		canvas.setBorder(new LineBorder(Color.BLACK, 1));
+		
+		x = 100;
+		y = 100;
+		z = 0;
+
+		line = new ArrayList<Point>();
+		Point startPoint = new Point(x,y);
+		line.add(startPoint);
 		
 		this.setLayout(new BorderLayout());
 		JPanel controls = new JPanel();
@@ -48,7 +64,7 @@ public class ThreeAxisControl extends JFrame{
 		
 		pIndicator = new PositionIndicator(x,y,z);
 		this.add(pIndicator,BorderLayout.EAST);
-		
+		new Timer(100, new updateScreenAction(this)).start();
 		//Handle Keyboard input
 		this.setFocusable(true);
 		this.addKeyListener(new motionKeyListener(this));
@@ -58,28 +74,47 @@ public class ThreeAxisControl extends JFrame{
 	
 	public void moveRight(){
 		this.x += 5;
-		updatePosition();
 	}
 	
 	public void moveLeft(){
 		this.x -= 5;
-		updatePosition();
 	}
 
 	public void moveUp(){
 		this.y -= 5;
-		updatePosition();
 	}
 	
 	public void moveDown(){
 		this.y += 5;
-		updatePosition();
 	}
 	
 	public void updatePosition(){
-		this.repaint();
+		int lastX = x, lastY = y;
+		if(upPressed)
+			moveUp();
+		if(leftPressed)
+			moveLeft();
+		if(rightPressed)
+			moveRight();
+		if(downPressed)
+			moveDown();
+		
+		if(lastX != x || lastY != y){
+			line.add(new Point(x,y));
+			pIndicator.updatePosition(x, y, z);
+			this.repaint();
+		}
 		this.requestFocus();
-		pIndicator.updatePosition(x, y, z);
+	}
+	
+	public class updateScreenAction implements ActionListener {
+		ThreeAxisControl tac;
+		public updateScreenAction(ThreeAxisControl tac){
+			this.tac = tac;
+		}
+	    public void actionPerformed(ActionEvent e) {
+	    	tac.updatePosition();
+	    }
 	}
 	
 	public class motionKeyListener implements KeyListener{
@@ -89,31 +124,31 @@ public class ThreeAxisControl extends JFrame{
 		}
 		
 		public void keyPressed(KeyEvent e) {
-			System.out.println("key pressed "+e.getKeyCode());
+			//System.out.println("key pressed "+e.getKeyCode());
 			int key = e.getKeyCode();
-			
-			if( key == KeyEvent.VK_LEFT ){
-				tac.moveLeft();
-			}
-			
-			if( key == KeyEvent.VK_RIGHT ){
-				tac.moveRight();
-			}
-			
-			if( key == KeyEvent.VK_DOWN ){
-				tac.moveDown();
-			}
-			
-			if( key == KeyEvent.VK_UP ){
-					tac.moveUp();
-			}
+			if( key == KeyEvent.VK_LEFT )
+				leftPressed = true;
+			if( key == KeyEvent.VK_RIGHT )
+				rightPressed = true;
+			if( key == KeyEvent.VK_DOWN )
+				downPressed = true;
+			if( key == KeyEvent.VK_UP )
+				upPressed = true;
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
+			int key = e.getKeyCode();
+			if( key == KeyEvent.VK_LEFT )
+				leftPressed = false;
+			if( key == KeyEvent.VK_RIGHT )
+				rightPressed = false;
+			if( key == KeyEvent.VK_DOWN )
+				downPressed = false;
+			if( key == KeyEvent.VK_UP )
+				upPressed = false;
 		}
 
-		@Override
 		public void keyTyped(KeyEvent e) {
 		}
 		
@@ -173,11 +208,17 @@ public class ThreeAxisControl extends JFrame{
 		}
 		
 		public void paintComponent(Graphics g){
-			g.setColor(getBackground());
-			g.drawRect(0, 0, this.getWidth(), this.getHeight());
 			g.setColor(Color.BLUE);
-			System.out.println("x "+tac.getX() + " y "+ tac.getY());
-			g.fillOval(tac.getX(), tac.getY(), 10, 10);
+			g.fillOval(tac.getX()-5, tac.getY()-5, 10, 10);
+			Point lastPoint = line.get(0);
+			for(int i = 1; i < line.size(); i++){
+				Point p = line.get(i);
+				g.drawLine(
+						(int)lastPoint.getX(), (int)lastPoint.getY(),
+						(int)p.getX(), (int)p.getY()
+				);
+				lastPoint = p;
+			}
 		}
 	}
 }

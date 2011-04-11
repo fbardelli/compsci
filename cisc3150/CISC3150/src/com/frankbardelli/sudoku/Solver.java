@@ -91,23 +91,31 @@ public class Solver {
     
     private boolean solveBT(int y, int x) {
     	this.solveCounter++;
+    	//at end of column?
         if (y == 9) {
+        	//go to next column
             y = 0;
+            //if we reach (8,8) we are done
             if (++x == 9)
                 return true;
         }
-        if ( grid.getCell(x, y).getValue() != 0)  // skip filled cells
+        //if cell is already filled, increment
+        if ( grid.getCell(x, y).getValue() != 0) 
             return solveBT(y+1,x);
 
+        //try each value
         for (int val = 1; val <= 9; ++val) {
+        	//can this value go in this square?
             if (legal(y,x,val)) {
+            	//try the value and move on to the next square in the row
                 grid.getCell(x, y).setValue(val);
                 if (solveBT(y+1,x))
                     return true;
             }
         }
-        //System.out.println("setting "+ i + " " + j);
-        grid.getCell(x, y).setValue(0); // reset on backtrack
+        // if we get this far, there are no legal values
+        // reset and go back
+        grid.getCell(x, y).setValue(0);
         return false;
     }
     
