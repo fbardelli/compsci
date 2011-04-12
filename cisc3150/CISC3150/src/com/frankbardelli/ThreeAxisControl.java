@@ -100,12 +100,30 @@ public class ThreeAxisControl extends JFrame{
 			moveDown();
 		
 		if(lastX != x || lastY != y){
-			line.add(new Point(x,y));
+			Point point = new Point(x,y);
 			pIndicator.updatePosition(x, y, z);
+			line.add(point);
+			cleanupIndices(line);
 			this.repaint();
 		}
 		this.requestFocus();
 	}
+	
+	private void cleanupIndices(List<Point> line){
+		if(line.size()>=3){
+			Point previousPivot = line.get(line.size()-3);
+			Point middlePoint	= line.get(line.size()-2);
+			Point currentPoint	= line.get(line.size()-1);
+			double slope1, slope2;
+			
+			slope1 = (previousPivot.getY()-middlePoint.getY()) / (previousPivot.getX()-middlePoint.getX());
+			slope2 = (previousPivot.getY()-currentPoint.getY()) / (previousPivot.getX()-currentPoint.getX());
+			if(slope1 == slope2){
+				line.remove(line.size()-2);
+			}
+		}		
+	}
+	
 	
 	public class updateScreenAction implements ActionListener {
 		ThreeAxisControl tac;
@@ -208,17 +226,19 @@ public class ThreeAxisControl extends JFrame{
 		}
 		
 		public void paintComponent(Graphics g){
-			g.setColor(Color.BLUE);
-			g.fillOval(tac.getX()-5, tac.getY()-5, 10, 10);
+			g.setColor(Color.MAGENTA);
 			Point lastPoint = line.get(0);
 			for(int i = 1; i < line.size(); i++){
 				Point p = line.get(i);
+				g.drawOval((int)p.getX()-1, (int)p.getY()-1, 2, 2);
 				g.drawLine(
 						(int)lastPoint.getX(), (int)lastPoint.getY(),
 						(int)p.getX(), (int)p.getY()
 				);
 				lastPoint = p;
 			}
+			g.setColor(Color.BLUE);
+			g.fillOval(tac.getX()-5, tac.getY()-5, 10, 10);
 		}
 	}
 }
