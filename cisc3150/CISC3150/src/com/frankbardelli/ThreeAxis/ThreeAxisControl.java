@@ -6,7 +6,7 @@
  * CISC 3150  
  */
 
-package com.frankbardelli;
+package com.frankbardelli.ThreeAxis;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,7 +30,7 @@ import javax.swing.border.LineBorder;
 
 public class ThreeAxisControl extends JFrame{
 	private int x, y, z;
-	private ThreeAxisCanvas canvas;
+	private Canvas canvas;
 	private PositionIndicator pIndicator;
 	private boolean leftPressed, rightPressed, upPressed, downPressed;
 	private List<Point> line;
@@ -44,7 +44,7 @@ public class ThreeAxisControl extends JFrame{
 		leftPressed = rightPressed = upPressed = downPressed = false;
 		
 		//Create 2d plane that allows movement along x and y axis
-		canvas = new ThreeAxisCanvas(this);
+		canvas = new Canvas(this);
 		canvas.setBackground(Color.BLACK);
 		canvas.setBorder(new LineBorder(Color.BLACK, 1));
 		
@@ -125,6 +125,11 @@ public class ThreeAxisControl extends JFrame{
 	}
 	
 	
+	public List<Point> getLine() {
+		return line;
+	}
+
+
 	public class updateScreenAction implements ActionListener {
 		ThreeAxisControl tac;
 		public updateScreenAction(ThreeAxisControl tac){
@@ -196,49 +201,4 @@ public class ThreeAxisControl extends JFrame{
 		this.z = z;
 	}
 
-	private class PositionIndicator extends JPanel {
-		private JLabel xPos, yPos, zPos;
-		public PositionIndicator(int x, int y, int z){
-			this.setSize(150, 300);
-			setLayout(new GridLayout(3,2));
-			add(new JLabel("x:"));
-			xPos = new JLabel(Integer.toString(x));
-			add(xPos);
-			add(new JLabel("y:"));
-			yPos = new JLabel(Integer.toString(y));
-			add(yPos);
-			add(new JLabel("z:"));
-			zPos = new JLabel(Integer.toString(z));
-			add(zPos);
-		}
-		
-		public void updatePosition(int x, int y, int z){
-			xPos.setText(Integer.toString(x));
-			yPos.setText(Integer.toString(y));
-			zPos.setText(Integer.toString(z));
-		}
-	}
-
-	private class ThreeAxisCanvas extends JComponent{
-		ThreeAxisControl tac;
-		public ThreeAxisCanvas(ThreeAxisControl tac){
-			this.tac = tac;
-		}
-		
-		public void paintComponent(Graphics g){
-			g.setColor(Color.MAGENTA);
-			Point lastPoint = line.get(0);
-			for(int i = 1; i < line.size(); i++){
-				Point p = line.get(i);
-				g.drawOval((int)p.getX()-1, (int)p.getY()-1, 2, 2);
-				g.drawLine(
-						(int)lastPoint.getX(), (int)lastPoint.getY(),
-						(int)p.getX(), (int)p.getY()
-				);
-				lastPoint = p;
-			}
-			g.setColor(Color.BLUE);
-			g.fillOval(tac.getX()-5, tac.getY()-5, 10, 10);
-		}
-	}
 }
