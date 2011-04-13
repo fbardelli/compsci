@@ -1,3 +1,11 @@
+/*
+ * Frank Bardelli
+ * ThreeAxisControl
+ * Line Object
+ * April 12, 2011
+ * CISC 3150  
+ */
+
 package com.frankbardelli.ThreeAxis;
 
 import java.awt.Point;

@@ -1,3 +1,11 @@
+/*
+ * Frank Bardelli
+ * ThreeAxisControl
+ * Cursor indicating current position
+ * April 12, 2011
+ * CISC 3150  
+ */
+
 package com.frankbardelli.ThreeAxis;
 
 public class Cursor{

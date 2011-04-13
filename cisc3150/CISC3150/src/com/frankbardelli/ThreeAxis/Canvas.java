@@ -1,9 +1,16 @@
+/*
+ * Frank Bardelli
+ * ThreeAxisControl
+ * Canvas control
+ * April 12, 2011
+ * CISC 3150  
+ */
+
 package com.frankbardelli.ThreeAxis;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.border.LineBorder;

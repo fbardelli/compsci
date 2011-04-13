@@ -1,3 +1,11 @@
+/*
+ * Frank Bardelli
+ * ThreeAxisControl
+ * Panel indicating x,y,z coordinates of the cursor
+ * April 12, 2011
+ * CISC 3150  
+ */
+
 package com.frankbardelli.ThreeAxis;
 
 import java.awt.GridLayout;

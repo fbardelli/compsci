@@ -2,7 +2,7 @@
  * Frank Bardelli
  * ThreeAxisControl
  * Renders a canvas with a movable point
- * March 20, 2011
+ * April 12, 2011
  * CISC 3150  
  */
 
@@ -34,20 +34,24 @@ public class ThreeAxisControl extends JFrame{
 	
 	public ThreeAxisControl(){
 		leftPressed = rightPressed = upPressed = downPressed = pageUpPressed = pageDownPressed = false;
-		//Create 2d plane that allows movement along x and y axis
+		//Create cursor that draws lines on a 2d plane
 		cursor = new Cursor(100,100,0);
+		//Create 2d plane that allows movement along x and y axis
 		canvas = new Canvas(this,cursor);
-		
-		line = new Line((int)cursor.getX(),(int)cursor.getY());
+		//Create a line that tracks the movement of the cursor 
+		line = new Line(cursor.getX(),cursor.getY());
+	    //PositionIndicator records the x,y,z positions of the cursor
+		pIndicator = new PositionIndicator(cursor);
 		
 		this.setSize(600, 400);
 		this.setLayout(new BorderLayout());
 		JPanel controls = new JPanel();
 		controls.add(new JLabel("Use arrow keys, pageUp and pageDown to move the point"));
 		this.add(controls,BorderLayout.SOUTH);
-		this.add(canvas,BorderLayout.CENTER);		
-		pIndicator = new PositionIndicator(cursor);
+		this.add(canvas,BorderLayout.CENTER);
 		this.add(pIndicator,BorderLayout.EAST);
+
+		//update the screen at regular intervals
 		new Timer(100, new updateScreenAction(this)).start();
 		//Handle Keyboard input
 		this.setFocusable(true);
