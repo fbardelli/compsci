@@ -6,16 +6,21 @@ import java.awt.Point;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.border.LineBorder;
 
 public class Canvas extends JComponent {
 	ThreeAxisControl tac;
-	public Canvas(ThreeAxisControl tac){
+	Cursor cursor;
+	public Canvas(ThreeAxisControl tac, Cursor cursor){
 		this.tac = tac;
+		this.cursor = cursor;
+		setBackground(Color.BLACK);
+		setBorder(new LineBorder(Color.BLACK, 1));
 	}
 	
 	public void paintComponent(Graphics g){
 		g.setColor(Color.MAGENTA);
-		List<Point> line = tac.getLine();
+		Line line = tac.getLine();
 		Point lastPoint = line.get(0);
 		for(int i = 1; i < line.size(); i++){
 			Point p = line.get(i);
@@ -27,6 +32,6 @@ public class Canvas extends JComponent {
 			lastPoint = p;
 		}
 		g.setColor(Color.BLUE);
-		g.fillOval(tac.getX()-5, tac.getY()-5, 10, 10);
+		g.fillOval(cursor.getX()-5, cursor.getY()-5, 10, 10);
 	}
 }

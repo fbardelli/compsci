@@ -1,29 +1,30 @@
 package com.frankbardelli.ThreeAxis;
 
 import java.awt.GridLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PositionIndicator extends JPanel {
 	private JLabel xPos, yPos, zPos;
-	public PositionIndicator(int x, int y, int z){
+	Cursor cursor;
+	public PositionIndicator(Cursor cursor){
+		this.cursor = cursor;
 		this.setSize(150, 300);
 		setLayout(new GridLayout(3,2));
 		add(new JLabel("x:"));
-		xPos = new JLabel(Integer.toString(x));
+		xPos = new JLabel(Integer.toString((int)cursor.getX()));
 		add(xPos);
 		add(new JLabel("y:"));
-		yPos = new JLabel(Integer.toString(y));
+		yPos = new JLabel(Integer.toString((int)cursor.getY()));
 		add(yPos);
 		add(new JLabel("z:"));
-		zPos = new JLabel(Integer.toString(z));
+		zPos = new JLabel(Integer.toString((int)cursor.getY()));
 		add(zPos);
 	}
 	
-	public void updatePosition(int x, int y, int z){
-		xPos.setText(Integer.toString(x));
-		yPos.setText(Integer.toString(y));
-		zPos.setText(Integer.toString(z));
+	public void updatePosition(){
+		xPos.setText(Integer.toString((int)cursor.getX()));
+		yPos.setText(Integer.toString((int)cursor.getY()));
+		zPos.setText(Integer.toString((int)cursor.getZ()));
 	}
 }

@@ -9,60 +9,44 @@
 package com.frankbardelli.ThreeAxis;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.border.LineBorder;
-
 
 public class ThreeAxisControl extends JFrame{
-	private int x, y, z;
 	private Canvas canvas;
+	private Cursor cursor;
 	private PositionIndicator pIndicator;
-	private boolean leftPressed, rightPressed, upPressed, downPressed;
-	private List<Point> line;
+	private boolean leftPressed, rightPressed, upPressed, 
+					downPressed, pageUpPressed, pageDownPressed;
+	private Line line;
 
 	public static void main(String[] args){
 		ThreeAxisControl tac = new ThreeAxisControl();
 	}
 	
 	public ThreeAxisControl(){
-		this.setSize(600, 400);
-		leftPressed = rightPressed = upPressed = downPressed = false;
-		
+		leftPressed = rightPressed = upPressed = downPressed = pageUpPressed = pageDownPressed = false;
 		//Create 2d plane that allows movement along x and y axis
-		canvas = new Canvas(this);
-		canvas.setBackground(Color.BLACK);
-		canvas.setBorder(new LineBorder(Color.BLACK, 1));
+		cursor = new Cursor(100,100,0);
+		canvas = new Canvas(this,cursor);
 		
-		x = 100;
-		y = 100;
-		z = 0;
-
-		line = new ArrayList<Point>();
-		Point startPoint = new Point(x,y);
-		line.add(startPoint);
+		line = new Line((int)cursor.getX(),(int)cursor.getY());
 		
+		this.setSize(600, 400);
 		this.setLayout(new BorderLayout());
 		JPanel controls = new JPanel();
-		controls.add(new JLabel("Use arrow keys to move the point"));
+		controls.add(new JLabel("Use arrow keys, pageUp and pageDown to move the point"));
 		this.add(controls,BorderLayout.SOUTH);
-		this.add(canvas,BorderLayout.CENTER);
-		
-		pIndicator = new PositionIndicator(x,y,z);
+		this.add(canvas,BorderLayout.CENTER);		
+		pIndicator = new PositionIndicator(cursor);
 		this.add(pIndicator,BorderLayout.EAST);
 		new Timer(100, new updateScreenAction(this)).start();
 		//Handle Keyboard input
@@ -72,63 +56,34 @@ public class ThreeAxisControl extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void moveRight(){
-		this.x += 5;
-	}
-	
-	public void moveLeft(){
-		this.x -= 5;
-	}
-
-	public void moveUp(){
-		this.y -= 5;
-	}
-	
-	public void moveDown(){
-		this.y += 5;
-	}
-	
 	public void updatePosition(){
-		int lastX = x, lastY = y;
+		int lastX = cursor.getX(), 
+			lastY = cursor.getY(), 
+			lastZ = cursor.getZ();
 		if(upPressed)
-			moveUp();
+		    cursor.moveUp();
 		if(leftPressed)
-			moveLeft();
+			cursor.moveLeft();
 		if(rightPressed)
-			moveRight();
+			cursor.moveRight();
 		if(downPressed)
-			moveDown();
+			cursor.moveDown();
+		if(pageUpPressed)
+			cursor.moveOut();
+		if(pageDownPressed)
+			cursor.moveIn();
 		
-		if(lastX != x || lastY != y){
-			Point point = new Point(x,y);
-			pIndicator.updatePosition(x, y, z);
-			line.add(point);
-			cleanupIndices(line);
+		if(lastX != cursor.getX() || lastY != cursor.getY() || lastZ != cursor.getZ()){
+			pIndicator.updatePosition();
+			line.add(new Point(cursor.getX(),cursor.getY()));
 			this.repaint();
 		}
 		this.requestFocus();
 	}
 	
-	private void cleanupIndices(List<Point> line){
-		if(line.size()>=3){
-			Point previousPivot = line.get(line.size()-3);
-			Point middlePoint	= line.get(line.size()-2);
-			Point currentPoint	= line.get(line.size()-1);
-			double slope1, slope2;
-			
-			slope1 = (previousPivot.getY()-middlePoint.getY()) / (previousPivot.getX()-middlePoint.getX());
-			slope2 = (previousPivot.getY()-currentPoint.getY()) / (previousPivot.getX()-currentPoint.getX());
-			if(slope1 == slope2){
-				line.remove(line.size()-2);
-			}
-		}		
-	}
-	
-	
-	public List<Point> getLine() {
+	public Line getLine() {
 		return line;
 	}
-
 
 	public class updateScreenAction implements ActionListener {
 		ThreeAxisControl tac;
@@ -147,7 +102,6 @@ public class ThreeAxisControl extends JFrame{
 		}
 		
 		public void keyPressed(KeyEvent e) {
-			//System.out.println("key pressed "+e.getKeyCode());
 			int key = e.getKeyCode();
 			if( key == KeyEvent.VK_LEFT )
 				leftPressed = true;
@@ -157,9 +111,12 @@ public class ThreeAxisControl extends JFrame{
 				downPressed = true;
 			if( key == KeyEvent.VK_UP )
 				upPressed = true;
+			if( key == KeyEvent.VK_PAGE_UP)
+				pageUpPressed = true;
+			if( key == KeyEvent.VK_PAGE_DOWN)
+				pageDownPressed = true;
 		}
 
-		@Override
 		public void keyReleased(KeyEvent e) {
 			int key = e.getKeyCode();
 			if( key == KeyEvent.VK_LEFT )
@@ -170,35 +127,14 @@ public class ThreeAxisControl extends JFrame{
 				downPressed = false;
 			if( key == KeyEvent.VK_UP )
 				upPressed = false;
+			if( key == KeyEvent.VK_PAGE_UP)
+				pageUpPressed = false;
+			if( key == KeyEvent.VK_PAGE_DOWN)
+				pageDownPressed = false;
 		}
 
-		public void keyTyped(KeyEvent e) {
-		}
+		public void keyTyped(KeyEvent e) {}
 		
 	}
 	
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getZ() {
-		return z;
-	}
-
-	public void setZ(int z) {
-		this.z = z;
-	}
-
 }
