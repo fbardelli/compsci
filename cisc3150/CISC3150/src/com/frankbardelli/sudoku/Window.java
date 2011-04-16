@@ -21,8 +21,8 @@ import javax.swing.border.LineBorder;
 
 public class Window extends JFrame {
 	Grid grid;
-	JPanel[] subgridPanel;
-	JPanel[][] cellPanel;
+	GameBoard sudokuBoard;
+
 	public static void main(String[] args){
 		Grid grid = new Grid();
 	    Problems problems = new Problems();
@@ -30,13 +30,21 @@ public class Window extends JFrame {
 	    grid.parse(problemList.get(0));
 		Window w = new Window(grid);
 	}
+	
 	public Window(Grid grid){
 		this.grid = grid;
-		this.subgridPanel = new JPanel[9];
-		this.cellPanel = new JPanel[9][9];
 		this.setSize(600, 600);
 		this.setLayout(new BorderLayout());
-		this.add(getSudokuGrid(),BorderLayout.CENTER);
+		sudokuBoard = new GameBoard();
+		this.add(sudokuBoard ,BorderLayout.CENTER);
+		createButtons();
+		createMenu();
+		this.updateGrid();
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	    this.setVisible(true);
+	}
+	
+	public void createButtons(){
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BorderLayout());
 		JButton solveEasyButton = new JButton("Solve Deductively");
@@ -45,11 +53,7 @@ public class Window extends JFrame {
 		solveAnyButton.addActionListener(new SolveListener(this,this.grid));
 		buttonPanel.add(solveEasyButton,BorderLayout.NORTH);
 		buttonPanel.add(solveAnyButton,BorderLayout.SOUTH);
-		this.add(buttonPanel,BorderLayout.SOUTH);
-		this.updateGrid();
-		createMenu();
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-	    this.setVisible(true);
+		this.add(buttonPanel,BorderLayout.SOUTH);		
 	}
 	
 	public void createMenu(){
@@ -77,57 +81,8 @@ public class Window extends JFrame {
 
 	}
 	
-	public JPanel getSudokuGrid(){
-		JPanel sudokuGrid = new JPanel();
-		sudokuGrid.setLayout(new GridLayout(3,3,2,2));
-		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
-			subgridPanel[subgridIndex] = new JPanel();
-			subgridPanel[subgridIndex].setLayout(new GridLayout(3, 3, 1, 1));
-			subgridPanel[subgridIndex].setBorder(new LineBorder(Color.BLACK));
-			sudokuGrid.add(subgridPanel[subgridIndex]);
-			for (int cellIndex = 0; cellIndex < 9; cellIndex++) {
-				cellPanel[subgridIndex][cellIndex] = new JPanel();
-				cellPanel[subgridIndex][cellIndex].setBorder(new LineBorder(Color.BLUE));
-				subgridPanel[subgridIndex].add(cellPanel[subgridIndex][cellIndex]);
-			}
-		}
-		return sudokuGrid;
-	}
-	
 	public void updateGrid(){
-		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
-			CellGroup cg = grid.getGrid(subgridIndex);
-			ArrayList<Cell> cells = cg.getCells();
-			for (int cellIndex = 0; cellIndex < 9; cellIndex++) {
-				Cell c = cells.get(cellIndex);
-				JPanel cell = cellPanel[subgridIndex][cellIndex];
-				cell.removeAll();
-				if (c.getValue() == 0) { 
-					cell.setLayout(new GridLayout(3,3)); 
-					HashMap<Integer, Boolean> pValues = c.getPossibleValues(); 
-					for (int l = 1; l <= 9; l++) {
-						JPanel pValue = new JPanel();
-						JLabel label = new JLabel();
-						if(pValues.get(new Integer(l))) {
-							label.setText(new Integer(l).toString());
-						}
-						label.setForeground(Color.BLUE);
-						pValue.add(label);
-						cell.add(pValue); 
-					} 
-				} else {
-					cell.setLayout(new FlowLayout());
-					JLabel label = new JLabel(new Integer(c.getValue()).toString());
-					label.setFont(label.getFont().deriveFont(40.0f));
-					cell.add(label);
-				}
-				//Cell subcomponents and layout may have changed so repaint and revalidate
-				cell.repaint();
-				cell.revalidate();
-				 
-			}
-		}
-		
+		sudokuBoard.updateGrid(grid);
 	}
 
 	public class PuzzleSelectListener implements ActionListener{
@@ -142,8 +97,7 @@ public class Window extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			this.grid.parse(puzzle);
 			this.window.updateGrid();
-		}
-		
+		}	
 	}
 
 	public class SolveEasyListener implements ActionListener{
@@ -164,7 +118,6 @@ public class Window extends JFrame {
 			//this.grid.print();
 			this.window.updateGrid();
 		}
-		
 	}
 	
 	public class SolveListener implements ActionListener{
