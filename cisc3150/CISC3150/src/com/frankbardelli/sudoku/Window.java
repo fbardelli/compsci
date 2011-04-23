@@ -114,6 +114,9 @@ public class Window extends JFrame {
 				lastCountPossibleValues = this.grid.totalCountPossibleValues();
 				s.solveNakedSingles();
 				s.solveHiddenSingles();
+				s.solveNakedPair();
+				s.solveHiddenPair();
+				s.solveXWing();
 			} while( this.grid.totalCountPossibleValues()  < lastCountPossibleValues );
 			//this.grid.print();
 			this.window.updateGrid();
