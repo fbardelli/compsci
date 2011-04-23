@@ -1,5 +1,7 @@
 package com.frankbardelli.sudoku;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Cell {
 	int value;
@@ -105,5 +107,13 @@ public class Cell {
 	}
 	public void setParentColumn(CellGroup parentColumn) {
 		this.parentColumn = parentColumn;
+	}
+	
+	public List<CellGroup> getCellGroups(){
+		List<CellGroup> cellGroups = new ArrayList();
+		cellGroups.add(parentColumn);
+		cellGroups.add(parentRow);
+		cellGroups.add(parentGrid);
+		return cellGroups;
 	}
 }

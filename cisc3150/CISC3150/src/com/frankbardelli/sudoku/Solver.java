@@ -2,6 +2,7 @@ package com.frankbardelli.sudoku;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Solver {
     private Grid grid;
@@ -17,12 +18,10 @@ public class Solver {
             for (int x = 0; x < 9; x++){
                 Cell c = grid.getCell(x, y);//  cells[y][x];
                 if( c.getValue() < 1){
-                    CellGroup cRow = c.getParentRow();
-                    CellGroup cCol = c.getParentColumn();
-                    CellGroup cGrid = c.getParentGrid();
-                    ArrayList<Integer> allSolved = cRow.getSolved();
-                    allSolved.addAll(cCol.getSolved());
-                    allSolved.addAll(cGrid.getSolved());
+                    ArrayList<Integer> allSolved = new ArrayList();
+                    for(CellGroup cg : c.getCellGroups()){
+                    	allSolved.addAll(cg.getSolved());
+                    }
                     for(Integer i : allSolved){
                         c.eliminatePossibleValue(i.intValue());
                         c.attemptSolve();
@@ -39,12 +38,9 @@ public class Solver {
                 Cell c = grid.getCell(x, y);//cells[y][x];
                 if( c.getValue() < 1){
                     //System.out.println("checking cell ("+x+","+y+")for hiddens");
-                    CellGroup cRow = c.getParentRow();
-                    CellGroup cCol = c.getParentColumn();
-                    CellGroup cGrid = c.getParentGrid();
-                    solveHiddenSingleInCellGroup(c, cRow);
-                    solveHiddenSingleInCellGroup(c, cCol);
-                    solveHiddenSingleInCellGroup(c, cGrid);
+                	for (CellGroup cg: c.getCellGroups()){
+                		solveHiddenSingleInCellGroup(c, cg);
+                	}
                 }
             }
         }
@@ -70,13 +66,111 @@ public class Solver {
         }
         if(possibles.size() == 1){
             for( Integer i : possibles.keySet()){
-                //System.out.println( " For Cell only possibility is " + i.toString() );
                 c.setValue(i.intValue());
             }
 
         }
         
     }
+
+    public void solveNakedPair(){
+        for (int y = 0; y < 9; y++ ){
+            for (int x = 0; x < 9; x++){
+                Cell c = grid.getCell(x, y);
+                HashMap<Integer,Boolean> pValues = c.getPossibleValues();
+                if( c.getPossibleValueCount() == 2){
+                	for (CellGroup cg: c.getCellGroups()){
+                        solveNakedPairInCellGroup(pValues, cg);
+                	}
+                }
+            }
+        }
+    }
+    
+    public void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
+    	int count = 0;
+    	List<Cell> eliminateCells = new ArrayList();
+    	for(Cell c: cg.getCells()){
+    		if(pValues.equals(c.getPossibleValues())){
+    			count++;
+    		}else{
+    			eliminateCells.add(c);
+    		}
+    	}
+    	if (count == 2){
+    		for(Cell c: eliminateCells){
+    			for (Integer i : pValues.keySet()){
+    				if(pValues.get(i)){
+    					c.eliminatePossibleValue(i.intValue());
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    public void solveHiddenPair(){
+    	for(int i=0; i<9; i++){
+    		solveHiddenPairInCellGroup(grid.getColumn(i));
+    		solveHiddenPairInCellGroup(grid.getRow(i));
+    		solveHiddenPairInCellGroup(grid.getGrid(i));    		
+    	}
+    }
+    
+    public void solveXWing(){
+    	for (int y = 0; y < 9; y++){
+    		for(int y1 = y+1; y1 < 9; y1++){
+    			solveXWingsInRows(y,y1);
+    		}
+    	}
+    }
+    
+    
+    public void solveXWingsInRows(int y, int y1){
+    	CellGroup cg1 = grid.getRow(y);
+    	CellGroup cg2 = grid.getRow(y1);
+    	for (int c = 1; c <= 9; c++){
+        	List<Integer> cgPositions = new ArrayList<Integer>();
+        	for(int i = 0; i < 9; i++){
+        		Integer candidate = new Integer(c);
+        		if(cg1.getCells().get(i).getPossibleValues().get(candidate)
+        				&&cg2.getCells().get(i).getPossibleValues().get(candidate))
+        				cgPositions.add(i);
+        	}
+        	if (cgPositions.size() == 2){
+        		System.out.println("found XWING fo candidate "+ c +"!" +
+        				"("+y+","+cgPositions.get(0)+"),"+
+        				"("+y+","+cgPositions.get(1)+"),"+
+        				"("+y1+","+cgPositions.get(0)+"),"+
+        				"("+y1+","+cgPositions.get(1)+"),"
+        		);
+        	}
+    	}
+    }
+
+    public void solveHiddenPairInCellGroup(CellGroup cg){
+    	for(int pv1 = 9; pv1 > 1; pv1--){
+    		for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
+				List<Cell> matchingCells = new ArrayList();
+    			for(Cell c: cg.getCells()){
+    				if(c.getPossibleValues().containsValue(new Integer(pv1)) &&
+    						c.getPossibleValues().containsValue(new Integer(pv2))){
+    					matchingCells.add(c);
+    				}
+    			}
+    			if(matchingCells.size()==2){
+    				Cell c1 = matchingCells.get(0);
+    				Cell c2 = matchingCells.get(1);    				
+    				for(int i = 1; i <= 9; i++){
+    					if(i!=pv1&&i!=pv2){
+    						c1.eliminatePossibleValue(i);
+    						c2.eliminatePossibleValue(i);
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    
     
     /* Based on Bob Carpenters backtracking sudoku solver 
      * http://www.colloquial.com/games/sudoku/java_sudoku.html
