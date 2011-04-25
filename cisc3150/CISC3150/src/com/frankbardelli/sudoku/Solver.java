@@ -7,6 +7,8 @@ import java.util.List;
 public class Solver {
     private Grid grid;
     private long solveCounter;
+    static int COLUMN = 1;
+    static int ROW = 2;
     
     public Solver(Grid grid){
         this.grid = grid;
@@ -18,7 +20,7 @@ public class Solver {
             for (int x = 0; x < 9; x++){
                 Cell c = grid.getCell(x, y);//  cells[y][x];
                 if( c.getValue() < 1){
-                    ArrayList<Integer> allSolved = new ArrayList();
+                    ArrayList<Integer> allSolved = new ArrayList<Integer>();
                     for(CellGroup cg : c.getCellGroups()){
                     	allSolved.addAll(cg.getSolved());
                     }
@@ -89,7 +91,7 @@ public class Solver {
     
     public void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
     	int count = 0;
-    	List<Cell> eliminateCells = new ArrayList();
+    	List<Cell> eliminateCells = new ArrayList<Cell>();
     	for(Cell c: cg.getCells()){
     		if(pValues.equals(c.getPossibleValues())){
     			count++;
@@ -108,6 +110,70 @@ public class Solver {
     	}
     }
     
+    public void SolveNakedTriplet(){
+        for(int first = 1; first <= 7; first++){
+            for(int second = first + 1; second <= 8; second++ ){
+                for (int third = second + 1; third <= 9; third++){
+                    for(int i = 0; i < 9; i++){
+                        //System.out.println("triplet "+first+" "+second+" "+third);
+                        int bitField = (int) Math.pow(2,first) + (int) Math.pow(2,second) + (int)Math.pow(2,third);
+                        if(solveNakedTripletInCellGroup(grid.getGrid(i),bitField,first,second,third)){
+                            //System.out.println("Found naked triple in grid "+i +" on ("+ first+","+second+","+third+")");
+                        }
+                        if(solveNakedTripletInCellGroup(grid.getRow(i),bitField,first,second,third)){
+                            //System.out.println("Found naked triple in row "+i +" on ("+ first+","+second+","+third+")");
+
+                        }
+                        if(solveNakedTripletInCellGroup(grid.getColumn(i),bitField,first,second,third)){
+                            //System.out.println("Found naked triple in column "+i +" on ("+ first+","+second+","+third+")");
+
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    public boolean solveNakedTripletInCellGroup(CellGroup cg, int bitField, int first, int second, int third){
+        int nakedTripleCandidates = 0;
+        int bitTotal = 0;
+        for(int i = 0; i <= 9; i++){
+            bitTotal += (int)Math.pow(2,i);
+        }
+        List<Cell> eliminateCells = new ArrayList<Cell>();
+        for(Cell c: cg.getCells()){
+            if( c.getPossibleValueCount() < 2){
+                continue;
+            }
+            int bitSum = 0;
+            for(Integer pv : c.getPossibleValues().keySet()){
+                if(c.getPossibleValues().get(pv)){
+                    bitSum += (int)Math.pow(2,pv.intValue());
+                }
+            }
+            
+            boolean match = ((~(bitSum) | bitField) & bitTotal) == bitTotal;
+            if(match){
+                nakedTripleCandidates++;
+                //System.out.println(Integer.toBinaryString(bitSum));
+                //System.out.println(Integer.toBinaryString(bitField));
+                //System.out.println(Integer.toBinaryString(bitTotal));
+            }else{
+                eliminateCells.add(c);
+            }
+        }
+        if(nakedTripleCandidates == 3){
+            for(Cell c : eliminateCells){
+                c.eliminatePossibleValue(first);
+                c.eliminatePossibleValue(second);
+                c.eliminatePossibleValue(third);
+            }
+            return true;
+        }
+        return false;
+    }
+    
     public void solveHiddenPair(){
     	for(int i=0; i<9; i++){
     		solveHiddenPairInCellGroup(grid.getColumn(i));
@@ -116,33 +182,107 @@ public class Solver {
     	}
     }
     
+    public void solvePointingPair(){
+        for(int i = 0; i < 9; i ++){
+            CellGroup cg = grid.getGrid(i);
+            for(int c=1; c<=9; c++){
+                CellGroup col=null;
+                boolean clearColumn = false;
+                for(Cell cell : cg.getCells()){
+                    if(cell.getPossibleValues().get(new Integer(c))){
+                        if(col == null){
+                            col = cell.getParentColumn();
+                        }else if(cell.getParentColumn() == col){
+                            clearColumn = true;
+                        }else{
+                            clearColumn = false;
+                            break;
+                        }
+                    }
+                }
+                if(clearColumn){
+                    for(Cell c2 : col.getCells()){
+                        if(c2.getParentGrid() != cg){
+                            c2.eliminatePossibleValue(c);
+                        }
+                    }
+                }
+                
+                CellGroup row= null;
+                boolean clearRow = false;
+                for(Cell cell : cg.getCells()){
+                    if(cell.getPossibleValues().get(new Integer(c))){
+                        if(row == null){
+                            row = cell.getParentRow();
+                        }else if(cell.getParentRow() == row){
+                            clearRow = true;
+                        }else{
+                            clearRow = false;
+                            break;
+                        }
+                    }
+                }
+                if(clearRow){
+                    for(Cell c2 : row.getCells()){
+                        if(c2.getParentGrid() != cg){
+                            c2.eliminatePossibleValue(c);
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+    }
+    
     public void solveXWing(){
-    	for (int y = 0; y < 9; y++){
+    	for (int y = 0; y < 8; y++){
     		for(int y1 = y+1; y1 < 9; y1++){
-    			solveXWingsInRows(y,y1);
+    			solveXWingType(y,y1,ROW);
+                solveXWingType(y,y1,COLUMN);
     		}
     	}
     }
     
     
-    public void solveXWingsInRows(int y, int y1){
-    	CellGroup cg1 = grid.getRow(y);
-    	CellGroup cg2 = grid.getRow(y1);
+    public void solveXWingType(int y, int y1, int TYPE){
+    	CellGroup cg1 = TYPE == ROW ? grid.getRow(y) : grid.getColumn(y);
+    	CellGroup cg2 = TYPE == ROW ? grid.getRow(y1) : grid.getColumn(y1);
     	for (int c = 1; c <= 9; c++){
-        	List<Integer> cgPositions = new ArrayList<Integer>();
+        	List<Integer> cg1Positions = new ArrayList<Integer>();
+            List<Integer> cg2Positions = new ArrayList<Integer>();
         	for(int i = 0; i < 9; i++){
         		Integer candidate = new Integer(c);
-        		if(cg1.getCells().get(i).getPossibleValues().get(candidate)
-        				&&cg2.getCells().get(i).getPossibleValues().get(candidate))
-        				cgPositions.add(i);
+        		if(cg1.getCells().get(i).getPossibleValues().get(candidate))
+                    cg1Positions.add(new Integer(i));
+                if(cg2.getCells().get(i).getPossibleValues().get(candidate))
+                    cg2Positions.add(new Integer(i));
         	}
-        	if (cgPositions.size() == 2){
-        		System.out.println("found XWING fo candidate "+ c +"!" +
-        				"("+y+","+cgPositions.get(0)+"),"+
-        				"("+y+","+cgPositions.get(1)+"),"+
-        				"("+y1+","+cgPositions.get(0)+"),"+
-        				"("+y1+","+cgPositions.get(1)+"),"
-        		);
+        	if (cg1Positions.size() == 2 && cg1Positions.equals(cg2Positions)){
+        		for(int groupPos = 0; groupPos < 9; groupPos++){
+        		    if(groupPos != y && groupPos != y1){
+        	            //System.out.println("found XWING for candidate "+ c +"!" +
+        	            //            "("+y+","+cg1Positions.get(0)+"),"+
+        	            //            "("+y+","+cg1Positions.get(1)+"),"+
+        	            //            "("+y1+","+cg1Positions.get(0)+"),"+
+        	            //            "("+y1+","+cg1Positions.get(1)+")"
+        	            //);
+        		        CellGroup currentGroup = TYPE == ROW ? grid.getRow(groupPos) : grid.getColumn(groupPos);
+        		        Cell r = currentGroup.getCells().get(cg1Positions.get(0).intValue());
+        		        if(r.getPossibleValues().get(new Integer(c))){
+        		            //System.out.println("eliminating "+ c +" from cell at (" + groupPos + ","+ cg1Positions.get(0).intValue() +")");
+        		            r.eliminatePossibleValue(c);
+        		            //r.attemptSolve();
+        		        }
+        		        Cell r2 = currentGroup.getCells().get(cg1Positions.get(1).intValue());
+                        if(r2.getPossibleValues().get(new Integer(c))){
+                            //System.out.println("eliminating "+ c +" from cell at (" + groupPos + ","+ cg1Positions.get(1).intValue() +")");
+        		            r2.eliminatePossibleValue(c);
+        		            //r.attemptSolve();
+        		        }
+        		    }
+        		    
+        		}
         	}
     	}
     }
@@ -150,7 +290,7 @@ public class Solver {
     public void solveHiddenPairInCellGroup(CellGroup cg){
     	for(int pv1 = 9; pv1 > 1; pv1--){
     		for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
-				List<Cell> matchingCells = new ArrayList();
+				List<Cell> matchingCells = new ArrayList<Cell>();
     			for(Cell c: cg.getCells()){
     				if(c.getPossibleValues().containsValue(new Integer(pv1)) &&
     						c.getPossibleValues().containsValue(new Integer(pv2))){
@@ -180,7 +320,10 @@ public class Solver {
         if(! solveBT(0,0)){
             System.out.println("Failed to solve Puzzle");
         }
-        System.out.println("Solved in " + this.solveCounter + " iterations");
+    }
+    
+    public long getSolveCount(){
+        return this.solveCounter;
     }
     
     private boolean solveBT(int y, int x) {

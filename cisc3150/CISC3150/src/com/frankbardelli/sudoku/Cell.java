@@ -110,7 +110,7 @@ public class Cell {
 	}
 	
 	public List<CellGroup> getCellGroups(){
-		List<CellGroup> cellGroups = new ArrayList();
+		List<CellGroup> cellGroups = new ArrayList<CellGroup>();
 		cellGroups.add(parentColumn);
 		cellGroups.add(parentRow);
 		cellGroups.add(parentGrid);

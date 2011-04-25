@@ -23,6 +23,7 @@ public class Window extends JFrame {
 	Grid grid;
 	GameBoard sudokuBoard;
 
+
 	public static void main(String[] args){
 		Grid grid = new Grid();
 	    Problems problems = new Problems();
@@ -33,7 +34,7 @@ public class Window extends JFrame {
 	
 	public Window(Grid grid){
 		this.grid = grid;
-		this.setSize(600, 600);
+		this.setSize(700, 700);
 		this.setLayout(new BorderLayout());
 		sudokuBoard = new GameBoard();
 		this.add(sudokuBoard ,BorderLayout.CENTER);
@@ -110,15 +111,22 @@ public class Window extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Solver s = new Solver(this.grid);
 			int lastCountPossibleValues;
+			long startSeconds = System.currentTimeMillis();
+			int iterations = 0;
 			do {
 				lastCountPossibleValues = this.grid.totalCountPossibleValues();
 				s.solveNakedSingles();
 				s.solveHiddenSingles();
 				s.solveNakedPair();
 				s.solveHiddenPair();
+				s.SolveNakedTriplet();
+				s.solvePointingPair();
 				s.solveXWing();
+				iterations++;
 			} while( this.grid.totalCountPossibleValues()  < lastCountPossibleValues );
-			//this.grid.print();
+	         long endSeconds = System.currentTimeMillis();
+	         System.out.println("Solved deductively in " + (endSeconds-startSeconds) +
+	                             "ms in " + iterations + " iterations");
 			this.window.updateGrid();
 		}
 	}
@@ -132,7 +140,11 @@ public class Window extends JFrame {
 		}
 		public void actionPerformed(ActionEvent e) {
 			Solver s = new Solver(this.grid);
+	        long startSeconds = System.currentTimeMillis();
 			s.solveBacktracking();
+	        long endSeconds = System.currentTimeMillis();
+	        System.out.println("Solved with brute force in " + (endSeconds-startSeconds) +
+	                "ms in "+ s.getSolveCount() + " iterations");
 			//this.grid.print();
 			this.window.updateGrid();
 		}
