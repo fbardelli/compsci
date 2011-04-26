@@ -40,15 +40,34 @@ public class Runner {
 	    Iterator<String> pIter = problemList.iterator();
 	    int sum = 0;
 	    Grid g3 = new Grid();
+	    int maxIterations = 0;
 	    while(pIter.hasNext()){
 	        g3.parse(pIter.next());
 	        Solver solver3 = new Solver(g3);
-	        solver3.solveBacktracking();
+	        //solver3.solveBacktracking();
+			int lastCountPossibleValues2;
+			long startSeconds = System.currentTimeMillis();
+			int iterations = 0;
+			do {
+				lastCountPossibleValues2 = g3.totalCountPossibleValues();
+				solver3.solveNakedSingles();
+				solver3.solveHiddenSingles();
+				solver3.solveNakedPair();
+				solver3.solveHiddenPair();
+				solver3.solveNakedTriplet();
+				solver3.solvePointingPair();
+				solver3.solveXWing();
+				iterations++;
+			} while( g3.totalCountPossibleValues()  < lastCountPossibleValues2 );
+			if (iterations > maxIterations){
+				maxIterations = iterations;
+			}
 	        System.out.println(g3.firstThree());
 	        sum += g3.firstThree();
 	        g3.print();
 	    }
 	    System.out.println(sum);
+	    System.out.println("max iterations:" + maxIterations);
 	}
 }
 

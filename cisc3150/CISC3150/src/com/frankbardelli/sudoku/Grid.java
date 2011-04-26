@@ -4,17 +4,37 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Grid.
+ */
 public class Grid {
+	
+	/** The rows. */
 	private ArrayList<CellGroup> rows;
+	
+	/** The cols. */
 	private ArrayList<CellGroup> cols;
+	
+	/** The grids. */
 	private ArrayList<CellGroup> grids;
+	
+	/** The cells. */
 	private Cell[][] cells;
+	
+	/** The is populated. */
 	private boolean isPopulated;
 	
+	/**
+	 * Instantiates a new grid.
+	 */
 	public Grid(){
 		reset();
 	}
 	
+	/**
+	 * Reset.
+	 */
 	public void reset(){
 		rows = new ArrayList<CellGroup>();
 		cols = new ArrayList<CellGroup>();
@@ -59,6 +79,11 @@ public class Grid {
 
 	*/
 
+	/**
+	 * Populate.
+	 *
+	 * @param a the a
+	 */
 	public void populate(int[][] a){
 		for (int y = 0; y < 9; y++){
 			for (int x = 0; x < 9; x++){
@@ -70,6 +95,11 @@ public class Grid {
 		isPopulated = true;
 	}
 	
+	/**
+	 * Parses the.
+	 *
+	 * @param s the s
+	 */
 	public void parse(String s){
 		if(isPopulated){
 			reset();
@@ -90,6 +120,11 @@ public class Grid {
 		populate(grid);
 	}
 	
+	/**
+	 * First three.
+	 *
+	 * @return the int
+	 */
 	public int firstThree(){
 	    CellGroup cg = rows.get(0);
 	    return cg.getCells().get(0).getValue() * 100 +
@@ -97,6 +132,9 @@ public class Grid {
 	    cg.getCells().get(2).getValue();
 	}
 	
+	/**
+	 * Prints the.
+	 */
 	public void print(){
 		Iterator<CellGroup> it = rows.iterator();
 		while(it.hasNext()){
@@ -110,6 +148,9 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * Prints the verbose.
+	 */
 	public void printVerbose(){
 		//char[] bigGrid = new char[36*36];
 		Iterator<CellGroup> it = rows.iterator();
@@ -152,6 +193,11 @@ public class Grid {
 		}	
 	}
 	
+	/**
+	 * Total count possible values.
+	 *
+	 * @return the int
+	 */
 	public int totalCountPossibleValues(){
 		int totalPossibleValues = 0;
 		for (int y = 0; y < 9; y++ ){
@@ -168,6 +214,11 @@ public class Grid {
 	}
 	
 	
+	/**
+	 * Count solved.
+	 *
+	 * @return the int
+	 */
 	public int countSolved(){
 		int countSolved = 0;
 		for( CellGroup cg: rows){
@@ -176,22 +227,55 @@ public class Grid {
 		return countSolved;
 	}
 	
+	/**
+	 * Gets the cell.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the cell
+	 */
 	public Cell getCell(int x,int y){
 		return cells[y][x];
 	}
 	
+	/**
+	 * Gets the grid index for cell at.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the grid index for cell at
+	 */
 	public int getGridIndexForCellAt(int x, int y){
 		int gridIndex = (x/3) + ((y/3)*3);
 		return gridIndex;
 	}
 	
+	/**
+	 * Gets the grid.
+	 *
+	 * @param g the g
+	 * @return the grid
+	 */
 	public CellGroup getGrid(int g){
 		return grids.get(g);
 	}
 	
+	/**
+	 * Gets the row.
+	 *
+	 * @param y the y
+	 * @return the row
+	 */
 	public CellGroup getRow(int y){
 		return rows.get(y);
 	}
+	
+	/**
+	 * Gets the column.
+	 *
+	 * @param x the x
+	 * @return the column
+	 */
 	public CellGroup getColumn(int x){
 		return cols.get(x);
 	}

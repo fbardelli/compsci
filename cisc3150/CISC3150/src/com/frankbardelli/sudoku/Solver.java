@@ -4,17 +4,37 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Solver.
+ */
 public class Solver {
+    
+    /** The grid. */
     private Grid grid;
+    
+    /** The solve counter. */
     private long solveCounter;
+    
+    /** The COLUMN. */
     static int COLUMN = 1;
+    
+    /** The ROW. */
     static int ROW = 2;
     
+    /**
+     * Instantiates a new solver.
+     *
+     * @param grid the grid
+     */
     public Solver(Grid grid){
         this.grid = grid;
         this.solveCounter = 0;
     }
     
+    /**
+     * Solve naked singles.
+     */
     public void solveNakedSingles(){
         for (int y = 0; y < 9; y++ ){
             for (int x = 0; x < 9; x++){
@@ -34,6 +54,9 @@ public class Solver {
         }
     }
     
+    /**
+     * Solve hidden singles.
+     */
     public void solveHiddenSingles(){
         for (int y = 0; y < 9; y++ ){
             for (int x = 0; x < 9; x++){
@@ -48,6 +71,12 @@ public class Solver {
         }
     }
     
+    /**
+     * Solve hidden single in cell group.
+     *
+     * @param c the c
+     * @param cg the cg
+     */
     public void solveHiddenSingleInCellGroup(Cell c, CellGroup cg) {
         HashMap<Integer,Boolean> possibles = new HashMap<Integer,Boolean>();
         HashMap<Integer,Boolean> cellPossibles = c.getPossibleValues();
@@ -75,6 +104,9 @@ public class Solver {
         
     }
 
+    /**
+     * Solve naked pair.
+     */
     public void solveNakedPair(){
         for (int y = 0; y < 9; y++ ){
             for (int x = 0; x < 9; x++){
@@ -89,6 +121,12 @@ public class Solver {
         }
     }
     
+    /**
+     * Solve naked pair in cell group.
+     *
+     * @param pValues the values
+     * @param cg the cg
+     */
     public void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
     	int count = 0;
     	List<Cell> eliminateCells = new ArrayList<Cell>();
@@ -110,7 +148,10 @@ public class Solver {
     	}
     }
     
-    public void SolveNakedTriplet(){
+    /**
+     * Solve naked triplet.
+     */
+    public void solveNakedTriplet(){
         for(int first = 1; first <= 7; first++){
             for(int second = first + 1; second <= 8; second++ ){
                 for (int third = second + 1; third <= 9; third++){
@@ -135,6 +176,16 @@ public class Solver {
         }
     }
     
+    /**
+     * Solve naked triplet in cell group.
+     *
+     * @param cg the cg
+     * @param bitField the bit field
+     * @param first the first
+     * @param second the second
+     * @param third the third
+     * @return true, if successful
+     */
     public boolean solveNakedTripletInCellGroup(CellGroup cg, int bitField, int first, int second, int third){
         int nakedTripleCandidates = 0;
         int bitTotal = 0;
@@ -174,6 +225,9 @@ public class Solver {
         return false;
     }
     
+    /**
+     * Solve hidden pair.
+     */
     public void solveHiddenPair(){
     	for(int i=0; i<9; i++){
     		solveHiddenPairInCellGroup(grid.getColumn(i));
@@ -182,6 +236,9 @@ public class Solver {
     	}
     }
     
+    /**
+     * Solve pointing pair.
+     */
     public void solvePointingPair(){
         for(int i = 0; i < 9; i ++){
             CellGroup cg = grid.getGrid(i);
@@ -235,6 +292,9 @@ public class Solver {
         
     }
     
+    /**
+     * Solve x wing.
+     */
     public void solveXWing(){
     	for (int y = 0; y < 8; y++){
     		for(int y1 = y+1; y1 < 9; y1++){
@@ -245,6 +305,13 @@ public class Solver {
     }
     
     
+    /**
+     * Solve x wing type.
+     *
+     * @param y the y
+     * @param y1 the y1
+     * @param TYPE the tYPE
+     */
     public void solveXWingType(int y, int y1, int TYPE){
     	CellGroup cg1 = TYPE == ROW ? grid.getRow(y) : grid.getColumn(y);
     	CellGroup cg2 = TYPE == ROW ? grid.getRow(y1) : grid.getColumn(y1);
@@ -287,6 +354,11 @@ public class Solver {
     	}
     }
 
+    /**
+     * Solve hidden pair in cell group.
+     *
+     * @param cg the cg
+     */
     public void solveHiddenPairInCellGroup(CellGroup cg){
     	for(int pv1 = 9; pv1 > 1; pv1--){
     		for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
@@ -315,6 +387,9 @@ public class Solver {
     /* Based on Bob Carpenters backtracking sudoku solver 
      * http://www.colloquial.com/games/sudoku/java_sudoku.html
      */
+    /**
+     * Solve backtracking.
+     */
     public void solveBacktracking(){
     	this.solveCounter = 0;
         if(! solveBT(0,0)){
@@ -322,10 +397,22 @@ public class Solver {
         }
     }
     
+    /**
+     * Gets the solve count.
+     *
+     * @return the solve count
+     */
     public long getSolveCount(){
         return this.solveCounter;
     }
     
+    /**
+     * Solve bt.
+     *
+     * @param y the y
+     * @param x the x
+     * @return true, if successful
+     */
     private boolean solveBT(int y, int x) {
     	this.solveCounter++;
     	//at end of column?
@@ -356,6 +443,14 @@ public class Solver {
         return false;
     }
     
+    /**
+     * Legal.
+     *
+     * @param y the y
+     * @param x the x
+     * @param val the val
+     * @return true, if successful
+     */
     private boolean legal(int y, int x, int val) {
         for (int y2 = 0; y2 < 9; ++y2)  // col
             if (val == grid.getCell(x, y2).getValue())

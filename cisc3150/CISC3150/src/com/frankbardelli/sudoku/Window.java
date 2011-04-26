@@ -1,29 +1,36 @@
 package com.frankbardelli.sudoku;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Window.
+ */
 public class Window extends JFrame {
+	
+	/** The grid. */
 	Grid grid;
+	
+	/** The sudoku board. */
 	GameBoard sudokuBoard;
 
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		Grid grid = new Grid();
 	    Problems problems = new Problems();
@@ -32,19 +39,28 @@ public class Window extends JFrame {
 		Window w = new Window(grid);
 	}
 	
+	/**
+	 * Instantiates a new window.
+	 *
+	 * @param grid the grid
+	 */
 	public Window(Grid grid){
 		this.grid = grid;
-		this.setSize(700, 700);
+		this.setSize(800, 650);
 		this.setLayout(new BorderLayout());
 		sudokuBoard = new GameBoard();
 		this.add(sudokuBoard ,BorderLayout.CENTER);
 		createButtons();
+		createInteractivePanel();
 		createMenu();
 		this.updateGrid();
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	    this.setVisible(true);
 	}
 	
+	/**
+	 * Creates the buttons.
+	 */
 	public void createButtons(){
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BorderLayout());
@@ -57,8 +73,45 @@ public class Window extends JFrame {
 		this.add(buttonPanel,BorderLayout.SOUTH);		
 	}
 	
+	/**
+	 * Creates the interactive panel.
+	 */
+	public void createInteractivePanel(){
+		JPanel sidePanel = new JPanel();
+		sidePanel.setLayout(new BoxLayout(sidePanel,BoxLayout.PAGE_AXIS));
+		JButton solveNSButton = new JButton("Demonstrate Naked Single");
+		sidePanel.add(solveNSButton);
+		JButton solveHSButton = new JButton("Demonstrate Hidden Single");
+		sidePanel.add(solveHSButton);
+		JButton solveNPButton = new JButton("Demonstrate Naked Pair");
+		sidePanel.add(solveNPButton);
+		JButton solveHPButton = new JButton("Demonstrate Hidden Pair");
+		sidePanel.add(solveHPButton);
+		JButton solveNTButton = new JButton("Demonstrate Naked Triplet");
+		sidePanel.add(solveNTButton);
+		JButton solvePPButton = new JButton("Demonstrate Pointing Pair");
+		sidePanel.add(solvePPButton);
+		JButton solveXWButton = new JButton("Demonstrate X-Wing");
+		sidePanel.add(solveXWButton);
+		this.add(sidePanel,BorderLayout.EAST);
+	}
+	
+	/**
+	 * Creates the menu.
+	 */
 	public void createMenu(){
 		JMenuBar menuBar = new JMenuBar();
+		JMenu file = new JMenu("File");
+		file.add(new JMenuItem("Import..."));
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.exit(DISPOSE_ON_CLOSE);
+			}
+		});
+		file.add(exit);
+		menuBar.add(file);
 		JMenu puzzles = new JMenu("Puzzles");
 		Problems problems = new Problems();
 		JMenu[] puzzleList = new JMenu[5];
@@ -69,45 +122,111 @@ public class Window extends JFrame {
 		int j = 0;
 		for (String p : problems.getProblemList()){
 			//a group of JMenuItems
-			JMenuItem menuItem = new JMenuItem("Puzzle #"+ (j+1));
+			String puzzleTitle = "Puzzle #"+ (j+1);
+			JMenuItem menuItem = new JMenuItem(puzzleTitle);
 			puzzleList[j/10].add(menuItem);
-			menuItem.addActionListener(new PuzzleSelectListener(this,grid,p));
+			menuItem.addActionListener(new PuzzleSelectListener(this,grid,p,puzzleTitle));
 			j++;
 		}
-		JMenuItem worstCase = new JMenuItem("Worst Case Scenario");
-		worstCase.addActionListener(new PuzzleSelectListener(this,grid,problems.worstCaseScenario()));
+		String puzzleTitle = "Brute Force Worst Case";
+		JMenuItem worstCase = new JMenuItem(puzzleTitle);
+		worstCase.addActionListener(new PuzzleSelectListener(this,grid,problems.worstCaseScenario(),puzzleTitle));
 		puzzles.add(worstCase);
 		menuBar.add(puzzles);
 		this.setJMenuBar(menuBar);
 
 	}
 	
+	/**
+	 * Update grid.
+	 */
 	public void updateGrid(){
 		sudokuBoard.updateGrid(grid);
 	}
 
+	/**
+	 * The listener interface for receiving puzzleSelect events.
+	 * The class that is interested in processing a puzzleSelect
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addPuzzleSelectListener<code> method. When
+	 * the puzzleSelect event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see PuzzleSelectEvent
+	 */
 	public class PuzzleSelectListener implements ActionListener{
+		
+		/** The window. */
 		Window window;
+		
+		/** The grid. */
 		Grid grid;
+		
+		/** The puzzle. */
 		String puzzle;
-		public PuzzleSelectListener(Window w, Grid g, String p){
+		
+		/** The title. */
+		String title;
+		
+		/**
+		 * Instantiates a new puzzle select listener.
+		 *
+		 * @param w the w
+		 * @param g the g
+		 * @param p the p
+		 * @param puzzleTitle the puzzle title
+		 */
+		public PuzzleSelectListener(Window w, Grid g, String p,String puzzleTitle){
 			this.window = w;
 			this.grid = g;
 			this.puzzle = p;
+			this.title = puzzleTitle;
 		}
+		
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(ActionEvent e) {
 			this.grid.parse(puzzle);
+			this.window.setTitle(title);
 			this.window.updateGrid();
 		}	
 	}
 
+	/**
+	 * The listener interface for receiving solveEasy events.
+	 * The class that is interested in processing a solveEasy
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addSolveEasyListener<code> method. When
+	 * the solveEasy event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see SolveEasyEvent
+	 */
 	public class SolveEasyListener implements ActionListener{
+		
+		/** The window. */
 		Window window;
+		
+		/** The grid. */
 		Grid grid;
+		
+		/**
+		 * Instantiates a new solve easy listener.
+		 *
+		 * @param w the w
+		 * @param g the g
+		 */
 		public SolveEasyListener(Window w, Grid g){
 			this.window = w;
 			this.grid = g;
 		}
+		
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(ActionEvent e) {
 			Solver s = new Solver(this.grid);
 			int lastCountPossibleValues;
@@ -115,11 +234,18 @@ public class Window extends JFrame {
 			int iterations = 0;
 			do {
 				lastCountPossibleValues = this.grid.totalCountPossibleValues();
-				s.solveNakedSingles();
-				s.solveHiddenSingles();
-				s.solveNakedPair();
-				s.solveHiddenPair();
-				s.SolveNakedTriplet();
+				//try simple methods
+				do {
+					lastCountPossibleValues = this.grid.totalCountPossibleValues();
+					s.solveNakedSingles();
+					s.solveHiddenSingles();
+					s.solveNakedPair();
+					s.solveHiddenPair();
+				} while( this.grid.totalCountPossibleValues()  < lastCountPossibleValues );
+				if(this.grid.totalCountPossibleValues() == 0)
+					break;
+				//try advanced methods
+				s.solveNakedTriplet();
 				s.solvePointingPair();
 				s.solveXWing();
 				iterations++;
@@ -131,13 +257,39 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * The listener interface for receiving solve events.
+	 * The class that is interested in processing a solve
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addSolveListener<code> method. When
+	 * the solve event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see SolveEvent
+	 */
 	public class SolveListener implements ActionListener{
+		
+		/** The window. */
 		Window window;
+		
+		/** The grid. */
 		Grid grid;
+		
+		/**
+		 * Instantiates a new solve listener.
+		 *
+		 * @param w the w
+		 * @param g the g
+		 */
 		public SolveListener(Window w, Grid g){
 			this.window = w;
 			this.grid = g;
 		}
+		
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		public void actionPerformed(ActionEvent e) {
 			Solver s = new Solver(this.grid);
 	        long startSeconds = System.currentTimeMillis();
@@ -145,7 +297,6 @@ public class Window extends JFrame {
 	        long endSeconds = System.currentTimeMillis();
 	        System.out.println("Solved with brute force in " + (endSeconds-startSeconds) +
 	                "ms in "+ s.getSolveCount() + " iterations");
-			//this.grid.print();
 			this.window.updateGrid();
 		}
 		

@@ -3,17 +3,35 @@ package com.frankbardelli.sudoku;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Problems.
+ */
 public class Problems {
+    
+    /** The project euler problems. */
     String[] projectEulerProblems;
+    
+    /**
+     * Instantiates a new problems.
+     */
     public Problems(){
         initializeData();
     }
     
+    /**
+     * Gets the problem list.
+     *
+     * @return the problem list
+     */
     public List<String> getProblemList() {
         List<String> pList = Arrays.asList(this.projectEulerProblems);
         return pList;
     }
     
+    /**
+     * Initialize data.
+     */
     private void initializeData(){
         this.projectEulerProblems = new String[]{
             "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
@@ -70,6 +88,11 @@ public class Problems {
         
     }
     
+    /**
+     * Worst case scenario.
+     *
+     * @return the string
+     */
     public String worstCaseScenario(){
     	return "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
     }
