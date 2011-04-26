@@ -9,10 +9,7 @@ import java.util.Arrays;
  */
 public class CellGroup {
 	
-	/** The cells. */
-	private ArrayList<Cell> cells;
-	
-	/** The solved. */
+	private ArrayList<Cell> cells;	
 	private boolean[] solved;
 	
 	/**
@@ -25,18 +22,20 @@ public class CellGroup {
 	}
 	
 	/**
-	 * Adds the.
+	 * Adds a Cell object to the cell group
 	 *
-	 * @param c the c
+	 * @param c the Cell object
 	 */
 	public void add(Cell c){
 		cells.add(c);
 	}
 	
 	/**
-	 * Solve.
+	 * Remove value n from the list of possible values for each cell
+	 * Usually called when a number has been definitively proven
+	 * to be in a specific cell.
 	 *
-	 * @param n the n
+	 * @param n the number to eliminate
 	 */
 	public void solve(int n){
 		if (n > 0 && n <= solved.length){ 
@@ -50,9 +49,9 @@ public class CellGroup {
 	}
 	
 	/**
-	 * Gets the unsolved.
+	 * Gets the unsolved numbers in the CellGroup
 	 *
-	 * @return the unsolved
+	 * @return the ArrayList of unsolved numbers
 	 */
 	public ArrayList<Integer> getUnsolved(){
 		ArrayList<Integer> unsolved = new ArrayList<Integer>();
@@ -64,9 +63,9 @@ public class CellGroup {
 	}
 	
 	/**
-	 * Gets the solved.
+	 * Gets the solved numbers in the CellGroup
 	 *
-	 * @return the solved
+	 * @return the ArrayList of solved numbers
 	 */
 	public ArrayList<Integer> getSolved(){
 		ArrayList<Integer> listSolved = new ArrayList<Integer>();
@@ -78,18 +77,18 @@ public class CellGroup {
 	}
 	
 	/**
-	 * Checks if is solved.
+	 * Checks if the entire CellGroup is solved.
 	 *
-	 * @return true, if is solved
+	 * @return true, if the CellGroup is solved
 	 */
 	public boolean isSolved(){
 		return (getUnsolved().size() == 0);
 	}
 	
 	/**
-	 * Gets the cells.
+	 * Gets the cells in the CellGroup
 	 *
-	 * @return the cells
+	 * @return a list of the Cell objects in the CellGroup
 	 */
 	public ArrayList<Cell> getCells(){
 		return cells;

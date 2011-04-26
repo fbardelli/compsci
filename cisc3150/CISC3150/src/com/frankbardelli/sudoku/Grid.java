@@ -55,7 +55,7 @@ public class Grid {
 	/**
 	 * Populate.
 	 *
-	 * @param a the a
+	 * @param a 2D array representing the initial state of the sudoku grid
 	 */
 	public void populate(int[][] a){
 		for (int y = 0; y < 9; y++){
@@ -69,9 +69,9 @@ public class Grid {
 	}
 	
 	/**
-	 * Parses the.
+	 * Parses a string of 81 characters representing a Sudoku puzzle
 	 *
-	 * @param s the s
+	 * @param s a string representing the puzzle
 	 */
 	public void parse(String s){
 		if(isPopulated){
@@ -95,7 +95,7 @@ public class Grid {
 	}
 	
 	/**
-	 * First three.
+	 * First three values in the first row of the grids.  Used for comparing solutions.
 	 *
 	 * @return the int
 	 */
@@ -107,7 +107,7 @@ public class Grid {
 	}
 	
 	/**
-	 * Prints the.
+	 * Prints the grid to standard out.
 	 */
 	public void print(){
 		Iterator<CellGroup> it = rows.iterator();
@@ -123,7 +123,7 @@ public class Grid {
 	}
 	
 	/**
-	 * Prints the verbose.
+	 * Prints a verbose representation of the grid to standard out.
 	 */
 	public void printVerbose(){
 		//char[] bigGrid = new char[36*36];
@@ -133,7 +133,6 @@ public class Grid {
 		while(it.hasNext()){
 			CellGroup cg = it.next();
 			ArrayList<Cell> cells = cg.getCells();
-			//Iterator<Cell> cellIterator = c.iterator();
 			for(int j = 0; j < 3; j++ ){
 				System.out.print("| ");
 				for (int i = 0; i < cells.size(); i++){
@@ -141,7 +140,6 @@ public class Grid {
 					HashMap<Integer,Boolean> possibles = cell.getPossibleValues();
 					for( int k=1; k<=3; k++){
 						int index = k + j*3;
-						//System.out.println(index);						
 						if(possibles.get(new Integer(index)).booleanValue()){
 							System.out.print(index);
 						}else{
@@ -168,9 +166,10 @@ public class Grid {
 	}
 	
 	/**
-	 * Total count possible values.
+	 * Total count of unsolved possible values.
+	 * Useful for gaging progress after applying a solving technique
 	 *
-	 * @return the int
+	 * @return the count of unsolved possible values
 	 */
 	public int totalCountPossibleValues(){
 		int totalPossibleValues = 0;
@@ -189,9 +188,9 @@ public class Grid {
 	
 	
 	/**
-	 * Count solved.
+	 * Count of solved values.
 	 *
-	 * @return the int
+	 * @return the Count of fully solved cells in the grid
 	 */
 	public int countSolved(){
 		int countSolved = 0;
@@ -202,11 +201,11 @@ public class Grid {
 	}
 	
 	/**
-	 * Gets the cell.
+	 * Gets the Cell at x,y
 	 *
-	 * @param x the x
-	 * @param y the y
-	 * @return the cell
+	 * @param x the x position of the Cell
+	 * @param y the y position of the Cell
+	 * @return the Cell object at (x,y)
 	 */
 	public Cell getCell(int x,int y){
 		return cells[y][x];
@@ -225,7 +224,7 @@ public class Grid {
 	}
 	
 	/**
-	 * Gets the box.
+	 * Gets the inner 3x3 box at the position supplied 
 	 *
 	 * @param g the index of the box
 	 * @return CellGroup representing the box
@@ -235,7 +234,7 @@ public class Grid {
 	}
 	
 	/**
-	 * Gets the row.
+	 * Gets the row at index y
 	 *
 	 * @param y the index of the row
 	 * @return CellGroup representing the row
@@ -245,7 +244,7 @@ public class Grid {
 	}
 	
 	/**
-	 * Gets the column.
+	 * Gets the column at index x
 	 *
 	 * @param x the index of the column
 	 * @return CellGroup representing the column

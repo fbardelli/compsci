@@ -25,9 +25,9 @@ public class Cell {
 	}
 	
 	/**
-	 * Instantiates a new cell.
+	 * Instantiates a new cell with a given value
 	 *
-	 * @param value the value
+	 * @param value the solved value of the cell
 	 */
 	public Cell(int value){
 		initializePossibleValues();
@@ -35,14 +35,14 @@ public class Cell {
 	}
 	
 	/**
-	 * Clear.
+	 * Clear the cell, setting it to unsolved and opening up all possible values
 	 */
 	public void clear(){
 		initializePossibleValues();
 	}
 	
 	/**
-	 * Initialize possible values.
+	 * Initialize list of possible values.
 	 */
 	private void initializePossibleValues(){
 		possibleValues = new boolean[9];		
@@ -52,9 +52,9 @@ public class Cell {
 	}
 	
 	/**
-	 * Eliminate possible value.
+	 * Eliminate a possible value from the Cell.
 	 *
-	 * @param i the i
+	 * @param i the value to eliminate
 	 */
 	public void eliminatePossibleValue(int i){
 		if (i <= 9) {
@@ -63,7 +63,7 @@ public class Cell {
 	}
 	
 	/**
-	 * Attempt solve.
+	 * Attempt to solve the cell.  If the list of possible values contains just one candidate the cell can be solved
 	 */
 	public void attemptSolve(){
 		int lastTrue = 0;
@@ -80,16 +80,27 @@ public class Cell {
 		}
 	}
 	
+	
+	/**
+	 * Gets the cell's highlighting state.
+	 *
+	 * @return boolean representing if the cell is highlighted
+	 */
 	public boolean getHighlight(){
         return highlight;
 	}
 	
-	 public void setHighlight(boolean h){
+	 /**
+ 	 * Sets the cells highlighting.  Useful for interactively showing solving progress.
+ 	 *
+ 	 * @param h boolean representing if the cell is highlighted
+ 	 */
+ 	public void setHighlight(boolean h){
 	     highlight = h;
 	 } 
 	
 	/**
-	 * Sets the value.
+	 * Sets the value of the cell, eliminating that value from all cell groups the cell is a member of
 	 *
 	 * @param value the new value
 	 */
@@ -106,9 +117,9 @@ public class Cell {
 	}
 	
 	/**
-	 * Gets the possible values.
+	 * Gets the possible values for this cell.
 	 *
-	 * @return the possible values
+	 * @return Hashmap of all possible values for this cell, true for possible values, false for eliminated values
 	 */
 	public HashMap<Integer,Boolean> getPossibleValues(){
 		HashMap<Integer,Boolean> values = new HashMap<Integer,Boolean>();
@@ -119,7 +130,7 @@ public class Cell {
 	}
 	
 	/**
-	 * Gets the possible value count.
+	 * Gets the count of possible values for this cell.
 	 *
 	 * @return the possible value count
 	 */
@@ -134,44 +145,44 @@ public class Cell {
 	}
 	
 	/**
-	 * Possible values match.
+	 * Test to determine if the possible values in this cell exactly match those of the Cell supplied.
 	 *
-	 * @param c2 the c2
-	 * @return true, if successful
+	 * @param c2 Cell object
+	 * @return true, if possible values are identical
 	 */
 	public boolean possibleValuesMatch(Cell c2){
 		return this.getPossibleValues().equals(c2.getPossibleValues());
 	}
 	
 	/**
-	 * Gets the value.
+	 * Gets the value of this Cell, 1-9 if solved.  0 if unsolved.
 	 *
-	 * @return the value
+	 * @return value
 	 */
 	public int getValue(){
 		return value;
 	}
 	
 	/**
-	 * Gets the parent grid.
+	 * Gets the parent 3x3 Box this cell belongs to.
 	 *
-	 * @return the parent grid
+	 * @return the parent box
 	 */
 	public CellGroup getParentBox() {
 		return parentBox;
 	}
 	
 	/**
-	 * Sets the parent grid.
+	 * Sets the parent 3x3 Box.
 	 *
-	 * @param parentGrid the new parent grid
+	 * @param parentBox the new parent box
 	 */
 	public void setParentBox(CellGroup parentBox) {
 		this.parentBox = parentBox;
 	}
 	
 	/**
-	 * Gets the parent row.
+	 * Gets the parent row this cell belongs to.
 	 *
 	 * @return the parent row
 	 */
@@ -189,7 +200,7 @@ public class Cell {
 	}
 	
 	/**
-	 * Gets the parent column.
+	 * Gets the parent column this cell belongs to.
 	 *
 	 * @return the parent column
 	 */
@@ -207,9 +218,9 @@ public class Cell {
 	}
 	
 	/**
-	 * Gets the cell groups.
+	 * Gets the CellGroups(row,column,box) this cell belongs to.
 	 *
-	 * @return the cell groups
+	 * @return List of the CellGroups
 	 */
 	public List<CellGroup> getCellGroups(){
 		List<CellGroup> cellGroups = new ArrayList<CellGroup>();
