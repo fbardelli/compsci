@@ -9,23 +9,15 @@ import java.util.List;
  * The Class Solver.
  */
 public class Solver {
-    
-    /** The grid. */
     private Grid grid;
-    
-    /** The solve counter. */
     private long solveCounter;
-    
-    /** The COLUMN. */
-    static int COLUMN = 1;
-    
-    /** The ROW. */
-    static int ROW = 2;
+    private static int COLUMN = 1;
+    private static int ROW = 2;
     
     /**
      * Instantiates a new solver.
      *
-     * @param grid the grid
+     * @param grid Grid object representing the state of the puzzle board
      */
     public Solver(Grid grid){
         this.grid = grid;
@@ -33,7 +25,7 @@ public class Solver {
     }
     
     /**
-     * Solve naked singles.
+     * Solve cells where only one candidate is available 
      */
     public void solveNakedSingles(){
         for (int y = 0; y < 9; y++ ){
@@ -47,6 +39,9 @@ public class Solver {
                     for(Integer i : allSolved){
                         c.eliminatePossibleValue(i.intValue());
                         c.attemptSolve();
+                        if(c.getValue()!=0){
+                            c.setHighlight(true);
+                        }
                     }
                 }
                 
@@ -55,7 +50,7 @@ public class Solver {
     }
     
     /**
-     * Solve hidden singles.
+     * Solve cells where one candidate is not possible in any other cell in the same row/box/column
      */
     public void solveHiddenSingles(){
         for (int y = 0; y < 9; y++ ){
@@ -74,10 +69,10 @@ public class Solver {
     /**
      * Solve hidden single in cell group.
      *
-     * @param c the c
-     * @param cg the cg
+     * @param c the Cell to be solved
+     * @param cg the CellGroup to examine for hidden singles 
      */
-    public void solveHiddenSingleInCellGroup(Cell c, CellGroup cg) {
+    private void solveHiddenSingleInCellGroup(Cell c, CellGroup cg) {
         HashMap<Integer,Boolean> possibles = new HashMap<Integer,Boolean>();
         HashMap<Integer,Boolean> cellPossibles = c.getPossibleValues();
         for( Integer i : cellPossibles.keySet()){
@@ -97,6 +92,7 @@ public class Solver {
         }
         if(possibles.size() == 1){
             for( Integer i : possibles.keySet()){
+                c.setHighlight(true);
                 c.setValue(i.intValue());
             }
 
@@ -105,7 +101,8 @@ public class Solver {
     }
 
     /**
-     * Solve naked pair.
+     * Find two cells in one cell group with two identical possible values.  Eliminate those possible values
+     * in all other cells in the Cell Group.
      */
     public void solveNakedPair(){
         for (int y = 0; y < 9; y++ ){
@@ -124,10 +121,10 @@ public class Solver {
     /**
      * Solve naked pair in cell group.
      *
-     * @param pValues the values
-     * @param cg the cg
+     * @param pValues the values of the pair being examined
+     * @param cg the CellGroup
      */
-    public void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
+    private void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
     	int count = 0;
     	List<Cell> eliminateCells = new ArrayList<Cell>();
     	for(Cell c: cg.getCells()){
@@ -141,35 +138,58 @@ public class Solver {
     		for(Cell c: eliminateCells){
     			for (Integer i : pValues.keySet()){
     				if(pValues.get(i)){
-    					c.eliminatePossibleValue(i.intValue());
+    				    if(c.getPossibleValues().get(i)){
+    				        c.setHighlight(true);
+                            c.eliminatePossibleValue(i.intValue());
+    				    }
     				}
     			}
     		}
     	}
     }
     
+    
     /**
-     * Solve naked triplet.
+     * Find two cells in one CellGroup that are the only possible candidates for two distinct values.
+     * Eliminate all other values in those cells
      */
-    public void solveNakedTriplet(){
-        for(int first = 1; first <= 7; first++){
-            for(int second = first + 1; second <= 8; second++ ){
-                for (int third = second + 1; third <= 9; third++){
-                    for(int i = 0; i < 9; i++){
-                        //System.out.println("triplet "+first+" "+second+" "+third);
-                        int bitField = (int) Math.pow(2,first) + (int) Math.pow(2,second) + (int)Math.pow(2,third);
-                        if(solveNakedTripletInCellGroup(grid.getGrid(i),bitField,first,second,third)){
-                            //System.out.println("Found naked triple in grid "+i +" on ("+ first+","+second+","+third+")");
+    public void solveHiddenPair(){
+        for(int i=0; i<9; i++){
+            solveHiddenPairInCellGroup(grid.getColumn(i));
+            solveHiddenPairInCellGroup(grid.getRow(i));
+            solveHiddenPairInCellGroup(grid.getBox(i));         
+        }
+    }
+    
+    /**
+     * Solve hidden pair in cell group.
+     *
+     * @param cg the Cell Group
+     */
+    public void solveHiddenPairInCellGroup(CellGroup cg){
+        for(int pv1 = 9; pv1 > 1; pv1--){
+            for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
+                List<Cell> matchingCells = new ArrayList<Cell>();
+                for(Cell c: cg.getCells()){
+                    if(c.getPossibleValues().containsValue(new Integer(pv1)) &&
+                            c.getPossibleValues().containsValue(new Integer(pv2))){
+                        matchingCells.add(c);
+                    }
+                }
+                if(matchingCells.size()==2){
+                    Cell c1 = matchingCells.get(0);
+                    Cell c2 = matchingCells.get(1);                 
+                    for(int i = 1; i <= 9; i++){
+                        if(i!=pv1&&i!=pv2){
+                            if(c1.getPossibleValues().get(new Integer(i))){
+                                c1.setHighlight(true);
+                                c1.eliminatePossibleValue(i);
+                            }
+                            if(c2.getPossibleValues().get(new Integer(i))){
+                                c2.setHighlight(true);
+                                c2.eliminatePossibleValue(i);
+                            }
                         }
-                        if(solveNakedTripletInCellGroup(grid.getRow(i),bitField,first,second,third)){
-                            //System.out.println("Found naked triple in row "+i +" on ("+ first+","+second+","+third+")");
-
-                        }
-                        if(solveNakedTripletInCellGroup(grid.getColumn(i),bitField,first,second,third)){
-                            //System.out.println("Found naked triple in column "+i +" on ("+ first+","+second+","+third+")");
-
-                        }
-                        
                     }
                 }
             }
@@ -177,16 +197,34 @@ public class Solver {
     }
     
     /**
-     * Solve naked triplet in cell group.
+     * Find three cells sharing some combination of 3 distinct values.
+     * Eliminate those values in other cells in the same CellGroup
+     */
+    public void solveNakedTriplet(){
+        for(int first = 1; first <= 7; first++){
+            for(int second = first + 1; second <= 8; second++ ){
+                for (int third = second + 1; third <= 9; third++){
+                    for(int i = 0; i < 9; i++){
+                        solveNakedTripletInCellGroup(grid.getBox(i),first,second,third);
+                        solveNakedTripletInCellGroup(grid.getRow(i),first,second,third);
+                        solveNakedTripletInCellGroup(grid.getColumn(i),first,second,third);
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Solve using naked triplet technique in a given cell group.
      *
-     * @param cg the cg
-     * @param bitField the bit field
-     * @param first the first
-     * @param second the second
-     * @param third the third
+     * @param cg the CellGroup to attempt to solve
+     * @param first the first number in the triplet
+     * @param second the second number in the triplet 
+     * @param third the third number in the triplet
      * @return true, if successful
      */
-    public boolean solveNakedTripletInCellGroup(CellGroup cg, int bitField, int first, int second, int third){
+    public boolean solveNakedTripletInCellGroup(CellGroup cg, int first, int second, int third){
+        int bitField = (int) Math.pow(2,first) + (int) Math.pow(2,second) + (int)Math.pow(2,third);
         int nakedTripleCandidates = 0;
         int bitTotal = 0;
         for(int i = 0; i <= 9; i++){
@@ -207,18 +245,26 @@ public class Solver {
             boolean match = ((~(bitSum) | bitField) & bitTotal) == bitTotal;
             if(match){
                 nakedTripleCandidates++;
-                //System.out.println(Integer.toBinaryString(bitSum));
-                //System.out.println(Integer.toBinaryString(bitField));
-                //System.out.println(Integer.toBinaryString(bitTotal));
             }else{
                 eliminateCells.add(c);
             }
         }
         if(nakedTripleCandidates == 3){
             for(Cell c : eliminateCells){
-                c.eliminatePossibleValue(first);
-                c.eliminatePossibleValue(second);
-                c.eliminatePossibleValue(third);
+                if (c.getValue() == 0){
+                    if(c.getPossibleValues().get(new Integer(first))){
+                        c.setHighlight(true);
+                        c.eliminatePossibleValue(first);
+                    }
+                    if(c.getPossibleValues().get(new Integer(second))){
+                        c.setHighlight(true);
+                        c.eliminatePossibleValue(second);
+                    }
+                    if(c.getPossibleValues().get(new Integer(third))){
+                        c.setHighlight(true);
+                        c.eliminatePossibleValue(third);
+                    }
+                }
             }
             return true;
         }
@@ -226,22 +272,13 @@ public class Solver {
     }
     
     /**
-     * Solve hidden pair.
-     */
-    public void solveHiddenPair(){
-    	for(int i=0; i<9; i++){
-    		solveHiddenPairInCellGroup(grid.getColumn(i));
-    		solveHiddenPairInCellGroup(grid.getRow(i));
-    		solveHiddenPairInCellGroup(grid.getGrid(i));    		
-    	}
-    }
-    
-    /**
-     * Solve pointing pair.
+     * In a single box, locate two or three cells in a row/column that share a distinct value.
+     * Since that value must occur in the current box, eliminate the value in adjacent
+     * boxes along the same row/column 
      */
     public void solvePointingPair(){
         for(int i = 0; i < 9; i ++){
-            CellGroup cg = grid.getGrid(i);
+            CellGroup cg = grid.getBox(i);
             for(int c=1; c<=9; c++){
                 CellGroup col=null;
                 boolean clearColumn = false;
@@ -259,8 +296,11 @@ public class Solver {
                 }
                 if(clearColumn){
                     for(Cell c2 : col.getCells()){
-                        if(c2.getParentGrid() != cg){
-                            c2.eliminatePossibleValue(c);
+                        if(c2.getParentBox() != cg){
+                            if(c2.getPossibleValues().get(new Integer(c))){
+                                c2.setHighlight(true);
+                                c2.eliminatePossibleValue(c);
+                            }
                         }
                     }
                 }
@@ -281,8 +321,11 @@ public class Solver {
                 }
                 if(clearRow){
                     for(Cell c2 : row.getCells()){
-                        if(c2.getParentGrid() != cg){
-                            c2.eliminatePossibleValue(c);
+                        if(c2.getParentBox() != cg){
+                            if(c2.getPossibleValues().get(new Integer(c))){
+                                c2.setHighlight(true);
+                                c2.eliminatePossibleValue(c);
+                            }
                         }
                     }
                 }
@@ -293,7 +336,9 @@ public class Solver {
     }
     
     /**
-     * Solve x wing.
+     * Match up all rows into pairs.  If a single value occurs twice in the same column position in both rows,
+     * that value can be eliminated for that column position in all other rows
+     * Repeat this technique for each pair of columns
      */
     public void solveXWing(){
     	for (int y = 0; y < 8; y++){
@@ -308,9 +353,9 @@ public class Solver {
     /**
      * Solve x wing type.
      *
-     * @param y the y
-     * @param y1 the y1
-     * @param TYPE the tYPE
+     * @param y the position of the first row/column in the grid
+     * @param y1 the position of the second row/column in the grid
+     * @param TYPE constant representing whether we are operating on rows or columns
      */
     public void solveXWingType(int y, int y1, int TYPE){
     	CellGroup cg1 = TYPE == ROW ? grid.getRow(y) : grid.getColumn(y);
@@ -328,24 +373,16 @@ public class Solver {
         	if (cg1Positions.size() == 2 && cg1Positions.equals(cg2Positions)){
         		for(int groupPos = 0; groupPos < 9; groupPos++){
         		    if(groupPos != y && groupPos != y1){
-        	            //System.out.println("found XWING for candidate "+ c +"!" +
-        	            //            "("+y+","+cg1Positions.get(0)+"),"+
-        	            //            "("+y+","+cg1Positions.get(1)+"),"+
-        	            //            "("+y1+","+cg1Positions.get(0)+"),"+
-        	            //            "("+y1+","+cg1Positions.get(1)+")"
-        	            //);
         		        CellGroup currentGroup = TYPE == ROW ? grid.getRow(groupPos) : grid.getColumn(groupPos);
         		        Cell r = currentGroup.getCells().get(cg1Positions.get(0).intValue());
         		        if(r.getPossibleValues().get(new Integer(c))){
-        		            //System.out.println("eliminating "+ c +" from cell at (" + groupPos + ","+ cg1Positions.get(0).intValue() +")");
-        		            r.eliminatePossibleValue(c);
-        		            //r.attemptSolve();
+        		            r.setHighlight(true);
+            		        r.eliminatePossibleValue(c);
         		        }
         		        Cell r2 = currentGroup.getCells().get(cg1Positions.get(1).intValue());
                         if(r2.getPossibleValues().get(new Integer(c))){
-                            //System.out.println("eliminating "+ c +" from cell at (" + groupPos + ","+ cg1Positions.get(1).intValue() +")");
+                            r2.setHighlight(true);
         		            r2.eliminatePossibleValue(c);
-        		            //r.attemptSolve();
         		        }
         		    }
         		    
@@ -354,34 +391,7 @@ public class Solver {
     	}
     }
 
-    /**
-     * Solve hidden pair in cell group.
-     *
-     * @param cg the cg
-     */
-    public void solveHiddenPairInCellGroup(CellGroup cg){
-    	for(int pv1 = 9; pv1 > 1; pv1--){
-    		for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
-				List<Cell> matchingCells = new ArrayList<Cell>();
-    			for(Cell c: cg.getCells()){
-    				if(c.getPossibleValues().containsValue(new Integer(pv1)) &&
-    						c.getPossibleValues().containsValue(new Integer(pv2))){
-    					matchingCells.add(c);
-    				}
-    			}
-    			if(matchingCells.size()==2){
-    				Cell c1 = matchingCells.get(0);
-    				Cell c2 = matchingCells.get(1);    				
-    				for(int i = 1; i <= 9; i++){
-    					if(i!=pv1&&i!=pv2){
-    						c1.eliminatePossibleValue(i);
-    						c2.eliminatePossibleValue(i);
-    					}
-    				}
-    			}
-    		}
-    	}
-    }
+
     
     
     /* Based on Bob Carpenters backtracking sudoku solver 
@@ -430,7 +440,7 @@ public class Solver {
         //try each value
         for (int val = 1; val <= 9; ++val) {
         	//can this value go in this square?
-            if (legal(y,x,val)) {
+            if (isLegal(y,x,val)) {
             	//try the value and move on to the next square in the row
                 grid.getCell(x, y).setValue(val);
                 if (solveBT(y+1,x))
@@ -444,14 +454,14 @@ public class Solver {
     }
     
     /**
-     * Legal.
+     * Is the value of the cell identified by (x,y) legal?
      *
-     * @param y the y
-     * @param x the x
-     * @param val the val
-     * @return true, if successful
+     * @param y the y coordinate of the current cell on the grid
+     * @param x the x coordinate of the current cell on the grid
+     * @param val the value of the cell
+     * @return true, if valid.  False otherwise
      */
-    private boolean legal(int y, int x, int val) {
+    private boolean isLegal(int y, int x, int val) {
         for (int y2 = 0; y2 < 9; ++y2)  // col
             if (val == grid.getCell(x, y2).getValue())
                 return false;

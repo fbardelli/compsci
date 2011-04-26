@@ -8,21 +8,12 @@ import java.util.List;
  * The Class Cell.
  */
 public class Cell {
-	
-	/** The value. */
-	int value;
-	
-	/** The possible values. */
-	boolean[] possibleValues;
-	
-	/** The parent grid. */
-	CellGroup parentGrid;	
-	
-	/** The parent row. */
-	CellGroup parentRow;
-	
-	/** The parent column. */
-	CellGroup parentColumn;
+	private int value;
+	private boolean[] possibleValues;
+	private CellGroup parentBox;	
+	private CellGroup parentRow;
+	private CellGroup parentColumn;
+	private boolean highlight;
 	
 	/**
 	 * Instantiates a new cell.
@@ -30,6 +21,7 @@ public class Cell {
 	public Cell(){
 		initializePossibleValues();
 		value = 0;
+		highlight = false;
 	}
 	
 	/**
@@ -88,6 +80,13 @@ public class Cell {
 		}
 	}
 	
+	public boolean getHighlight(){
+        return highlight;
+	}
+	
+	 public void setHighlight(boolean h){
+	     highlight = h;
+	 } 
 	
 	/**
 	 * Sets the value.
@@ -100,7 +99,7 @@ public class Cell {
     		for( int i = 0; i < 9; i++ ){
     			possibleValues[i] = ( (i+1) == value ? true : false );
     		}
-    		parentGrid.solve(value);
+    		parentBox.solve(value);
     		parentRow.solve(value);
     		parentColumn.solve(value);
 		}
@@ -158,8 +157,8 @@ public class Cell {
 	 *
 	 * @return the parent grid
 	 */
-	public CellGroup getParentGrid() {
-		return parentGrid;
+	public CellGroup getParentBox() {
+		return parentBox;
 	}
 	
 	/**
@@ -167,8 +166,8 @@ public class Cell {
 	 *
 	 * @param parentGrid the new parent grid
 	 */
-	public void setParentGrid(CellGroup parentGrid) {
-		this.parentGrid = parentGrid;
+	public void setParentBox(CellGroup parentBox) {
+		this.parentBox = parentBox;
 	}
 	
 	/**
@@ -216,7 +215,7 @@ public class Cell {
 		List<CellGroup> cellGroups = new ArrayList<CellGroup>();
 		cellGroups.add(parentColumn);
 		cellGroups.add(parentRow);
-		cellGroups.add(parentGrid);
+		cellGroups.add(parentBox);
 		return cellGroups;
 	}
 }

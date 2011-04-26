@@ -4,25 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Grid.
  */
 public class Grid {
 	
-	/** The rows. */
 	private ArrayList<CellGroup> rows;
-	
-	/** The cols. */
 	private ArrayList<CellGroup> cols;
-	
-	/** The grids. */
-	private ArrayList<CellGroup> grids;
-	
-	/** The cells. */
+	private ArrayList<CellGroup> boxes;
 	private Cell[][] cells;
-	
-	/** The is populated. */
 	private boolean isPopulated;
 	
 	/**
@@ -38,11 +28,11 @@ public class Grid {
 	public void reset(){
 		rows = new ArrayList<CellGroup>();
 		cols = new ArrayList<CellGroup>();
-		grids = new ArrayList<CellGroup>();
+		boxes = new ArrayList<CellGroup>();
 		for(int i = 0; i < 9; i++){
 			rows.add(new CellGroup());
 			cols.add(new CellGroup());
-			grids.add(new CellGroup());
+			boxes.add(new CellGroup());
 		}
 		cells = new Cell[9][9];
 		for(int y = 0; y < 9; y++){
@@ -50,34 +40,17 @@ public class Grid {
 				cells[y][x] = new Cell();
 				CellGroup parentRow = rows.get(y);
 				CellGroup parentColumn = cols.get(x);
-				CellGroup parentGrid = grids.get(getGridIndexForCellAt(x,y));
+				CellGroup parentBox = boxes.get(getBoxIndexForCellAt(x,y));
 				parentRow.add(cells[y][x]);
 				cells[y][x].setParentRow(parentRow);
 				parentColumn.add(cells[y][x]);
 				cells[y][x].setParentColumn(parentColumn);
-				parentGrid.add(cells[y][x]);
-				cells[y][x].setParentGrid(parentGrid);
+				parentBox.add(cells[y][x]);
+				cells[y][x].setParentBox(parentBox);
 			}
 		}
 		isPopulated = false;
 	}
-	/*
-	 	 0             1             2
-	0,0 1,0 2,0	  3,0 4,0 5,0   0,6 7,0 8,0  0
-	0,1 1,1 2,1	  3,1 4,1 5,1   6,1 7,1 8,1  9
-	0,2 1,2 2,2	  3,2 4,2 5,2   6,2 7,2 8,2  18
-	
-		 3             4             5
-	0,3 1,3 2,3   3,3 4,3 5,3   6,3 7,3 8,3  27
-	0,4 1,4 2,4   3,4 4,4 5,4   6,4 7,4 8,4  36
-	0,5 1,5 2,5   3,5 4,5 5,5   6,5 7,5 8,5  45
-	
-		 6             7             8
-	0,6 1,6 2,6   3,6 4,6 5,6   6,6 7,6 8,6  54
-	0,7 1,7 2,7   3,7 4,7 5,7   6,7 7,7 8,7  63
-	0,8 1,8 2,8   3,8 4,8 5,8   6,8 7,8 8,8	 72
-
-	*/
 
 	/**
 	 * Populate.
@@ -107,6 +80,7 @@ public class Grid {
 		int[][] grid = new int[9][9];
 		String[] fileRows = new String[9];
 		String clean = s.replaceAll("\n","");
+		clean = clean.replaceAll("\\.","0");
 		for(int i=0; i<9; i++){
 		    fileRows[i] = clean.substring(i*9,i*9+9);
 		}
@@ -239,32 +213,32 @@ public class Grid {
 	}
 	
 	/**
-	 * Gets the grid index for cell at.
+	 * Gets the box index for cell at the given position.
 	 *
-	 * @param x the x
-	 * @param y the y
-	 * @return the grid index for cell at
+	 * @param x the x position
+	 * @param y the y position
+	 * @return the box index for cell at (x,y)
 	 */
-	public int getGridIndexForCellAt(int x, int y){
+	public int getBoxIndexForCellAt(int x, int y){
 		int gridIndex = (x/3) + ((y/3)*3);
 		return gridIndex;
 	}
 	
 	/**
-	 * Gets the grid.
+	 * Gets the box.
 	 *
-	 * @param g the g
-	 * @return the grid
+	 * @param g the index of the box
+	 * @return CellGroup representing the box
 	 */
-	public CellGroup getGrid(int g){
-		return grids.get(g);
+	public CellGroup getBox(int g){
+		return boxes.get(g);
 	}
 	
 	/**
 	 * Gets the row.
 	 *
-	 * @param y the y
-	 * @return the row
+	 * @param y the index of the row
+	 * @return CellGroup representing the row
 	 */
 	public CellGroup getRow(int y){
 		return rows.get(y);
@@ -273,8 +247,8 @@ public class Grid {
 	/**
 	 * Gets the column.
 	 *
-	 * @param x the x
-	 * @return the column
+	 * @param x the index of the column
+	 * @return CellGroup representing the column
 	 */
 	public CellGroup getColumn(int x){
 		return cols.get(x);

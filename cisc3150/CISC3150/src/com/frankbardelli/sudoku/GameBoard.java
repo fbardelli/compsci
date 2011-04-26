@@ -33,11 +33,16 @@ public class GameBoard extends JPanel{
 
 	public void updateGrid(Grid grid){
 		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
-			CellGroup cg = grid.getGrid(subgridIndex);
+			CellGroup cg = grid.getBox(subgridIndex);
 			ArrayList<Cell> cells = cg.getCells();
 			for (int cellIndex = 0; cellIndex < 9; cellIndex++) {
 				Cell c = cells.get(cellIndex);
 				JPanel cell = cellPanel[subgridIndex][cellIndex];
+				cell.setBackground(this.getBackground());
+				if(c.getHighlight()){
+				    cell.setBackground(Color.GREEN);
+				    c.setHighlight(false);
+				}
 				cell.removeAll();
 				if (c.getValue() == 0) { 
 					cell.setLayout(new GridLayout(3,3)); 
@@ -49,6 +54,7 @@ public class GameBoard extends JPanel{
 							label.setText(new Integer(l).toString());
 						}
 						label.setForeground(Color.BLUE);
+						pValue.setBackground(cell.getBackground());
 						pValue.add(label);
 						cell.add(pValue); 
 					} 
