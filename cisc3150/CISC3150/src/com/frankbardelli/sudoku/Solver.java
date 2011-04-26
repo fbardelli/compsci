@@ -392,21 +392,6 @@ public class Solver {
     }
 
 
-    
-    
-    /* Based on Bob Carpenters backtracking sudoku solver 
-     * http://www.colloquial.com/games/sudoku/java_sudoku.html
-     */
-    /**
-     * Solve backtracking.
-     */
-    public void solveBacktracking(){
-    	this.solveCounter = 0;
-        if(! solveBT(0,0)){
-            System.out.println("Failed to solve Puzzle");
-        }
-    }
-    
     /**
      * Gets the solve count.
      *
@@ -416,12 +401,28 @@ public class Solver {
         return this.solveCounter;
     }
     
+    
+    /* Based on Bob Carpenters backtracking sudoku solver 
+     * http://www.colloquial.com/games/sudoku/java_sudoku.html
+     */
     /**
-     * Solve bt.
+     * Solve entire puzzle using brute force recursive backtracking technique.
+     */
+    public void solveBacktracking(){
+    	this.solveCounter = 0;
+        if(! solveBT(0,0)){
+            System.out.println("Failed to solve Puzzle");
+        }
+    }
+    
+
+    
+    /**
+     * Solve 
      *
-     * @param y the y
-     * @param x the x
-     * @return true, if successful
+     * @param y the y coordinate of the cell to solve 
+     * @param x the x coordinate of the cell to solve 
+     * @return true, if solved successfully
      */
     private boolean solveBT(int y, int x) {
     	this.solveCounter++;
