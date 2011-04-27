@@ -3,15 +3,26 @@ package com.frankbardelli.sudoku;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+
 
 /**
  * The Class Window.
@@ -30,7 +41,27 @@ public class Window extends JFrame {
 	    Problems problems = new Problems();
 	    List<String> problemList = problems.getProblemList();
 	    grid.parse(problemList.get(0));
+		setCustomLookAndFeel("Nimbus");
 		Window w = new Window(grid);
+	}
+
+	private static void setCustomLookAndFeel(String laf){
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		    	if (laf.equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (UnsupportedLookAndFeelException e) {
+		    // handle exception
+		} catch (ClassNotFoundException e) {
+		    // handle exception
+		} catch (InstantiationException e) {
+		    // handle exception
+		} catch (IllegalAccessException e) {
+		    // handle exception
+		}
 	}
 	
 	/**
@@ -145,7 +176,10 @@ public class Window extends JFrame {
 	public void createMenu(){
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
-		file.add(new JMenuItem("Import..."));
+		JMenuItem importCommand = new JMenuItem("Import...");
+		JFrame window = this;
+		importCommand.addActionListener(new FileImportListener(this, grid, importCommand));
+		file.add(importCommand);
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -220,6 +254,46 @@ public class Window extends JFrame {
 		}	
 	}
 
+	public class FileImportListener implements ActionListener{
+		Window window;
+		Grid grid;
+		JMenuItem button;
+		JFileChooser fc;
+		public FileImportListener(Window w,Grid g,JMenuItem b){
+			this.window = w;
+			this.grid = g;
+			this.button = b;
+			this.fc = new JFileChooser();
+		}
+		public void actionPerformed(ActionEvent e) {
+		    //Handle open button d.
+		    if (e.getSource() == button) {
+		        int returnVal = fc.showOpenDialog(window);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            //This is where a real application would open the file.
+		            System.out.println("Opening: " + file.getAbsolutePath() + "\n");
+		            try {
+		            	InputStream in = new FileInputStream(file.getAbsolutePath());
+		            	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		            	String line = null;
+		            	String puzzle = "";
+		            	while ((line = reader.readLine()) != null) {
+		            		puzzle = puzzle.concat(line);
+		            	}
+            			grid.parse(puzzle);
+            			window.updateGrid();
+		            } catch (IOException x) {
+		            	System.err.println(x);
+		            }
+		        } else {
+		            System.out.println("Open command cancelled by user\n");
+		        }
+		   }
+		}
+
+	}
 	/**
 	 * The listener interface for receiving solveDeductive events.
 	 *

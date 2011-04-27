@@ -81,6 +81,11 @@ public class Grid {
 		String[] fileRows = new String[9];
 		String clean = s.replaceAll("\n","");
 		clean = clean.replaceAll("\\.","0");
+		if(clean.length() != 81)
+			return;
+		if(!clean.matches("^[0-9]*$")){
+			return;
+		}
 		for(int i=0; i<9; i++){
 		    fileRows[i] = clean.substring(i*9,i*9+9);
 		}

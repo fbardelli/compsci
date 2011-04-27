@@ -43,6 +43,10 @@ public class GameBoard extends JPanel{
 				    cell.setBackground(Color.GREEN);
 				    c.setHighlight(false);
 				}
+				if(c.getSelected()){
+					cell.setBackground(Color.CYAN);
+					c.setSelected(false);
+				}
 				cell.removeAll();
 				if (c.getValue() == 0) { 
 					cell.setLayout(new GridLayout(3,3)); 

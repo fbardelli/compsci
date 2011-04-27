@@ -125,16 +125,19 @@ public class Solver {
      * @param cg the CellGroup
      */
     private void solveNakedPairInCellGroup(HashMap<Integer,Boolean> pValues, CellGroup cg){
-    	int count = 0;
     	List<Cell> eliminateCells = new ArrayList<Cell>();
+    	List<Cell> candidateCells = new ArrayList<Cell>();
     	for(Cell c: cg.getCells()){
     		if(pValues.equals(c.getPossibleValues())){
-    			count++;
+    			candidateCells.add(c);
     		}else{
     			eliminateCells.add(c);
     		}
     	}
-    	if (count == 2){
+    	if (candidateCells.size() == 2){
+    		for(Cell c: candidateCells){
+    			c.setSelected(true);
+    		}
     		for(Cell c: eliminateCells){
     			for (Integer i : pValues.keySet()){
     				if(pValues.get(i)){
@@ -225,12 +228,12 @@ public class Solver {
      */
     public boolean solveNakedTripletInCellGroup(CellGroup cg, int first, int second, int third){
         int bitField = (int) Math.pow(2,first) + (int) Math.pow(2,second) + (int)Math.pow(2,third);
-        int nakedTripleCandidates = 0;
         int bitTotal = 0;
         for(int i = 0; i <= 9; i++){
             bitTotal += (int)Math.pow(2,i);
         }
         List<Cell> eliminateCells = new ArrayList<Cell>();
+        List<Cell> candidateCells = new ArrayList<Cell>();
         for(Cell c: cg.getCells()){
             if( c.getPossibleValueCount() < 2){
                 continue;
@@ -244,12 +247,15 @@ public class Solver {
             
             boolean match = ((~(bitSum) | bitField) & bitTotal) == bitTotal;
             if(match){
-                nakedTripleCandidates++;
+                candidateCells.add(c);
             }else{
                 eliminateCells.add(c);
             }
         }
-        if(nakedTripleCandidates == 3){
+        if(candidateCells.size() == 3){
+        	for(Cell c: candidateCells){
+        		c.setSelected(true);
+        	}
             for(Cell c : eliminateCells){
                 if (c.getValue() == 0){
                     if(c.getPossibleValues().get(new Integer(first))){
@@ -301,6 +307,8 @@ public class Solver {
                                 c2.setHighlight(true);
                                 c2.eliminatePossibleValue(c);
                             }
+                        }else{
+                        	c2.setSelected(true);
                         }
                     }
                 }
@@ -326,6 +334,8 @@ public class Solver {
                                 c2.setHighlight(true);
                                 c2.eliminatePossibleValue(c);
                             }
+                        }else{
+                        	c2.setSelected(true);
                         }
                     }
                 }
@@ -371,6 +381,10 @@ public class Solver {
                     cg2Positions.add(new Integer(i));
         	}
         	if (cg1Positions.size() == 2 && cg1Positions.equals(cg2Positions)){
+        		cg1.getCells().get(cg1Positions.get(0)).setSelected(true);
+        		cg1.getCells().get(cg1Positions.get(1)).setSelected(true);
+        		cg2.getCells().get(cg2Positions.get(0)).setSelected(true);
+        		cg2.getCells().get(cg2Positions.get(1)).setSelected(true);
         		for(int groupPos = 0; groupPos < 9; groupPos++){
         		    if(groupPos != y && groupPos != y1){
         		        CellGroup currentGroup = TYPE == ROW ? grid.getRow(groupPos) : grid.getColumn(groupPos);

@@ -14,6 +14,7 @@ public class Cell {
 	private CellGroup parentRow;
 	private CellGroup parentColumn;
 	private boolean highlight;
+	private boolean selected;
 	
 	/**
 	 * Instantiates a new cell.
@@ -22,8 +23,27 @@ public class Cell {
 		initializePossibleValues();
 		value = 0;
 		highlight = false;
+		selected = false;
 	}
 	
+	/**
+	 * Gets the selected state of the Cell.
+	 *
+	 * @return the selected state
+	 */
+	public boolean getSelected() {
+		return selected;
+	}
+
+	/**
+	 * Sets the selected state of the cell.
+	 *
+	 * @param selected the new selected state
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
 	/**
 	 * Instantiates a new cell with a given value
 	 *
