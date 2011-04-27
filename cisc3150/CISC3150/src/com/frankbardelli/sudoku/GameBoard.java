@@ -10,9 +10,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GameBoard.
+ */
 public class GameBoard extends JPanel{
+	
+	/** The subgrid panel. */
 	JPanel[] subgridPanel;
+	
+	/** The cell panel. */
 	JPanel[][] cellPanel;
+	
+	/**
+	 * Instantiates a new game board.
+	 */
 	public GameBoard(){
 		this.subgridPanel = new JPanel[9];
 		this.cellPanel = new JPanel[9][9];
@@ -31,6 +43,11 @@ public class GameBoard extends JPanel{
 	}
 
 
+	/**
+	 * Update grid.
+	 *
+	 * @param grid the grid
+	 */
 	public void updateGrid(Grid grid){
 		for (int subgridIndex = 0; subgridIndex < 9; subgridIndex++) {
 			CellGroup cg = grid.getBox(subgridIndex);
