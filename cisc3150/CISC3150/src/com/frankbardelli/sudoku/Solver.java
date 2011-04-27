@@ -172,27 +172,40 @@ public class Solver {
     public void solveHiddenPairInCellGroup(CellGroup cg){
         for(int pv1 = 9; pv1 > 1; pv1--){
             for(int pv2 = pv1 - 1; pv2 > 0; pv2--){
-                List<Cell> matchingCells = new ArrayList<Cell>();
+                List<Cell> matchingBoth = new ArrayList<Cell>();
+                List<Cell> matchingEither = new ArrayList<Cell>();
                 for(Cell c: cg.getCells()){
-                    if(c.getPossibleValues().containsValue(new Integer(pv1)) &&
-                            c.getPossibleValues().containsValue(new Integer(pv2))){
-                        matchingCells.add(c);
+                    if(c.getPossibleValues().get(new Integer(pv1)) &&
+                            c.getPossibleValues().get(new Integer(pv2))){
+                        matchingBoth.add(c);
+                    }
+                    if(c.getPossibleValues().get(new Integer(pv1)) ||
+                            c.getPossibleValues().get(new Integer(pv2))){
+                        matchingEither.add(c);
                     }
                 }
-                if(matchingCells.size()==2){
-                    Cell c1 = matchingCells.get(0);
-                    Cell c2 = matchingCells.get(1);                 
+                if(matchingBoth.size()==2&&matchingEither.size()==2){
+                    Cell c1 = matchingBoth.get(0);
+                    c1.setSelected(true);
+                    Cell c2 = matchingBoth.get(1);
+                    c2.setSelected(true);
                     for(int i = 1; i <= 9; i++){
                         if(i!=pv1&&i!=pv2){
                             if(c1.getPossibleValues().get(new Integer(i))){
+                                c1.setSelected(false);
                                 c1.setHighlight(true);
                                 c1.eliminatePossibleValue(i);
                             }
                             if(c2.getPossibleValues().get(new Integer(i))){
+                                c2.setSelected(false);
                                 c2.setHighlight(true);
                                 c2.eliminatePossibleValue(i);
                             }
                         }
+                    }
+                    if((!c1.getHighlight())&&(!c2.getHighlight())){
+                        c1.setSelected(false);
+                        c2.setSelected(false);
                     }
                 }
             }
@@ -300,18 +313,11 @@ public class Solver {
                         }
                     }
                 }
+
                 if(clearColumn){
-                    for(Cell c2 : col.getCells()){
-                        if(c2.getParentBox() != cg){
-                            if(c2.getPossibleValues().get(new Integer(c))){
-                                c2.setHighlight(true);
-                                c2.eliminatePossibleValue(c);
-                            }
-                        }else{
-                        	c2.setSelected(true);
-                        }
-                    }
+                    clearPointingPairGroup(col,cg,c);
                 }
+  
                 
                 CellGroup row= null;
                 boolean clearRow = false;
@@ -328,21 +334,34 @@ public class Solver {
                     }
                 }
                 if(clearRow){
-                    for(Cell c2 : row.getCells()){
-                        if(c2.getParentBox() != cg){
-                            if(c2.getPossibleValues().get(new Integer(c))){
-                                c2.setHighlight(true);
-                                c2.eliminatePossibleValue(c);
-                            }
-                        }else{
-                        	c2.setSelected(true);
-                        }
-                    }
+                    clearPointingPairGroup(row,cg,c);
                 }
                 
             }
         }
         
+    }
+    
+    public void clearPointingPairGroup(CellGroup group, CellGroup parent, int c){
+        List<Cell> selectCells = new ArrayList<Cell>();
+        int eliminated = 0;
+        for(Cell c2 : group.getCells()){
+            if(c2.getParentBox() != parent){
+                if(c2.getPossibleValues().get(new Integer(c))){
+                    c2.setHighlight(true);
+                    c2.eliminatePossibleValue(c);
+                    eliminated++;
+                }
+            }else{
+                if (c2.getValue() == 0){
+                    selectCells.add(c2);
+                }
+            }
+        }
+        if(eliminated>0){
+            for(Cell c3: selectCells)
+                c3.setSelected(true);
+        }
     }
     
     /**
