@@ -37,16 +37,17 @@ What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed 
 */
 
 int main(){
-    const int MAX_SIZE = 1001;
-    unsigned int sum = 1;
-    int counter = 1;
-    for(int i = 2; i < MAX_SIZE; i += 2){
+    //const int MAX_SIZE = 1001;
+    //const unsigned long long MAX_SIZE = 1001;
+    const unsigned long long MAX_SIZE = 100000001;
+    unsigned long long sum = 1;
+    unsigned long long counter = 1;
+    for(unsigned long long i = 2; i < MAX_SIZE; i += 2){
         for(int j = 0; j < 4; j++){
-            counter +=i;
+            counter += i;
             sum += counter;
         }
     }
-    cout << sum <<endl;
-
+    cout << sum << endl;
 }
 
