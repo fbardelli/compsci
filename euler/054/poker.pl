@@ -9,7 +9,9 @@ RF ([RF])
                             -> ( [2K2,2KH,2KL,Remainder] ) 
                                 -> ( [2K,2K,H,M,L] )
                                     -> ( [HC, H, MH, M, ML, M])
-
+ 30  29  28  27  26  25   24   20  16 12  8  4  0 
+ 1   1   1   1   1   1    4    4   4  4   4  4  4
+[SF][4K][FH][FL][ST][3K][P2H][P1L][H][MH][M][ML][L]
 
 {
     value => { 2=>N,3=>N,4=>N,5=>N,6=>N,7=>N,8=>N,9=>N,T=>N,J=>N,Q=>N,K=>N,A=>N},
@@ -39,15 +41,24 @@ use constant VALUE_MAP => {
     K => 13,
     A => 14
 };
+=pod
+ 30  29  28  27  26  25   24   20  16 12  8  4  0 
+ 1   1   1   1   1   1    4    4   4  4   4  4  4
+[SF][4K][FH][FL][ST][3K][P2H][P1L][H][MH][M][ML][L]
+=cut
 
 use overload '""' => \&stringify;
 sub new {
     my ($class,$cards) = @_;
     my $self = {
         cards => $cards,
-        royal => 0,
         straight => 0,
-        flush => 0
+        flush => 0,
+        full_house => 0,
+        three_of_kind => 0,
+        pairs => 0,
+        high_pair => 0,
+        low_pair => 0
     };
     bless $self,$class;
     $self->analyze();
