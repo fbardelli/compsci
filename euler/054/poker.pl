@@ -66,24 +66,67 @@ sub analyze {
     ];
     for $card (@{$self->{cards}}){
        $suits->{$card->suit}++;
+       $values->{$card->value}++;
     }
+    my $flush = 0;
     for my $s (keys %$suits){
         if($suits->{$s} == 5){
-            print "found a flush $self\n";
+            $flush = 1;
+            #print "found a flush $self\n";
         }
     }
-    my $high = $self->{cards}->[0]->value;
-    my $medh = $self->{cards}->[1]->value;
-    my $med  = $self->{cards}->[2]->value;
-    my $medl = $self->{cards}->[3]->value;
-    my $low  = $self->{cards}->[4]->value;
+    my $straight = 0;
+    my $high = VALUE_MAP->{$self->{cards}->[0]->value};
+    my $medh = VALUE_MAP->{$self->{cards}->[1]->value};
+    my $med  = VALUE_MAP->{$self->{cards}->[2]->value};
+    my $medl = VALUE_MAP->{$self->{cards}->[3]->value};
+    my $low  = VALUE_MAP->{$self->{cards}->[4]->value};
     if( $high-1 == $medh &&
         $medh-1 == $med &&
         $med-1 == $medl &&
         $medl-1 == $low){
-            print "found a straight $self\n";
+            $straight = 1;
+            if($flush){
+                if($high eq VALUE_MAP->{'A'}){
+                    print "found a royal flush $self\n";
+                }else{
+                    print "found a straight flush $self\n";
+                }
+            }else{
+                print "found a straight $self\n";
+            }
     } 
+    if ( $flush && ! $straight){
+                print "found a flush $self\n";
+    }
+    my $max = 0;
+    my $pair_count = 0;
+    for my $v (keys %$values){
+        if($values->{$v} > $max){
+            $max = $values->{$v};
+        }
+        if($values->{$v} == 2){
+            $pair_count++;
+        }
+    }
+
+    if($max == 4){
+            print "found a 4 of a kind $self\n";
+    } elsif($max == 3) {
+            if($pair_count){
+                print "found a FULL HOUSE $self\n";
+            }else{
+                print "found a 3 of a kind $self\n";
+            }
+    } elsif($max == 2) {
+        if($pair_count == 2){
+            print "found two pair $self\n";
+        }else{
+            print "found two of a kind $self\n";
+        }    
+    }
 }
+
 sub stringify {
     my $self = shift;
     return "[". join(",",@{$self->{cards}})."]";
@@ -117,7 +160,7 @@ sub value {
 
 sub stringify {
     my $self = shift;
-    return $self->value . " of " . $self->suit;
+    return $self->value . $self->suit;
 }
 
 1;
