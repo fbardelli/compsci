@@ -8,6 +8,8 @@ int countChain(int, map<int,bool> &seen,map <int,int> &cache);
 int main(){
     //int fact[10];
     int sixtyTerms = 0;
+    int max = 0;
+    int maxTerm = 0;
     for(int i = 0; i < 10; i++){
         //cout << "factorial(" << i << ") = " << factorial(i) << endl;
         fact[i] = factorial(i);
@@ -19,12 +21,17 @@ int main(){
         seen[i] = true;
         int size = countChain(i,seen,cache);
         cache[i] = size;
+        if(size > max){
+            max = size;
+            maxTerm = i;
+        }
         if ( size == 60){
             //cout << i << " = (" << size << ")\n";
             sixtyTerms++;
         }
     }
     cout << sixtyTerms << " numbers have 60 terms " << endl;
+    cout << maxTerm << " has a cycle of " << max << endl;
 
 }
 
