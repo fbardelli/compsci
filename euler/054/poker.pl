@@ -7,12 +7,15 @@ sub new {
     my ($class,$cards) = @_;
     my $self = {
         cards => $cards,
+        royal_flush => 0,
+        straight_flush => 0,
         straight => 0,
         flush => 0,
         full_house => 0,
-        three_of_kind => 0,
-        four_of_kind => 0,
-        pairs => 0,
+        two_of_a_kind => 0,
+        two_pair => 0,
+        three_of_a_kind => 0,
+        four_of_a_kind => 0,
         high_pair => 0,
         low_pair => 0
     };
@@ -22,12 +25,16 @@ sub new {
 }
 
 =pod
-offset:     33  32  31  30  29  28  24  20  16 12  8  4  0 
-bits:       1   1   1   1   1   1   4   4   4  4   4  4  4
-condition: [SF][4K][FH][FL][ST][3K][HP][LP][H][MH][M][ML][L]
-HP = High pair, either a 3 of a kind, Full House 3 of a kind, a 4 of a kind, or the higher value of 2 pair
-LP = Low pair, either a 2 of a kind, the lower of 2 pair, or the 2 of a kind in a full house
-Royal Flush is just a straight flush with a higher high card, so needs no flag
+
+=head1 Scoring overview
+
+ offset:     33  32  31  30  29  28  24  20  16 12  8  4  0 
+ bits:       1   1   1   1   1   1   4   4   4  4   4  4  4
+ condition: [SF][4K][FH][FL][ST][3K][HP][LP][H][MH][M][ML][L]
+ HP = High pair, either a 3 of a kind, Full House 3 of a kind, a 4 of a kind, or the higher value of 2 pair
+ LP = Low pair, either a 2 of a kind, the lower of 2 pair, or the 2 of a kind in a full house
+ Royal Flush is just a straight flush with a higher high card, so needs no flag
+
 =cut
 
 sub score {
@@ -49,7 +56,7 @@ sub score {
         $self->cards->[4]->value % 16
     );
 
-=comment
+=for comment
     #This one only works on 64-bit perls, requires a 34-bit int   
     return (
         $self->cards->[4]->value +
