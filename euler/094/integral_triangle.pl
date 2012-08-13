@@ -1,6 +1,6 @@
 my $end = 1e9/3;
 print "$end\n";
-$end = 100000;
+$end = 333333333;
 for my $side (2..$end){
     $base1 = $side - 1;
     $base2 = $side + 1;
