@@ -1,0 +1,6 @@
+Revision history for Perl extension Example.
+
+0.01  Thu Aug 23 12:59:01 2012
+	- original version; created by h2xs 1.23 with options
+		-A -n Example
+
